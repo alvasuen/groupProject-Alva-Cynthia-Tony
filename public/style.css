@@ -1,13 +1,28 @@
-header {
+/* 
+Color:
+font-size:
+font-family: 
+*/
+
+body {
+  font-family: "Courier New", Courier, monospace;
+  background-color: rgb(250, 235, 214);
+  background-color: rgb(241, 162, 66);
+  background-color: rgb(233, 149, 46);
+  margin: 0;
+  position: relative;
+}
+
+/* Rea Bar */
+.header {
   position: fixed;
-  display:flex;
+  width: 100%;
+  display: flex;
   justify-content: space-between;
-  min-width: 100%;
-  max-width: 100%;
   height: 80px;
   background-color: #fccb05;
   color: black;
-  margin: -10px;
+  /* margin: -10px; */
 }
 
 .header-left {
@@ -74,4 +89,111 @@ header {
   background-color: transparent;
   border: transparent;
   text-transform: uppercase;
+}
+
+/* Main Photo */
+.main-photo {
+  width: 100%;
+}
+
+/* Choose go to recipe or memoWall */
+.go-to-other {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+}
+
+.recipe,
+.memowall {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 50px;
+  padding: 100px 250px;
+}
+
+.recipe {
+  /* img 暫時set顏色 */
+  padding: 100px 290px;
+  background-color: rgb(250, 235, 214);
+}
+
+.memowall {
+  /* img 暫時set顏色 */
+  padding: 100px 255px;
+  background-color: rgb(65, 177, 166);
+}
+
+/* Famous posts */
+.sub-title {
+  font-size: 50px;
+  font-weight: bolder;
+}
+
+.mostlike {
+  max-width: 1272;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.shadow-box {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* background-color: #fafafa; */
+  width: 410px;
+  height: 410px;
+  /* background-color: rgb(250, 250, 250); */
+
+  border-radius: 8px;
+  background-color: rgb(65, 177, 166);
+  box-shadow: 1px 5px 8px rgba(110, 110, 110, 0.326);
+}
+
+.comment {
+  width: 359px;
+  height: 320px;
+  /* background-color: rgb(250, 250, 250); */
+
+  /* background-color: rgba(240, 239, 239, 0.388); */
+  background-color: rgba(213, 242, 240);
+  border-radius: 8px;
+}
+
+.content {
+  padding: 10px;
+}
+
+.icon {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.features {
+  width: 320px;
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 23px;
+
+  background-color: rgb(65, 177, 166);
+  margin-top: 20px;
+  padding: 8px;
+}
+
+.icon:hover {
+  color: #ffffff;
+}
+
+.icon:active {
+  color: #504f4f;
+}
+
+/* Contact Box */
+.contact,
+.address {
+  text-transform: uppercase;
+  font-weight: bolder;
 }
