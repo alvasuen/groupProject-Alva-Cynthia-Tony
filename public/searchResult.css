@@ -1,0 +1,164 @@
+body {
+    font-family: "Courier New", Courier, monospace;
+    /* background-color: rgb(250, 235, 214); 
+    background-color: rgb(241, 162, 66); */
+    background-color: rgb(233, 149, 46);
+    margin: 0;
+  }
+  
+  /* Rea Bar */
+  .header {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fccb05;
+    color: black;
+  }
+
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 80px;
+    margin-left: 10px;
+  }
+  
+  .icon {
+    margin-left: 10px;
+  }
+  
+  .header-nav-bar img {
+    padding: 10px;
+  }
+  
+  .recipe-catalogs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    border-right: 1px solid gray;
+    border-left: 1px solid gray;
+    margin: 10px;
+  }
+  
+  .eshop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    border-right: 1px solid gray;
+  }
+  
+  .search {
+    width: 500px;
+    height: 30px;
+    border-radius: 45px;
+    border: 0px;
+    padding: 10px;
+    margin-left: 30px;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 80px;
+    margin-right: 10px;
+  }
+  
+  .login {
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  .login input {
+    width: 100px;
+    font-size: 15px;
+    background-color: transparent;
+    border: transparent;
+    text-transform: uppercase;
+  }
+
+ .separator{
+    height:100px;
+    background-color: transparent;
+ }
+
+ .mainContainer{
+    padding-left: 150px;
+    padding-right:150px;
+ }
+
+ .searchResultBanner{
+    height: 440px;
+    width:100%;
+    display: flex;
+    justify-content: center;
+ }
+
+.filter{
+    margin-top: 30px;
+}
+
+  select{
+    border:none;
+    padding: 10px 20px;
+    margin-top: 5px;
+    border-radius:5px;
+  }
+  
+  select:focus{
+    outline:none;
+  }
+
+  .result{
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 100px;
+  }
+
+  .resultDisplayBlock{
+    width: 400px;
+    height: 600px;
+    margin: 30px 17px 0px 17px;
+    background-color: aliceblue;
+    border-radius: 20px;
+    /* display: flex; */
+    justify-content: center;
+    /* opacity: 95%; */
+  }
+
+  .resultImage{
+    display: flex;
+    justify-content: center;
+  }
+
+  .resultImage img{
+    width: 350px;
+    margin-top: 30px;
+    border-radius: 50px;
+  }
+
+  .resultHeadline{
+    font-size: 35px;
+    font-weight: bold;
+    margin: 10px 15px 10px 15px;
+    color: black;
+  }
+
+  .resultBriefContent{
+    font-size: 15px;
+    margin: 10px 15px 10px 15px;
+    color: black;
+  }
+
+  a{
+    text-decoration: none;
+  }
+
+  .resultDisplayBlock:hover{
+    box-shadow: 1px 1px 2px black, 0 0 25px rgb(255, 238, 0), 0 0 5px rgb(139, 109, 0);
+  }
