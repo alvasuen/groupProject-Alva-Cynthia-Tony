@@ -32,7 +32,21 @@ fs.mkdirSync(uploadDir, { recursive: true });
 let p = path.join(__dirname, "public");
 app.use(express.static(p));
 
+
+//login
+
+
+//logout
+
+
+//signup
+
+
+
+
+
 const PORT = 8080;
+
 
 //Socket.io
 server.listen(PORT, () => {
