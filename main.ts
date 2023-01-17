@@ -7,6 +7,7 @@ import path from "path";
 import { Client } from "pg";
 import dotenv from "dotenv";
 import http from "http";
+import { checkPassword, hashPassword } from "./hash";
 import {Server as SocketIO} from "socket.io";
 
 const app = express();
