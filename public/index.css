@@ -136,6 +136,7 @@ main-link:hover {
   flex-direction: row;
   align-items: center;
   text-align: center;
+  margin-top: 50px;
 }
 
 .recipe,
@@ -211,6 +212,26 @@ main-link:hover {
   transform: scale(1.2, 1.2);
 }
 
+/* logo animation*/
+@keyframes translateinfinite {
+  100% {
+    transform: translateX(calc(-180px * 12));
+  }
+}
+
+.nypd {
+  height: 200px;
+  border-radius: 50%;
+  animation: translateinfinite 30s linear infinite;
+  margin: 30px;
+}
+
+.animate-container {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
 /* Famous posts */
 .sub-title {
   font-size: 50px;
@@ -222,8 +243,8 @@ main-link:hover {
   max-width: 1272;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   justify-content: space-between;
+  overflow: hidden;
 }
 
 .shadow-box {
@@ -235,10 +256,20 @@ main-link:hover {
   align-items: center;
   width: 410px;
   height: 410px;
+  margin-right: 20px;
+
+  animation: post-slide 10s linear infinite;
+  animation-direction: alternate;
 
   /* border-radius: 8px; */
   background-color: #efefee;
   box-shadow: 1px 5px 8px rgba(110, 110, 110, 0.326);
+}
+
+@keyframes post-slide {
+  100% {
+    transform: translateX(calc(-70px * 12));
+  }
 }
 
 .comment {
