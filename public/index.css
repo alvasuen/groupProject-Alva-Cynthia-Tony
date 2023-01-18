@@ -9,6 +9,32 @@ body {
   background-color: #053e5a;
   margin: 0;
   position: relative;
+  color: #efefee;
+}
+
+a {
+  cursor: pointer;
+  text-transform: uppercase;
+  display: inline-block;
+  position: relative;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #636363;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
 
 /* Rea Bar */
@@ -61,7 +87,7 @@ body {
 }
 
 .search {
-  width: 500px;
+  width: 300px;
   height: 30px;
   border-radius: 45px;
   border: 0px;
@@ -147,7 +173,7 @@ body {
 }
 
 .link:hover {
-  color: #f9b508;
+  color: #c28d06;
 }
 
 /* .choice-photo:before, */
@@ -158,7 +184,7 @@ body {
   height: 2px;
   bottom: -5px;
   left: 0;
-  background-color: #ffe120;
+  background-color: #f5dfa9;
   visibility: hidden;
   -webkit-transform: scaleX(0);
   -o-transform: scaleX(0);
@@ -181,6 +207,7 @@ body {
 .sub-title {
   font-size: 50px;
   font-weight: bolder;
+  text-transform: uppercase;
 }
 
 .mostlike {
@@ -193,6 +220,8 @@ body {
 
 .shadow-box {
   margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 25px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -200,8 +229,8 @@ body {
   width: 410px;
   height: 410px;
 
-  border-radius: 8px;
-  background-color: rgb(65, 177, 166);
+  /* border-radius: 8px; */
+  background-color: #efefee;
   box-shadow: 1px 5px 8px rgba(110, 110, 110, 0.326);
 }
 
@@ -211,8 +240,8 @@ body {
   /* background-color: rgb(250, 250, 250); */
 
   /* background-color: rgba(240, 239, 239, 0.388); */
-  background-color: rgba(213, 242, 240);
-  border-radius: 8px;
+  background-color: rgb(219, 219, 217);
+  /* border-radius: 8px; */
 }
 
 .content {
@@ -231,22 +260,26 @@ body {
 
   font-size: 23px;
 
-  background-color: rgb(65, 177, 166);
+  background-color: #efefee;
+  color: #053e5a;
   margin-top: 20px;
   padding: 8px;
 }
 
 .icon:hover {
-  color: #ffffff;
+  color: #b4b4b3;
 }
 
 .icon:active {
-  color: #504f4f;
+  color: #042d42;
 }
 
 /* Contact Box */
-.contact,
 .address {
   text-transform: uppercase;
   font-weight: bolder;
+}
+
+.contact-box {
+  font-size: 25px;
 }
