@@ -1,3 +1,14 @@
 {
-  "livePreview.defaultPreviewPath": "/Users/wong/Documents/tecky-exercise/WSP/groupProject-Alva-Cynthia-Tony/index.html"
+  "livePreview.defaultPreviewPath": "/Users/wong/Documents/tecky-exercise/WSP/groupProject-Alva-Cynthia-Tony/index.html",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "memowall",
+      "database": "memowall",
+      "username": "alva"
+    }
+  ]
 }

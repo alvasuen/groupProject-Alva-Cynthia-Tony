@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="./login.css">
     <title>Login</title>
 </head>
@@ -38,24 +39,26 @@
             <button class="newAcBtn">Create Account</button>
         </div>
 
-        <div class="loginPanel">
+        <div class="loginContainer">
             <p>I already have an account!</p>
-            <form>
-                <div class="email">
+            <form class="loginPanel">
+                <!-- <div class="email"> -->
                 <label>Email:</label>
                 <input class="emailInput" type="email" name="email" placeholder="Email Address" required>
-                </div>
-                <div class="pw">
+                <!-- </div> -->
+                <!-- <div class="pw"> -->
                 <label>Password:</label>
                 <input class="pwInput" type="password" name="password" placeholder="Password" required>
-                </div>
+                <!-- </div> -->
                 <input class="loginBtn" type="submit" value="Login"/>
             </form>
+            <button>
+                <span><i class="fa-brands fa-google"></i></span>
+                <span>Sign in  with Google</span>
+            </button>
 
         </div>
-
     </div>
-
 
     <script src="./login.js"></script>
 </body>
