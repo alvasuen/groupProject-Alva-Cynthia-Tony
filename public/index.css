@@ -109,26 +109,72 @@ body {
   text-transform: uppercase;
   font-family: "Times New Roman", Times, serif;
   font-size: 50px;
-  width: 50%;
-  height: 300px;
+  width: 1000px;
+  /* margin: 10px; */
 
+  float: left;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
+  overflow: hidden;
+  position: relative;
 
   /* padding-bottom: 15%; */
 }
 
-.recipe {
-  /* img 暫時set顏色 */
-  background-color: rgb(250, 235, 214);
-  background-image: url("./rec-background.png");
+.choice-photo {
+  width: 100px;
+  height: 400px;
+  display: block;
+  position: relative;
+  transform: scale(1, 1);
+  transition: all 1s ease-out;
 }
 
-.memowall {
-  /* img 暫時set顏色 */
-  background-color: rgb(65, 177, 166);
-  background-image: url("./mmw-background.png");
+.choice-photo:hover {
+  transform: scale(1.2, 1.2);
+}
+
+.a-recipe,
+.a-memowall {
+  width: 100%;
+  position: absolute;
+}
+
+.link {
+  text-decoration: wavy;
+  color: #ab7b03;
+}
+
+.link:hover {
+  color: #f9b508;
+}
+
+/* .choice-photo:before, */
+.link:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: #ffe120;
+  visibility: hidden;
+  -webkit-transform: scaleX(0);
+  -o-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  -o-transition: all 0.3s ease-in-out 0s;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+/* .choice-photo:hover, */
+.link:hover:before {
+  visibility: visible;
+  -webkit-transform: scaleX(1);
+  -o-transform: scaleX(1);
+  transform: scaleX(1);
+  transform: scale(1.2, 1.2);
 }
 
 /* Famous posts */
@@ -151,10 +197,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* background-color: #fafafa; */
   width: 410px;
   height: 410px;
-  /* background-color: rgb(250, 250, 250); */
 
   border-radius: 8px;
   background-color: rgb(65, 177, 166);
