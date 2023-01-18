@@ -1,6 +1,8 @@
-import * as bcrypt from "bcryptjs";
+// import * as bcrypt from "bcryptjs";
+const bcrypt = require("bcrypt");
 
 const SALT_ROUNDS = 10;
+
 
 export async function hashPassword(plainPassword: string) {
   const hash: string = await bcrypt.hash(plainPassword, SALT_ROUNDS);
@@ -17,3 +19,4 @@ export async function checkPassword(
   );
   return isMatched;
 }
+

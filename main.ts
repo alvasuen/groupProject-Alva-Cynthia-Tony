@@ -7,6 +7,7 @@ import path from "path";
 import { Client } from "pg";
 import dotenv from "dotenv";
 import http from "http";
+import * as bcrypt from "bcryptjs";
 import { checkPassword, hashPassword } from "./hash";
 import {Server as SocketIO} from "socket.io";
 
@@ -65,7 +66,7 @@ function formidable_promise(req:express.Request){
 let p = path.join(__dirname, "public");
 app.use(express.static(p));
 
-//session
+//session req.session
 app.use(
   expressSession({
     //key to be encryted and exchange with client
@@ -91,6 +92,7 @@ declare module "express-session" {
 app.get ("/login", (req: Request, res: Response)=>{
   res.sendFile(path.join(p,"login.html"));
 })
+
 
 //Local login
 app.post("/login", async(req:Request, res:Response)=>{
@@ -148,13 +150,50 @@ app.post("/login", async(req:Request, res:Response)=>{
 
 
 //signup
-app.get ("signup", (req: Request, res: Response)=>{
+app.get ("/signup", (req: Request, res: Response)=>{
   res.sendFile(path.join(p,"signup.html"));
 })
 
 
+app.post("/signup", async (req:Request, res:Response)=>{
+  let formidable_result:any = await formidable_promise(req)
+  console.log(formidable_result);
+  try {
+    const username = formidable_result.fields.email
+    const password = formidable_result.fields.password
+    const repeatPassword = formidable_result.fields.psw_repeat
+    console.log(username);
+    if (password == repeatPassword){
+      await client.query(
+        //check row count
+        `INSERT INTO users (username, password) 
+        VALUES ($1, $2)`,
+        [username, bcrypt.hash(password, 10)]
+      );
+      res.json({ success: true });
+    }else{
+      res.json({ success: false });
+    }} catch {
+    res.json({ success: false });
+  }
+})
 
+// app.get("/currentUser",(req,res)=>{
+//   res.json(req.session)
+// })
 
+// const isLoginGuard = (req:Request,res:Response,next:NextFunction)=>{
+//   if (req.session.userId){
+//     next();
+//   }else{
+//     res.redirect("/login.html");
+//   }
+// };
+
+// app.use(
+//   isLoginGuard,
+//   express.static("protected")
+// );
 
 const PORT = 8080;
 
