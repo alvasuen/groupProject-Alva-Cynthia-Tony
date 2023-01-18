@@ -7,7 +7,6 @@ import path from "path";
 import { Client } from "pg";
 import dotenv from "dotenv";
 import http from "http";
-import * as bcrypt from "bcryptjs";
 import { checkPassword, hashPassword } from "./hash";
 import {Server as SocketIO} from "socket.io";
 
@@ -109,6 +108,7 @@ app.post("/login", async(req:Request, res:Response)=>{
     `SELECT * FROM users WHERE username = $1`,
       [formidable_result.fields.email]
   );
+  console.log(loginResult.rows[0].password);
 
   if (loginResult.rowCount === 0) {
     result.isLogin = false;
@@ -117,9 +117,9 @@ app.post("/login", async(req:Request, res:Response)=>{
     res.json(result);
   } else {
     try{
-      // const match = await checkPassword (formidable_result.fields.password, loginResult.rows[0].password)
-      // if (match) {
-      if (loginResult.rows[0].password === formidable_result.fields.password) {
+      const match = await checkPassword (formidable_result.fields.password, loginResult.rows[0].password)
+      if (match) {
+      // if (loginResult.rows[0].password === formidable_result.fields.password) {
         //for js
         result.isLogin = true;
         result.isError = false;
@@ -162,13 +162,13 @@ app.post("/signup", async (req:Request, res:Response)=>{
     const username = formidable_result.fields.email
     const password = formidable_result.fields.password
     const repeatPassword = formidable_result.fields.psw_repeat
-    console.log(username);
+    const hash = await hashPassword("tecky");
     if (password == repeatPassword){
       await client.query(
         //check row count
         `INSERT INTO users (username, password) 
         VALUES ($1, $2)`,
-        [username, bcrypt.hash(password, 10)]
+        [username, hash]
       );
       res.json({ success: true });
     }else{
