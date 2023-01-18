@@ -122,13 +122,13 @@ body {
 .recipe {
   /* img 暫時set顏色 */
   background-color: rgb(250, 235, 214);
-  background-image: url("");
+  background-image: url("./rec-background.png");
 }
 
 .memowall {
   /* img 暫時set顏色 */
   background-color: rgb(65, 177, 166);
-  background-image: url("");
+  background-image: url("./mmw-background.png");
 }
 
 /* Famous posts */
