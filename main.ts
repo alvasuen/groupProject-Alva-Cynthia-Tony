@@ -207,7 +207,7 @@ app.post("/signup", async (req: Request, res: Response) => {
   }}
   catch{
     result.isSignUp =false;
-    result.errMess = "Unexpected error! Please create an account first!"
+    result.errMess = "Unexpected error!"
     res.json(result);
   }
 });
