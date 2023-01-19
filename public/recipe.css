@@ -144,16 +144,26 @@ body {
   height: 560px;
   /* width: calc(var(--h) + 550px); */
   width: 610px;
+  width: 510px;
   position: absolute;
   /* background-image: linear-gradient(to bottom, #ff5c33, #ff9166, #3dd6f5); */
-  background-image: linear-gradient(to bottom, #b0aead, #c1bfbf, #e9ebeb);
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
+  background-color: rgb(255, 255, 255);
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
   transition: 1s;
   transform-origin: left;
   backface-visibility: visible;
   border: 0.5px solid black;
   margin-left: 340px;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.recipe-cover {
+  width: 300px;
+  margin-right: 50px;
 }
 
 .book-page {
@@ -161,11 +171,12 @@ body {
   height: -740px;
   /* width: var(-610px); */
   width: -610px;
+  width: -510px;
   position: absolute;
   z-index: 100;
   transition: 1s;
   /* 封面比頁面每條邊寬的長度 */
-  transform-origin: -300px;
+  transform-origin: -250px;
   background-size: cover;
   backface-visibility: visible;
   /*  */
@@ -190,4 +201,21 @@ body {
   border-radius: 50%;
   background-color: rgb(63, 63, 63, 0.8);
   outline: none;
+}
+
+/* Cover page */
+.book-cover-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-cover-page {
+  width: 400px;
+  margin-bottom: 20px;
+}
+
+.recipe-title,
+.recipe-step-title {
+  text-transform: uppercase;
+  font-size: 30px;
 }
