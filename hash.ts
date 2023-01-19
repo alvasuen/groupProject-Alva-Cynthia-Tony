@@ -18,3 +18,9 @@ export async function checkPassword(
   return isMatched;
 }
 
+//  (async function ():Promise<any>{
+// const hash:string = await hashPassword("alvaalva");
+// console.log(hash);
+// const result:boolean = await checkPassword("alvaalva",hash);
+// console.log(result);
+// })();

@@ -103,13 +103,16 @@ app.post("/login", async(req:Request, res:Response)=>{
   }
 
   let formidable_result:any = await formidable_promise(req)
-  console.log(formidable_result);
   const loginResult = await client.query(
-    `SELECT * FROM users WHERE username = $1`,
+    `SELECT * FROM "users" WHERE username = $1`,
       [formidable_result.fields.email]
   );
-  console.log(loginResult.rows[0].password);
 
+  console.log(loginResult.rows[0].username);
+  console.log(loginResult.rows[0].password);
+  console.log(formidable_result.fields.email);
+  console.log(formidable_result.fields.password);
+  
   if (loginResult.rowCount === 0) {
     result.isLogin = false;
     result.isError = true;
@@ -156,9 +159,23 @@ app.get ("/signup", (req: Request, res: Response)=>{
 
 
 app.post("/signup", async (req:Request, res:Response)=>{
+  let result = {
+    errMess:'',
+    isSignUp:false
+  }
+
   let formidable_result:any = await formidable_promise(req)
   console.log(formidable_result);
-  try {
+  const signUpCheck = await client.query(
+    `SELECT * FROM "users" WHERE username = $1`,
+      [formidable_result.fields.email]
+  );
+  if (signUpCheck.rowCount > 0){
+    result.errMess = 'Sign Up rejected!';
+    result.isSignUp = false;
+    res.json(result);
+  }else
+  {try {
     const username = formidable_result.fields.email
     const password = formidable_result.fields.password
     const repeatPassword = formidable_result.fields.psw_repeat
@@ -170,13 +187,18 @@ app.post("/signup", async (req:Request, res:Response)=>{
         VALUES ($1, $2)`,
         [username, hash]
       );
+      result.isSignUp=true;
       res.json({ success: true });
     }else{
-      res.json({ success: false });
+      result.isSignUp=false;
+      result.errMess='Password not match!'
+      res.json(result);
     }} catch {
-    res.json({ success: false });
+    result.isSignUp=false;
+    result.errMess='Unexpected error, please try again!'
+    res.json(result);
   }
-})
+}});
 
 // app.get("/currentUser",(req,res)=>{
 //   res.json(req.session)
