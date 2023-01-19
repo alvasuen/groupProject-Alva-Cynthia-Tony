@@ -1,3 +1,7 @@
+body {
+  background-color: #0b3e5a;
+}
+
 .user-profile {
   display: flex;
   flex-direction: column;
@@ -8,6 +12,7 @@
   grid-template-columns: 270px 570px;
   grid-template-rows: 200px;
   justify-content: center;
+  color: #efeee8;
   /* background-color: #838bd0; */
 }
 
@@ -23,6 +28,7 @@
   border-radius: 50%;
   margin: 10px;
   background-color: #37ba67;
+  /* border: 2px #c28d06 solid; */
 }
 
 .user-profile-panel {
@@ -38,6 +44,9 @@
 
 .user-profile-edit {
   width: 120px;
+  background-color: #0b3e5a;
+  color: white;
+  border: #c28d06 solid white;
 }
 
 .user-panel-count {
@@ -61,7 +70,7 @@
   justify-content: center;
   width: 960px;
   margin-top: 15px;
-  border-top: solid 1px gray;
+  border-top: solid 1px #c28d06;
 }
 
 .post-panel button {
@@ -73,6 +82,7 @@
   align-items: center;
   background-color: transparent;
   border: transparent;
+  color: #efeee8;
 }
 
 .grid {
@@ -82,7 +92,6 @@
   margin: 10px;
   position: relative;
   overflow: hidden;
-  border: 1px solid gray;
 }
 
 .grid img {
