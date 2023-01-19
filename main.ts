@@ -8,6 +8,7 @@ import { Client } from "pg";
 import dotenv from "dotenv";
 import http from "http";
 import { checkPassword, hashPassword } from "./hash";
+import { resolveModuleName } from "typescript";
 // import { Server as SocketIO } from "socket.io";
 
 const app = express();
@@ -101,6 +102,7 @@ app.post("/login", async (req: Request, res: Response) => {
     user: { username: "" },
   };
 
+  try{
   let formidable_result: any = await formidable_promise(req);
   const loginResult = await client.query(
     `SELECT * FROM "users" WHERE username = $1`,
@@ -139,13 +141,18 @@ app.post("/login", async (req: Request, res: Response) => {
         return;
       }
     } catch (err) {
-
       result.isLogin = false;
       result.isError = true;
       result.errMess = "Server error 500";
       res.json(result);
     }
   }
+}catch{
+  result.isLogin=false;
+  result.isError = true;
+  result.errMess = "Unexpected error! Please create an account first!"
+  res.json(result);
+}
 });
 
 //logout
@@ -160,12 +167,14 @@ app.post("/signup", async (req: Request, res: Response) => {
     errMess: "",
     isSignUp: false,
   };
-
+  
   let formidable_result: any = await formidable_promise(req);
+
   const signUpCheck = await client.query(
     `SELECT * FROM "users" WHERE username = $1`,
     [formidable_result.fields.email]
   );
+ 
   if (signUpCheck.rowCount > 0) {
     result.errMess = "Sign Up rejected!";
     result.isSignUp = false;
