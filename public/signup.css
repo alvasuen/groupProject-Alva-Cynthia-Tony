@@ -67,19 +67,7 @@ body {
     height: 80px;
     margin-right: 10px;
   }
-  
-  .container2 {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .login input {
-    width: 100px;
-    font-size: 15px;
-    background-color: transparent;
-    border: transparent;
-    text-transform: uppercase;
-  }
+    
 
  .separator{
     height:100px;
@@ -92,6 +80,24 @@ body {
     padding-left: 150px;
     padding-right: 150px;
  }
+
+.signUpPanel{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.signUpPanel div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container2{
+  display: flex;
+  flex-direction: column;
+}
+
 
  .email{
     margin-bottom: 20px;
@@ -111,33 +117,13 @@ body {
     flex-direction: column;
  }
 
- .emailInput{
-    width:80%;
-    height: 30px;
-    border-radius: 25px;
+ .mainContainer input{
+    width:90%;
+    height: 20px;
+    border-radius: 10px;
     border: none;
     padding: 8px 12px 8px 12px;
-    font-size: 20px;
-    margin-top: 5px;
- }
-
- .pwInput{
-    width:80%;
-    height: 30px;
-    border-radius: 25px;
-    border: none;
-    padding: 8px 12px 8px 12px;
-    font-size: 20px;
-    margin-top: 5px;
- }
-
- .pwRepeatInput{
-    width:80%;
-    height: 30px;
-    border-radius: 25px;
-    border: none;
-    padding: 8px 12px 8px 12px;
-    font-size: 20px;
+    font-size: 13px;
     margin-top: 5px;
  }
 

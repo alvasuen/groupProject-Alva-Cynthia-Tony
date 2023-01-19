@@ -8,29 +8,28 @@ import { Client } from "pg";
 import dotenv from "dotenv";
 import http from "http";
 import { checkPassword, hashPassword } from "./hash";
-import {Server as SocketIO} from "socket.io";
+// import { Server as SocketIO } from "socket.io";
 
 const app = express();
 dotenv.config();
 
 export const client = new Client({
-    database: process.env.DB_NAME,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-  });
+  database: process.env.DB_NAME,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+});
 
 client.connect();
 
-//Socket.io
-const server = new http.Server(app);
-const io = new SocketIO(server);
-
+// //Socket.io
+// const server = new http.Server(app);
+// const io = new SocketIO(server);
 
 //formidable's default setting
 const uploadDir = "uploads";
 fs.mkdirSync(uploadDir, { recursive: true });
 
-const form = formidable({
+export const form = formidable({
   uploadDir,
   keepExtensions: true,
   maxFiles: 1,
@@ -38,27 +37,29 @@ const form = formidable({
   filter: (part) => part.mimetype?.startsWith("image/") || false,
 });
 
-function formidable_promise(req:express.Request){
-  return new Promise((resolve,reject)=>{
+export function formidable_promise(req: express.Request) {
+  return new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
-      if({err}.err !== null){
-        reject({err})
+      if ({ err }.err !== null) {
+        reject({ err });
       }
-      if(JSON.stringify({fields}.fields) !== '{}' && JSON.stringify({files}.files) !== '{}'){
+      if (
+        JSON.stringify({ fields }.fields) !== "{}" &&
+        JSON.stringify({ files }.files) !== "{}"
+      ) {
         // exist files and fields
-        resolve({files,fields})
+        resolve({ files, fields });
       }
-      if(JSON.stringify({files}.files) !== '{}'){
+      if (JSON.stringify({ files }.files) !== "{}") {
         // exist files but not exist fields
-        resolve({files})
+        resolve({ files });
       }
-      if(JSON.stringify({fields}.fields) !== '{}'){
+      if (JSON.stringify({ fields }.fields) !== "{}") {
         // exist fields but not exist files
-        resolve({fields})
+        resolve({ fields });
       }
-      
-    })
-  })
+    });
+  });
 }
 
 //main page
@@ -86,119 +87,116 @@ declare module "express-session" {
   }
 }
 
-
 //login
-app.get ("/login", (req: Request, res: Response)=>{
-  res.sendFile(path.join(p,"login.html"));
-})
-
+app.get("/login", (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "login.html"));
+});
 
 //Local login
-app.post("/login", async(req:Request, res:Response)=>{
+app.post("/login", async (req: Request, res: Response) => {
   let result = {
-    isLogin:false,
-    errMess:'',
-    isError:false,
-    user:{username:''}
-  }
+    isLogin: false,
+    errMess: "",
+    isError: false,
+    user: { username: "" },
+  };
 
-  let formidable_result:any = await formidable_promise(req)
+  let formidable_result: any = await formidable_promise(req);
   const loginResult = await client.query(
     `SELECT * FROM "users" WHERE username = $1`,
-      [formidable_result.fields.email]
+    [formidable_result.fields.email]
   );
 
-  console.log(loginResult.rows[0].username);
-  console.log(loginResult.rows[0].password);
-  console.log(formidable_result.fields.email);
-  console.log(formidable_result.fields.password);
-  
   if (loginResult.rowCount === 0) {
     result.isLogin = false;
     result.isError = true;
     result.errMess = "Oops! User not found!";
     res.json(result);
+    return;
   } else {
-    try{
-      const match = await checkPassword (formidable_result.fields.password, loginResult.rows[0].password)
+    try {
+      const match = await checkPassword(
+        formidable_result.fields.password,
+        loginResult.rows[0].password
+      );
       if (match) {
-      // if (loginResult.rows[0].password === formidable_result.fields.password) {
+        // if (loginResult.rows[0].password === formidable_result.fields.password) {
         //for js
         result.isLogin = true;
         result.isError = false;
-        result.user.username = formidable_result.fields.username;
+        result.user.username = formidable_result.fields.email;
         //for session
-        req.session.userId = loginResult.rows[0].id
+        // req.session.userId = loginResult.rows[0].id
         req.session.isLogin = true;
         //for response
         res.json(result);
+        return;
       } else {
         result.isLogin = false;
         result.isError = true;
         result.errMess = "Incorrect Password";
         res.json(result);
+        return;
       }
     } catch (err) {
-      console.log(err);
+
       result.isLogin = false;
       result.isError = true;
       result.errMess = "Server error 500";
       res.json(result);
     }
-    }
-  });
-
+  }
+});
 
 //logout
 
-
 //signup
-app.get ("/signup", (req: Request, res: Response)=>{
-  res.sendFile(path.join(p,"signup.html"));
-})
+app.get("/signup", (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "signup.html"));
+});
 
-
-app.post("/signup", async (req:Request, res:Response)=>{
+app.post("/signup", async (req: Request, res: Response) => {
   let result = {
-    errMess:'',
-    isSignUp:false
-  }
+    errMess: "",
+    isSignUp: false,
+  };
 
-  let formidable_result:any = await formidable_promise(req)
-  console.log(formidable_result);
+  let formidable_result: any = await formidable_promise(req);
   const signUpCheck = await client.query(
     `SELECT * FROM "users" WHERE username = $1`,
-      [formidable_result.fields.email]
+    [formidable_result.fields.email]
   );
-  if (signUpCheck.rowCount > 0){
-    result.errMess = 'Sign Up rejected!';
+  if (signUpCheck.rowCount > 0) {
+    result.errMess = "Sign Up rejected!";
     result.isSignUp = false;
     res.json(result);
-  }else
-  {try {
-    const username = formidable_result.fields.email
-    const password = formidable_result.fields.password
-    const repeatPassword = formidable_result.fields.psw_repeat
-    const hash = await hashPassword("tecky");
-    if (password == repeatPassword){
-      await client.query(
-        //check row count
-        `INSERT INTO users (username, password) 
+  } else {
+    try {
+      const username = formidable_result.fields.email;
+      const password = formidable_result.fields.password;
+      const repeatPassword = formidable_result.fields.psw_repeat;
+      const hash = await hashPassword(formidable_result.fields.password);
+      if (password == repeatPassword) {
+        await client.query(
+          //check row count
+          `INSERT INTO users (username, password) 
         VALUES ($1, $2)`,
-        [username, hash]
-      );
-      result.isSignUp=true;
-      res.json({ success: true });
-    }else{
-      result.isSignUp=false;
-      result.errMess='Password not match!'
+          [username, hash]
+        );
+        result.isSignUp = true;
+        res.json(result);
+      } else {
+        result.isSignUp = false;
+        result.errMess = "Password not match!";
+        res.json(result);
+      }
+    } catch {
+      result.isSignUp = false;
+      result.errMess = "Unexpected error, please try again!";
       res.json(result);
-    }} catch {
-    result.isSignUp=false;
-    result.errMess='Unexpected error, please try again!'
-    res.json(result);
+    }
   }
-}});
+});
 
 // app.get("/currentUser",(req,res)=>{
 //   res.json(req.session)
@@ -219,8 +217,7 @@ app.post("/signup", async (req:Request, res:Response)=>{
 
 const PORT = 8080;
 
-
 //Socket.io
-server.listen(PORT, () => {
-    console.log(`Listening at http://localhost:${PORT}/`);
-  });
+app.listen(PORT, () => {
+  console.log(`Listening at http://localhost:${PORT}/`);
+});
