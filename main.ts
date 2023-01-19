@@ -169,7 +169,7 @@ app.post("/signup", async (req: Request, res: Response) => {
   };
   
   let formidable_result: any = await formidable_promise(req);
-
+  try{
   const signUpCheck = await client.query(
     `SELECT * FROM "users" WHERE username = $1`,
     [formidable_result.fields.email]
@@ -204,6 +204,11 @@ app.post("/signup", async (req: Request, res: Response) => {
       result.errMess = "Unexpected error, please try again!";
       res.json(result);
     }
+  }}
+  catch{
+    result.isSignUp =false;
+    result.errMess = "Unexpected error! Please create an account first!"
+    res.json(result);
   }
 });
 
