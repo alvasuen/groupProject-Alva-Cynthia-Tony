@@ -80,3 +80,5 @@ INSERT INTO public.rep_ingredients (recipe_id,ingredient_id) VALUES
 	 (13,8);
 INSERT INTO public.rep_ingredients (recipe_id,ingredient_id) VALUES
 	 (13,47);
+
+ALTER TABLE public.steps ALTER COLUMN image DROP NOT NULL;

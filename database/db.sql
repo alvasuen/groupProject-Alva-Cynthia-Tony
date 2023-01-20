@@ -140,3 +140,4 @@ ALTER TABLE public.rep_ingredients ADD CONSTRAINT rep_ingredients_fk FOREIGN KEY
 
 ALTER TABLE public.rep_ingredients ADD CONSTRAINT rep_ingredients_fk_1 FOREIGN KEY (ingredient_id) REFERENCES public.ingredient(ingredient_id);
 
+ALTER TABLE public.steps ALTER COLUMN image DROP NOT NULL;
