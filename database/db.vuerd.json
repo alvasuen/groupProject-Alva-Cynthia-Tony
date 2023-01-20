@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -118.1986678052823,
-    "scrollLeft": -456.1772423524974,
-    "zoomLevel": 0.8,
+    "scrollTop": -159.0178806889107,
+    "scrollLeft": -804.6970157302517,
+    "zoomLevel": 0.1,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -19,7 +19,7 @@
     },
     "database": "MySQL",
     "databaseName": "",
-    "canvasType": "@vuerd/builtin-sql-ddl",
+    "canvasType": "ERD",
     "language": "GraphQL",
     "tableCase": "pascalCase",
     "columnCase": "camelCase",
@@ -272,7 +272,7 @@
           {
             "name": "image",
             "comment": "",
-            "dataType": "TEXT",
+            "dataType": "VARCHAR (255)",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -287,7 +287,7 @@
               "pfk": false,
               "widthName": 60,
               "widthComment": 60,
-              "widthDataType": 60,
+              "widthDataType": 100.17587280273438,
               "widthDefault": 60
             },
             "id": "dc419473-7635-4424-95c3-13c04e220e02"
@@ -411,8 +411,8 @@
         "ui": {
           "active": false,
           "left": 583.8059,
-          "top": 72.9726,
-          "zIndex": 24,
+          "top": 74.2226,
+          "zIndex": 3,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1527,7 +1527,7 @@
             "29febf95-b95c-42a0-a9b6-5da9bdc70225"
           ],
           "x": 803.7737802490234,
-          "y": 305.9726,
+          "y": 307.2226,
           "direction": "bottom"
         },
         "end": {
@@ -1605,7 +1605,7 @@
             "29febf95-b95c-42a0-a9b6-5da9bdc70225"
           ],
           "x": 583.8059,
-          "y": 189.4726,
+          "y": 190.7226,
           "direction": "left"
         },
         "end": {
@@ -1735,7 +1735,7 @@
             "29febf95-b95c-42a0-a9b6-5da9bdc70225"
           ],
           "x": 1023.7416604980468,
-          "y": 189.4726,
+          "y": 190.7226,
           "direction": "right"
         },
         "end": {
@@ -1761,7 +1761,7 @@
             "29febf95-b95c-42a0-a9b6-5da9bdc70225"
           ],
           "x": 1023.7416604980468,
-          "y": 111.80593333333334,
+          "y": 113.05593333333334,
           "direction": "right"
         },
         "end": {
@@ -1813,7 +1813,7 @@
             "29febf95-b95c-42a0-a9b6-5da9bdc70225"
           ],
           "x": 1023.7416604980468,
-          "y": 267.1392666666667,
+          "y": 268.3892666666667,
           "direction": "right"
         },
         "end": {
