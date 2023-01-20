@@ -6,9 +6,48 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Personal Profile</title>
+  <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   <link rel="stylesheet" href="profile.css">
-
 <body>
+
+  <!-- add post -->
+
+  <div class="generate-post-container">
+    <div class="generate-post">
+      <div class="generate-post-header">
+            <div>Create a new post</div>        
+          <div class="close-create-post">
+            <div>
+            <i class="fa-solid fa-delete-left"></i>
+            </div>
+          </div>
+      </div>
+
+      <formgit 
+          action="/memos"
+          method="POST"
+          id="memo-form"
+          enctype="multipart/form-data"
+        >
+      <div class="generate-post-main">
+           <div class="post" contenteditable="true"></div>
+          <textarea class="hidden post-input" name="content"></textarea>
+              <input type="file" name="image" />
+              <input type="submit" value="Submit" />
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- add post -->
+
   <div class="user-profile">
     <div class="user-profile-container">
     <div class="user-icon">
@@ -18,17 +57,14 @@
     <div class="user-profile-panel">
         <div class="user-panel-user">
         <div class="username">Username</div>
-        <button class="user-profile-edit">EDIT PROFILE</button>
-        <div>Message</div>
-        </div>
+        <button class="addpost">Add Post</button>
+      <button class="logout">LOGOUT</button>  
+      </div>
    <div class="user-panel-count">
     <div>1,230 posts</div>
    </div>
     <div class="user-panel-main">
-        <div>djn</div>
-         <div>djnfjndfjnddjnfjndjfnjndjfnjd</div>
-         <div>djnfjndfjndfnjd</div>
-         <div>djnfjndfjnddjnfjndjfnjndjfnjd</div>
+         <div>Hi, I'm using COOKABLE !!!</div>
     </div>
     </div>
     </div>
@@ -77,6 +113,8 @@
 
     </div>
   </div>
+
+  
 
   
 </body>
