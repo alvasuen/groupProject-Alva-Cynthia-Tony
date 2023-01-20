@@ -14,6 +14,7 @@ body {
   /* background-color: #f9f9f9; */
   color: #262626;
   /* margin: -10px; */
+  z-index: 999;
 }
 
 .header-left {
@@ -144,16 +145,26 @@ body {
   height: 560px;
   /* width: calc(var(--h) + 550px); */
   width: 610px;
+  width: 510px;
   position: absolute;
   /* background-image: linear-gradient(to bottom, #ff5c33, #ff9166, #3dd6f5); */
-  background-image: linear-gradient(to bottom, #b0aead, #c1bfbf, #e9ebeb);
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
+  background-color: #ffffff;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
   transition: 1s;
   transform-origin: left;
   backface-visibility: visible;
   border: 0.5px solid black;
-  margin-left: 340px;
+  margin-left: 250px;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.recipe-cover {
+  width: 300px;
+  margin-right: 50px;
 }
 
 .book-page {
@@ -165,11 +176,14 @@ body {
   z-index: 100;
   transition: 1s;
   /* 封面比頁面每條邊寬的長度 */
-  transform-origin: -300px;
+  transform-origin: -3px;
   background-size: cover;
   backface-visibility: visible;
   /*  */
-  margin-left: 340px;
+  margin-left: 250px;
+  border-top: #636363;
+  border-right: #636363;
+  border-bottom: #636363;
 }
 
 #control {
@@ -190,4 +204,39 @@ body {
   border-radius: 50%;
   background-color: rgb(63, 63, 63, 0.8);
   outline: none;
+}
+
+/* Cover page */
+.book-cover-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-cover-page {
+  width: 400px;
+  margin-bottom: 80px;
+  margin-top: 10px;
+}
+
+.recipe-title,
+.recipe-step-title {
+  font-family: "Cormorant Garamond", serif;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+.recipe-step-title {
+  font-size: 60px;
+}
+
+.step-1 {
+  width: 200px;
+}
+
+.page-background {
+  padding: 55px 150px;
+  background-color: rgb(218, 195, 195);
+  background-color: rgb(194, 146, 146);
+
+  border-radius: 8px;
 }
