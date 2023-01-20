@@ -1,5 +1,5 @@
 /* 
-Color: #efefee #053e5a #262626
+Color: #efefee #053e5a #262626 #ab7b03 #c28d06
 font-size:
 font-family: 
 */
@@ -78,16 +78,12 @@ body {
   font-family: "Times New Roman", Times, serif;
   font-size: 50px;
   width: 1000px;
-  /* margin: 10px; */
 
   float: left;
   display: flex;
-  /* justify-content: center; */
   align-items: center;
   overflow: hidden;
   position: relative;
-
-  /* padding-bottom: 15%; */
 }
 
 .choice-photo {
