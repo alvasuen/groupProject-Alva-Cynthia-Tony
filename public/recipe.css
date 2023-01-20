@@ -148,7 +148,7 @@ body {
   width: 510px;
   position: absolute;
   /* background-image: linear-gradient(to bottom, #ff5c33, #ff9166, #3dd6f5); */
-  background-color: #ffffff;
+  background-color: rgb(234, 229, 229);
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   transition: 1s;
@@ -236,8 +236,7 @@ body {
 
 .page-background {
   padding: 55px 150px;
-  background-color: rgb(218, 195, 195);
-  background-color: rgb(194, 146, 146);
+  background-color: rgb(247, 242, 242);
 
   border-radius: 8px;
 }
