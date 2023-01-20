@@ -46,24 +46,9 @@ body {
   cursor: pointer;
 }
 
-.menu-wrapper > a::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  color: #c28d06;
-  background-color: #636363;
-  transform-origin: bottom right;
-  transition: transform 0.25s ease-out;
-}
-
-.menu-wrapper > a:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
-  color: #c28d06;
+.menu-wrapper a:hover {
+  color: #ab7b03 !important;
+  border-bottom: #042d42 1px solid;
 }
 
 .right-icon a {

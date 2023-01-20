@@ -105,7 +105,7 @@ app.post("/login", async (req: Request, res: Response) => {
   try{
   let formidable_result: any = await formidable_promise(req);
   const loginResult = await client.query(
-    `SELECT * FROM "users" WHERE username = $1`,
+    `SELECT * FROM "users" WHERE login_email = $1`,
     [formidable_result.fields.email]
   );
 
@@ -126,9 +126,9 @@ app.post("/login", async (req: Request, res: Response) => {
         //for js
         result.isLogin = true;
         result.isError = false;
-        result.user.username = formidable_result.fields.email;
+        result.user.username = loginResult.rows[0].username;
         //for session
-        // req.session.userId = loginResult.rows[0].id
+        req.session.userId = loginResult.rows[0].id
         req.session.isLogin = true;
         //for response
         res.json(result);
@@ -156,6 +156,16 @@ app.post("/login", async (req: Request, res: Response) => {
 });
 
 //logout
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      res.json({ err });
+      return;
+    }
+    res.json({ success: true });
+  });
+});
+
 
 //signup
 app.get("/signup", (req: Request, res: Response) => {
@@ -171,26 +181,28 @@ app.post("/signup", async (req: Request, res: Response) => {
   let formidable_result: any = await formidable_promise(req);
   try{
   const signUpCheck = await client.query(
-    `SELECT * FROM "users" WHERE username = $1`,
+    `SELECT * FROM "users" WHERE login_email = $1`,
     [formidable_result.fields.email]
   );
- 
   if (signUpCheck.rowCount > 0) {
     result.errMess = "Sign Up rejected!";
     result.isSignUp = false;
     res.json(result);
+
   } else {
     try {
-      const username = formidable_result.fields.email;
+      const login_email = formidable_result.fields.email;
       const password = formidable_result.fields.password;
+      const username = formidable_result.fields.username;
       const repeatPassword = formidable_result.fields.psw_repeat;
       const hash = await hashPassword(formidable_result.fields.password);
       if (password == repeatPassword) {
+        
         await client.query(
           //check row count
-          `INSERT INTO users (username, password) 
-        VALUES ($1, $2)`,
-          [username, hash]
+          `INSERT INTO "users" (login_email, password, username) 
+        VALUES ($1, $2, $3)`,
+          [login_email, hash, username ]
         );
         result.isSignUp = true;
         res.json(result);
@@ -199,13 +211,15 @@ app.post("/signup", async (req: Request, res: Response) => {
         result.errMess = "Password not match!";
         res.json(result);
       }
-    } catch {
+    } catch(err) {
+      console.log(err)
       result.isSignUp = false;
       result.errMess = "Unexpected error, please try again!";
       res.json(result);
     }
   }}
-  catch{
+  catch(err){
+    console.log(err)
     result.isSignUp =false;
     result.errMess = "Unexpected error!"
     res.json(result);

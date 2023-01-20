@@ -9,6 +9,15 @@
       "name": "memowall",
       "database": "memowall",
       "username": "alva"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "cookable",
+      "username": "alva",
+      "database": "cookable"
     }
   ]
 }
