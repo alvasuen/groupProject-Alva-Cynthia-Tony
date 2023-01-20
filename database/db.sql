@@ -9,3 +9,130 @@ CREATE TABLE users
   liked_post_id INTEGER       NULL,
   PRIMARY KEY (user_id)
 );
+
+CREATE TABLE recipes
+(
+  recipe_id          INTEGER       NOT NULL,
+  recipe_name        VARCHAR (255) NOT NULL,
+  image              TEXT          NOT NULL,
+  cooking_level      VARCHAR (255) NOT NULL,
+  recipe_description VARCHAR (255) NOT NULL,
+  ingredient_id      INTEGER       NOT NULL,
+  PRIMARY KEY (recipe_id)
+);
+
+CREATE TABLE steps
+(
+  step_id          SERIAL        NOT NULL,
+  image            TEXT          NOT NULL,
+  step_number      INTEGER       NOT NULL,
+  step_description VARCHAR (255) NOT NULL,
+  recipe_id        INTEGER       NOT NULL,
+  PRIMARY KEY (step_id)
+);
+
+CREATE TABLE posts
+(
+  post_id     SERIAL       NOT NULL,
+  liked_count INTEGER       NOT NULL,
+  saved_count INTEGER       NOT NULL,
+  image       VARCHAR (255) NOT NULL,
+  content     VARCHAR (255) NOT NULL,
+  created_at  TIMESTAMP WITH TIME ZONE      NOT NULL,
+  tag_id      INTEGER       NOT NULL,
+  user_id     INTEGER       NOT NULL,
+  PRIMARY KEY (post_id)
+);
+
+CREATE TABLE tag
+(
+  tag_id      SERIAL  NOT NULL,
+  tag_content TEXT    NULL    ,
+  post_id     INTEGER NOT NULL,
+  recipe_id   INTEGER NOT NULL,
+  PRIMARY KEY (tag_id)
+);
+
+CREATE TABLE ingredient
+(
+  ingredient_id SERIAL       NOT NULL    ,
+  ingredient    TEXT         NOT NULL    ,
+  PRIMARY KEY (ingredient_id)
+);
+
+CREATE TABLE liked_posts
+(
+  liked_post_id SERIAL  NOT NULL,
+  liked         BOOLEAN NOT NULL DEFAULT false,
+  user_id       INTEGER NOT NULL,
+  post_id       INTEGER NOT NULL,
+  PRIMARY KEY (liked_post_id)
+);
+
+CREATE TABLE saved_posts
+(
+  saved_post_id SERIAL  NOT NULL,
+  saved         BOOLEAN NOT NULL,
+  user_id       INTEGER NOT NULL,
+  post_id       INTEGER NOT NULL,
+  PRIMARY KEY (saved_post_id)
+);
+
+CREATE TABLE saved_recipe
+(
+  recipe_id       INTEGER NOT NULL,
+  saved_recipe_id SERIAL  NOT NULL,
+  user_id         INTEGER NOT NULL,
+  PRIMARY KEY (saved_recipe_id)
+);
+
+ALTER TABLE posts
+  ADD CONSTRAINT FK_users_TO_posts
+    FOREIGN KEY (user_id)
+    REFERENCES users (user_id);
+
+ALTER TABLE saved_recipe
+  ADD CONSTRAINT FK_recipes_TO_saved_recipe
+    FOREIGN KEY (recipe_id)
+    REFERENCES recipes (recipe_id);
+
+ALTER TABLE saved_recipe
+  ADD CONSTRAINT FK_users_TO_saved_recipe
+    FOREIGN KEY (user_id)
+    REFERENCES users (user_id);
+
+ALTER TABLE saved_posts
+  ADD CONSTRAINT FK_users_TO_saved_posts
+    FOREIGN KEY (user_id)
+    REFERENCES users (user_id);
+
+ALTER TABLE saved_posts
+  ADD CONSTRAINT FK_posts_TO_saved_posts
+    FOREIGN KEY (post_id)
+    REFERENCES posts (post_id);
+
+ALTER TABLE liked_posts
+  ADD CONSTRAINT FK_users_TO_liked_posts
+    FOREIGN KEY (user_id)
+    REFERENCES users (user_id);
+
+ALTER TABLE liked_posts
+  ADD CONSTRAINT FK_posts_TO_liked_posts
+    FOREIGN KEY (post_id)
+    REFERENCES posts (post_id);
+
+ALTER TABLE steps
+  ADD CONSTRAINT FK_recipes_TO_steps
+    FOREIGN KEY (recipe_id)
+    REFERENCES recipes (recipe_id);
+
+ALTER TABLE tag
+  ADD CONSTRAINT FK_posts_TO_tag
+    FOREIGN KEY (post_id)
+    REFERENCES posts (post_id);
+
+ALTER TABLE tag
+  ADD CONSTRAINT FK_recipes_TO_tag
+    FOREIGN KEY (recipe_id)
+    REFERENCES recipes (recipe_id);
+
