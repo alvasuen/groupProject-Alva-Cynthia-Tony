@@ -126,7 +126,6 @@ body {
 }
 
 .generate-post {
-  /* display: none; */
   background-color: white;
   width: 500px;
   height: 500px;
@@ -148,15 +147,7 @@ body {
   justify-content: end;
   width: 180px;
   margin-right: 10px;
-}
-
-.fa-delete-left:hover {
   cursor: pointer;
-  display: none;
-}
-
-.active {
-  display: block;
 }
 
 .generate-post-main {
@@ -180,6 +171,9 @@ body {
 
 .hidden {
   display: none;
+}
+
+.active {
 }
 
 .generate-post-main input {
