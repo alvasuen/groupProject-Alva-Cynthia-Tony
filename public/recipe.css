@@ -155,7 +155,7 @@ body {
   transform-origin: left;
   backface-visibility: visible;
   border: 0.5px solid black;
-  margin-left: 340px;
+  margin-left: 250px;
 
   display: flex;
   justify-content: flex-end;
@@ -176,11 +176,14 @@ body {
   z-index: 100;
   transition: 1s;
   /* 封面比頁面每條邊寬的長度 */
-  transform-origin: -10px;
+  transform-origin: -3px;
   background-size: cover;
   backface-visibility: visible;
   /*  */
-  margin-left: 340px;
+  margin-left: 250px;
+  border-top: #636363;
+  border-right: #636363;
+  border-bottom: #636363;
 }
 
 #control {
@@ -231,7 +234,9 @@ body {
 }
 
 .page-background {
-  padding: 25px 150px;
-  background-color: #fff;
+  padding: 55px 150px;
+  background-color: rgb(218, 195, 195);
+  background-color: rgb(194, 146, 146);
+
   border-radius: 8px;
 }
