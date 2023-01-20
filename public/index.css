@@ -29,6 +29,7 @@ body {
 .logo img {
   max-height: 60px;
   margin-left: 40px;
+  cursor: pointer;
 }
 
 .menu-wrapper {
@@ -56,6 +57,51 @@ body {
   font-size: 12px;
   cursor: pointer;
 }
+
+.search-header {
+  z-index: 9999;
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #efeee8;
+  height: 80px;
+  width: 100%;
+  line-height: 22px;
+  margin-top: 80px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  color: #042d42;
+  border-top: #042d42 1px solid;
+}
+
+.search-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-container input {
+  width: 1000px;
+  font-size: 20px;
+  letter-spacing: 3px;
+  border: 0;
+  border: transparent;
+  background-color: transparent;
+  outline: none;
+}
+
+.search-container i {
+  margin-left: 100px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+/* header Bar */
 
 /* Main Photo */
 .main-photo {

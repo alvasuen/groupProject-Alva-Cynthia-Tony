@@ -44,18 +44,22 @@ body {
 
 .logout {
   width: 120px;
-  background-color: #0b3e5a;
-  color: white;
+  padding: 4px;
+  background-color: white;
+  color: #0b3e5a;
   border: #c28d06 solid white;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .addpost {
   width: 120px;
-  background-color: #0b3e5a;
-  color: white;
+  padding: 4px;
+  background-color: white;
+  color: #0b3e5a;
   border: #c28d06 solid white;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .user-panel-count {
@@ -171,9 +175,6 @@ body {
 
 .hidden {
   display: none;
-}
-
-.active {
 }
 
 .generate-post-main input {
