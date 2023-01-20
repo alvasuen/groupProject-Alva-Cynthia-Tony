@@ -150,6 +150,15 @@ body {
   margin-right: 10px;
 }
 
+.fa-delete-left:hover {
+  cursor: pointer;
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
 .generate-post-main {
   display: flex;
   align-items: center;
