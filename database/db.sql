@@ -17,7 +17,6 @@ CREATE TABLE recipes
   image              TEXT          NOT NULL,
   cooking_level      VARCHAR (255) NOT NULL,
   recipe_description VARCHAR (255) NOT NULL,
-  ingredient_id      INTEGER       NOT NULL,
   PRIMARY KEY (recipe_id)
 );
 
@@ -192,4 +191,5 @@ INSERT INTO public.ingredient (ingredient) VALUES
 	 ('black sesame seeds'),
 	 ('fine sugar'),
 	 ('egg wash');
+
 
