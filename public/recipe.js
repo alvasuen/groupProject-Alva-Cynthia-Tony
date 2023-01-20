@@ -68,8 +68,10 @@ function init() {
   btn[1].onclick = function () {
     //if this is first page, turn front
     if (0 == pageNo) {
+      // 水平反轉180度
       allPage[pageNo].style.transform = "rotateY(-180deg)";
       //(240px + 50px) * 5
+      //水平向左移145px
       book.style.transform = "translateX(145px)";
       btn[0].style.backgroundColor = "rgb(63,63,63,0.8)";
       btn[0].style.color = "white";
@@ -84,7 +86,7 @@ function init() {
       btn[1].style.backgroundColor = "rgb(110,110,110,0.5)";
       btn[1].style.color = "darkgray";
       btn[1].disabled = true;
-      book.style.transform = "translateX(300px)";
+      // book.style.transform = "translateX(300px)";
     }
   };
 }
