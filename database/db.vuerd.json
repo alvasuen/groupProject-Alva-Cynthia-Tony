@@ -3,9 +3,26 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
+<<<<<<< HEAD
     "scrollTop": -559.5574354029744,
     "scrollLeft": 0,
     "zoomLevel": 1,
+=======
+<<<<<<< HEAD
+    "scrollTop": -3.0178806889107364,
+    "scrollLeft": -36,
+    "zoomLevel": 0.9,
+=======
+<<<<<<< HEAD
+    "scrollTop": 0,
+    "scrollLeft": 0,
+=======
+    "scrollTop": -159.0178806889107,
+    "scrollLeft": -804.6970157302517,
+>>>>>>> 0521eff0ba4f5e1eddc654f8bdaaf0e7724fc982
+    "zoomLevel": 0.1,
+>>>>>>> b48d5bfe9a9a79fe768ce703c46fe0c57b6f7785
+>>>>>>> 6a855a6b624bd08e4abd3aaeb7e73e341b7122e0
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -1366,10 +1383,23 @@
         ],
         "ui": {
           "active": false,
+<<<<<<< HEAD
+          "left": 1130.8888,
+          "top": 260.8897,
+          "zIndex": 12,
+=======
           "left": 1118.8891,
           "top": 268.8895,
           "zIndex": 4,
           "widthName": 60,
+<<<<<<< HEAD
+=======
+=======
+          "zIndex": 11,
+>>>>>>> b48d5bfe9a9a79fe768ce703c46fe0c57b6f7785
+          "widthName": 62.28094482421875,
+>>>>>>> 0521eff0ba4f5e1eddc654f8bdaaf0e7724fc982
+>>>>>>> 6a855a6b624bd08e4abd3aaeb7e73e341b7122e0
           "widthComment": 60
         },
         "visible": true,
@@ -1769,8 +1799,8 @@
           "columnIds": [
             "cdb8cdda-9831-4350-936a-88223bc4e7b5"
           ],
-          "x": 1118.8891,
-          "y": 344.3895,
+          "x": 1130.8888,
+          "y": 336.3897,
           "direction": "left"
         },
         "constraintName": "fk_recipes_to_ingredient",
