@@ -189,8 +189,9 @@ body {
 #control {
   user-select: none;
   /* Setting The with between the book and the buttons */
-  margin-top: 200px;
+  margin-top: 180px;
   margin-bottom: 55px;
+  z-index: 100;
 }
 
 #control button {

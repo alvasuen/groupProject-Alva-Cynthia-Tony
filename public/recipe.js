@@ -42,7 +42,7 @@ function init() {
   btn[0].onclick = function () {
     //往後退一頁
     pageNo--;
-    //if is last page return
+    //if the last page return
     if (PAGECOUNT - 1 == pageNo) {
       allPage[pageNo].style.transform = "rotateY(0deg)";
       //(240px + 50px) * 5
@@ -71,7 +71,7 @@ function init() {
       // 水平反轉180度
       allPage[pageNo].style.transform = "rotateY(-180deg)";
       //(240px + 50px) * 5
-      //水平向左移145px
+      //當打開書，就水平向左移145px
       book.style.transform = "translateX(145px)";
       btn[0].style.backgroundColor = "rgb(63,63,63,0.8)";
       btn[0].style.color = "white";
@@ -86,6 +86,7 @@ function init() {
       btn[1].style.backgroundColor = "rgb(110,110,110,0.5)";
       btn[1].style.color = "darkgray";
       btn[1].disabled = true;
+      // btn[1].disabled = false;
       // book.style.transform = "translateX(300px)";
     }
   };
