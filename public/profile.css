@@ -139,8 +139,15 @@ body {
   border-bottom: #0b3e5a 2px solid;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: end;
   font-size: 14px;
+}
+
+.close-create-post {
+  display: flex;
+  justify-content: end;
+  width: 180px;
+  margin-right: 10px;
 }
 
 .generate-post-main {
