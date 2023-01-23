@@ -15,5 +15,5 @@ async function stepsMain() {
 }
 
 stepsRoutes.get("/recipe/:id", (req, res) => {
-  let recipeId = req.params.id;
+  let { recipeId } = req.query;
 });
