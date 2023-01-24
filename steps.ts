@@ -4,11 +4,11 @@ import express from "express";
 import { Client } from "pg";
 import dotenv from "dotenv";
 
-export const client = new Client({
-  database: process.env.DB_NAME,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-});
+// export const client = new Client({
+//   database: process.env.DB_NAME,
+//   user: process.env.DB_USERNAME,
+//   password: process.env.DB_PASSWORD,
+// });
 
 export let stepsRoutes = express.Router();
 
@@ -19,7 +19,7 @@ interface Steps {
   // recipe_id: number;
 }
 
-client.connect();
+// client.connect();
 async function stepsMain() {
   // await client.connect();
 }

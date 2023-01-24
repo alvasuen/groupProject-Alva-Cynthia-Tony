@@ -222,6 +222,10 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/search", (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "searchResult.html"));
+});
+
 app.use("/search", searchRoutes);
 
 const PORT = 8080;
