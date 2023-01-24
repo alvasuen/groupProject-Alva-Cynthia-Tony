@@ -24,7 +24,6 @@ export const client = new Client({
 
 client.connect();
 
-
 //formidable's default setting
 const uploadDir = "uploads";
 fs.mkdirSync(uploadDir, { recursive: true });
