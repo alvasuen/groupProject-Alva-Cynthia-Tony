@@ -65,7 +65,7 @@ export function formidable_promise(req: express.Request) {
 //main page
 let p = path.join(__dirname, "public");
 app.use(express.static(p));
-app.use(stepsRoutes);
+app.use("/", stepsRoutes);
 
 //session req.session
 app.use(
