@@ -1,4 +1,4 @@
-import populateEnv from "populate-env";
+// import populateEnv from "populate-env";
 
 export let env = {
   DB_NAME: "",
@@ -6,4 +6,4 @@ export let env = {
   DB_PASSWORD: "",
 };
 
-populateEnv(env, { mode: "halt" });
+// populateEnv(env, { mode: "halt" });

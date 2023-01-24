@@ -10,6 +10,7 @@ import http from "http";
 import { checkPassword, hashPassword } from "./hash";
 import { resolveModuleName } from "typescript";
 import { stepsRoutes } from "./steps";
+import { searchRoutes } from "./search";
 // import { Server as SocketIO } from "socket.io";
 
 const app = express();
@@ -23,9 +24,6 @@ export const client = new Client({
 
 client.connect();
 
-// //Socket.io
-// const server = new http.Server(app);
-// const io = new SocketIO(server);
 
 //formidable's default setting
 const uploadDir = "uploads";
@@ -225,22 +223,7 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
-// app.get("/currentUser",(req,res)=>{
-//   res.json(req.session)
-// })
-
-// const isLoginGuard = (req:Request,res:Response,next:NextFunction)=>{
-//   if (req.session.userId){
-//     next();
-//   }else{
-//     res.redirect("/login.html");
-//   }
-// };
-
-// app.use(
-//   isLoginGuard,
-//   express.static("protected")
-// );
+app.use("/search", searchRoutes);
 
 const PORT = 8080;
 
