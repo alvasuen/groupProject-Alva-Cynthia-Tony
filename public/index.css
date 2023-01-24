@@ -5,7 +5,7 @@ font-family:
 */
 
 body {
-  font-family: "Pontano Sans", sans-serif;
+  font-family: "Cormorant Garamond", serif;
   background-color: #053e5a;
   margin: 0;
   position: relative;
@@ -209,10 +209,10 @@ body {
 
 /* Famous posts */
 .sub-title {
-  font-size: 50px;
+  font-size: 40px;
   font-weight: bolder;
   text-transform: uppercase;
-  color: #efeee8;
+  color: #ab7b03;
 }
 
 .mostlike {
@@ -288,13 +288,25 @@ body {
   color: #042d42;
 }
 
-/* Contact Box */
+/* Footer */
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .address {
   text-transform: uppercase;
   font-weight: bolder;
 }
 
 .contact-box {
-  font-size: 25px;
-  color: #efefee;
+  font-size: 15px;
+  color: #ab7b03;
+  /* color: #c28d06; */
+}
+
+.icon {
+  color: #b78403;
+  font-size: 20px;
 }

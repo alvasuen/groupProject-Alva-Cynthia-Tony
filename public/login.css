@@ -87,7 +87,7 @@ body {
 
  .mainContainer{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding-left: 150px;
     padding-right: 150px;
@@ -98,10 +98,11 @@ body {
    flex-direction: column;
    width: 40%;
     padding-top: 150px;
-    width: 550px;
-    height:400px;
+    width: 300px;
+    height:300px;
     background-color: rgba(0, 0, 0, 0.5);
     padding: 20px;
+    margin:50px;
  }
 
  .textTitle{
@@ -114,8 +115,9 @@ body {
  }
 
  .newAcBtn{
-    padding: 15px 25px;
-    font-size: 24px;
+  padding: 5px 15px;
+  font-size: 22px;
+  margin-top: 15px;
     text-align: center;
     cursor: pointer;
     outline: none;
@@ -131,19 +133,25 @@ body {
     background-color: #8b2208;
     transform: translateY(4px);
   }
-
+  
   .loginContainer{
     width:40%;
     padding-top: 150px;
     background-color: rgba(0, 0, 0, 0.8);
     width: 400px;
-    height:500px;
+    height:400px;
     padding: 20px;
  }
 
  .loginContainer p{
     font-size: 25px;
     font-weight: bold;
+ }
+
+ .loginPanel{
+  display: flex;
+    flex-direction: column;
+    justify-content: center;
  }
 
  label{
@@ -183,8 +191,9 @@ body {
  }
 
  .loginBtn{
-    padding: 15px 25px;
-    font-size: 24px;
+  padding: 5px 15px;
+  font-size: 22px;
+  margin-top: 15px;
     text-align: center;
     cursor: pointer;
     outline: none;
@@ -202,8 +211,10 @@ body {
   }
 
 button{
-   padding: 15px 25px;
-   font-size: 24px;
+  width:100%;
+   padding: 5px 15px;
+   font-size: 22px;
+   margin-top: 15px;
    text-align: center;
    cursor: pointer;
    outline: none;

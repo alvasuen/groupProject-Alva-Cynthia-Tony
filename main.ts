@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 import http from "http";
 import { checkPassword, hashPassword } from "./hash";
 import { resolveModuleName } from "typescript";
+import { stepsRoutes } from "./steps";
+import { searchRoutes } from "./search";
 // import { Server as SocketIO } from "socket.io";
 
 const app = express();
@@ -22,9 +24,6 @@ export const client = new Client({
 
 client.connect();
 
-// //Socket.io
-// const server = new http.Server(app);
-// const io = new SocketIO(server);
 
 //formidable's default setting
 const uploadDir = "uploads";
@@ -66,6 +65,7 @@ export function formidable_promise(req: express.Request) {
 //main page
 let p = path.join(__dirname, "public");
 app.use(express.static(p));
+app.use("/", stepsRoutes);
 
 //session req.session
 app.use(
@@ -102,57 +102,57 @@ app.post("/login", async (req: Request, res: Response) => {
     user: { username: "" },
   };
 
-  try{
-  let formidable_result: any = await formidable_promise(req);
-  const loginResult = await client.query(
-    `SELECT * FROM "users" WHERE login_email = $1`,
-    [formidable_result.fields.email]
-  );
+  try {
+    let formidable_result: any = await formidable_promise(req);
+    const loginResult = await client.query(
+      `SELECT * FROM "users" WHERE login_email = $1`,
+      [formidable_result.fields.email]
+    );
 
-  if (loginResult.rowCount === 0) {
-    result.isLogin = false;
-    result.isError = true;
-    result.errMess = "Oops! User not found!";
-    res.json(result);
-    return;
-  } else {
-    try {
-      const match = await checkPassword(
-        formidable_result.fields.password,
-        loginResult.rows[0].password
-      );
-      if (match) {
-        // if (loginResult.rows[0].password === formidable_result.fields.password) {
-        //for js
-        result.isLogin = true;
-        result.isError = false;
-        result.user.username = loginResult.rows[0].username;
-        //for session
-        req.session.userId = loginResult.rows[0].id
-        req.session.isLogin = true;
-        //for response
-        res.json(result);
-        return;
-      } else {
-        result.isLogin = false;
-        result.isError = true;
-        result.errMess = "Incorrect Password";
-        res.json(result);
-        return;
-      }
-    } catch (err) {
+    if (loginResult.rowCount === 0) {
       result.isLogin = false;
       result.isError = true;
-      result.errMess = "Server error 500";
+      result.errMess = "Oops! User not found!";
       res.json(result);
+      return;
+    } else {
+      try {
+        const match = await checkPassword(
+          formidable_result.fields.password,
+          loginResult.rows[0].password
+        );
+        if (match) {
+          // if (loginResult.rows[0].password === formidable_result.fields.password) {
+          //for js
+          result.isLogin = true;
+          result.isError = false;
+          result.user.username = loginResult.rows[0].username;
+          //for session
+          req.session.userId = loginResult.rows[0].id;
+          req.session.isLogin = true;
+          //for response
+          res.json(result);
+          return;
+        } else {
+          result.isLogin = false;
+          result.isError = true;
+          result.errMess = "Incorrect Password";
+          res.json(result);
+          return;
+        }
+      } catch (err) {
+        result.isLogin = false;
+        result.isError = true;
+        result.errMess = "Server error 500";
+        res.json(result);
+      }
     }
+  } catch {
+    result.isLogin = false;
+    result.isError = true;
+    result.errMess = "Unexpected error! Please create an account first!";
+    res.json(result);
   }
-}catch{
-  result.isLogin=false;
-  result.isError = true;
-  result.errMess = "Unexpected error! Please create an account first!"
-  res.json(result);
-}
 });
 
 //logout
@@ -166,7 +166,6 @@ app.post("/logout", (req, res) => {
   });
 });
 
-
 //signup
 app.get("/signup", (req: Request, res: Response) => {
   res.sendFile(path.join(p, "signup.html"));
@@ -177,71 +176,54 @@ app.post("/signup", async (req: Request, res: Response) => {
     errMess: "",
     isSignUp: false,
   };
-  
-  let formidable_result: any = await formidable_promise(req);
-  try{
-  const signUpCheck = await client.query(
-    `SELECT * FROM "users" WHERE login_email = $1`,
-    [formidable_result.fields.email]
-  );
-  if (signUpCheck.rowCount > 0) {
-    result.errMess = "Sign Up rejected!";
-    result.isSignUp = false;
-    res.json(result);
 
-  } else {
-    try {
-      const login_email = formidable_result.fields.email;
-      const password = formidable_result.fields.password;
-      const username = formidable_result.fields.username;
-      const repeatPassword = formidable_result.fields.psw_repeat;
-      const hash = await hashPassword(formidable_result.fields.password);
-      if (password == repeatPassword) {
-        
-        await client.query(
-          //check row count
-          `INSERT INTO "users" (login_email, password, username) 
+  let formidable_result: any = await formidable_promise(req);
+  try {
+    const signUpCheck = await client.query(
+      `SELECT * FROM "users" WHERE login_email = $1`,
+      [formidable_result.fields.email]
+    );
+    if (signUpCheck.rowCount > 0) {
+      result.errMess = "Sign Up rejected!";
+      result.isSignUp = false;
+      res.json(result);
+    } else {
+      try {
+        const login_email = formidable_result.fields.email;
+        const password = formidable_result.fields.password;
+        const username = formidable_result.fields.username;
+        const repeatPassword = formidable_result.fields.psw_repeat;
+        const hash = await hashPassword(formidable_result.fields.password);
+        if (password == repeatPassword) {
+          await client.query(
+            //check row count
+            `INSERT INTO "users" (login_email, password, username) 
         VALUES ($1, $2, $3)`,
-          [login_email, hash, username ]
-        );
-        result.isSignUp = true;
-        res.json(result);
-      } else {
+            [login_email, hash, username]
+          );
+          result.isSignUp = true;
+          res.json(result);
+        } else {
+          result.isSignUp = false;
+          result.errMess = "Password not match!";
+          res.json(result);
+        }
+      } catch (err) {
+        console.log(err);
         result.isSignUp = false;
-        result.errMess = "Password not match!";
+        result.errMess = "Unexpected error, please try again!";
         res.json(result);
       }
-    } catch(err) {
-      console.log(err)
-      result.isSignUp = false;
-      result.errMess = "Unexpected error, please try again!";
-      res.json(result);
     }
-  }}
-  catch(err){
-    console.log(err)
-    result.isSignUp =false;
-    result.errMess = "Unexpected error!"
+  } catch (err) {
+    console.log(err);
+    result.isSignUp = false;
+    result.errMess = "Unexpected error!";
     res.json(result);
   }
 });
 
-// app.get("/currentUser",(req,res)=>{
-//   res.json(req.session)
-// })
-
-// const isLoginGuard = (req:Request,res:Response,next:NextFunction)=>{
-//   if (req.session.userId){
-//     next();
-//   }else{
-//     res.redirect("/login.html");
-//   }
-// };
-
-// app.use(
-//   isLoginGuard,
-//   express.static("protected")
-// );
+app.use("/search", searchRoutes);
 
 const PORT = 8080;
 

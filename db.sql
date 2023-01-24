@@ -134,10 +134,7 @@ ALTER TABLE tag
     FOREIGN KEY (recipe_id)
     REFERENCES recipes (recipe_id);
 
-CREATE TABLE rep_ingredients (rep_ingre_id SERIAL primary key, recipe_id INTEGER not NULL, ingredient_id INTEGER not NULL);
 
-ALTER TABLE public.rep_ingredients ADD CONSTRAINT rep_ingredients_fk FOREIGN KEY (recipe_id) REFERENCES public.recipes(recipe_id);
 
-ALTER TABLE public.rep_ingredients ADD CONSTRAINT rep_ingredients_fk_1 FOREIGN KEY (ingredient_id) REFERENCES public.ingredient(ingredient_id);
 
-ALTER TABLE public.steps ALTER COLUMN image DROP NOT NULL;
+
