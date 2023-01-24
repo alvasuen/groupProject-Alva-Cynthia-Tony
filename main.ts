@@ -24,7 +24,6 @@ export const client = new Client({
 
 client.connect();
 
-
 //formidable's default setting
 const uploadDir = "uploads";
 fs.mkdirSync(uploadDir, { recursive: true });
@@ -221,6 +220,10 @@ app.post("/signup", async (req: Request, res: Response) => {
     result.errMess = "Unexpected error!";
     res.json(result);
   }
+});
+
+app.get("/search", (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "searchResult.html"));
 });
 
 app.use("/search", searchRoutes);

@@ -10,17 +10,17 @@ cancel.addEventListener("click", function () {
 });
 
 //searching function
-const searchForm = document.querySelector("#searchForm");
-searchForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    formData = new FormData (searchForm);
-    
-    let res = await fetch ("/search",{
-        method: "POST",
-        body: formData,
-    });
+const searchContent= document.querySelector("#searchBar");
+const searchBtn = document.querySelector("#searchSubmit");
+searchBtn.addEventListener("click", async (event)=>{
 
-    let res_json = await res.json();
-    console.log(res_json);
-})
+    event.preventDefault();
+    console.log(searchContent.value);
+
+    const res = await fetch("/search", {
+    method: "POST",
+    body: 
+});
+
+});
 
