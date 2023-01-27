@@ -55,12 +55,12 @@ async function loadInit(id) {
       let innerPBText = document.createElement("div");
       innerPBText.classList.add("text-box");
       console.log("INDEX: " + index);
-      let textContent = steps.step_description[0].step_description;
+      let textContent = steps.step_description[index].step_description;
       let innerPBTContent = document.createTextNode(
         steps.step_description[index].step_description
       );
-      let newC = textContent.split(",");
-      console.log(newC);
+      // let newC = textContent.split(",");
+      // console.log(newC);
       //將img element put 入 innerPBImg 這個div
       innerPBImg.appendChild(img);
       //將 p element put 入 innerPBText 這個div
