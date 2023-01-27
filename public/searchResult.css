@@ -1,12 +1,12 @@
 body {
-    font-family: "Courier New", Courier, monospace;
-    /* background-color: rgb(250, 235, 214); 
+  font-family: "Courier New", Courier, monospace;
+  /* background-color: rgb(250, 235, 214); 
     background-color: rgb(241, 162, 66); */
-    background-color: #053e5a;
-    margin: 0;
-  }
-  
-  /* header Bar */
+  background-color: #053e5a;
+  margin: 0;
+}
+
+/* header Bar */
 .header {
   z-index: 9999;
   position: fixed;
@@ -98,94 +98,158 @@ body {
 
 /* header Bar */
 
- .separator{
-    height:100px;
-    background-color: transparent;
- }
-
- .mainContainer{
-    padding-left: 150px;
-    padding-right:150px;
- }
-
- /* .bannerContainer{
-  
- } */
-
- .searchResultBanner{
-  width: 1000px;
-  overflow: hidden;
-    height: 380px;
-    width:100%;
-    display: flex;
-    justify-content: center;
- }
-
-.filter{
-    margin-top: 30px;
+.separator {
+  height: 100px;
+  background-color: transparent;
 }
 
-  select{
-    border:none;
-    padding: 10px 20px;
-    margin-top: 5px;
-    border-radius:5px;
-  }
-  
-  select:focus{
-    outline:none;
-  }
+.mainContainer {
+  padding-left: 150px;
+  padding-right: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-  .result{
-    margin-top: 30px;
-    display: flex;
-    flex-wrap: wrap;
-    padding-bottom: 100px;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
+.buttonPanel{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top:20px;
+}
 
-  .resultDisplayBlock{
-    width: 280px;
-    height: 400px;
-    margin: 30px 8px 0px 8px;
-    padding: 5px;
-    background-color: aliceblue;
-    border-radius: 20px;
-    justify-content: center;
-    overflow: hidden;
-  }
+.tagLine1{
+  display: flex;
+  justify-content: center;
+}
 
-  .resultImage{
-    display: flex;
-    justify-content: center;
-  }
+.tagLine2{
+  display: flex;
+  justify-content: center;
+}
 
-  .resultImage img{
-    width: 250px;
-    margin-top: 20px;
-    border-radius: 30px;
-  }
+.buttonPanel button{
+  background-color: #f0f0f0d2;
+}
 
-  .resultHeadline{
-    font-size: 20px;
-    font-weight: bold;
-    margin: 10px 15px 10px 15px;
-    color: black;
-  }
+.searchPanel{
+  display: flex;
+  justify-content: center;
+  margin-top:40px;
+}
 
-  .resultBriefContent{
-    font-size: 12px;
-    margin: 10px 15px 10px 15px;
-    color: black;
-    /* width: 240px;
-    height: 100px; */
-  }
+.searchPanel input{
+  width: 800px;
+  font-size: 20px;
+  letter-spacing: 3px;
+  /* border: 0; */
+  border: black;
+  background-color: #efeee8;
+  outline: none;
+}
 
-  a{
-    text-decoration: none;
-  }
+.searchResultBanner {
+  width: 1500px;
+  overflow: hidden;
+  height: 320px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
-  .resultDisplayBlock:hover{
-    box-shadow: 1px 1px 2px black, 0 0 25px rgb(255, 238, 0), 0 0 5px rgb(139, 109, 0);
-  }
+label{
+  color: white;
+}
+
+.filter {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+select {
+  border: none;
+  padding: 10px 20px;
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 5px;
+}
+
+select:focus {
+  outline: none;
+}
+
+.result {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-bottom: 100px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.resultDisplayBlock {
+  width: 1000px;
+  height: 250px;
+  margin: 30px 8px 0px 8px;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.453);
+  border-radius: 20px;
+  display: flex;
+  overflow: hidden;
+}
+
+.cookingLv{
+  width: 95px;
+  height:25px;
+  position: relative;
+  left: 645px;
+  top: 10px;
+  border-radius: 5px;
+  background-color: #efeee8;
+  display: flex;
+  justify-content: center;
+  color:black;
+  font-weight:200;
+}
+
+.resultImage {
+  display: flex;
+  overflow: hidden;
+  width: 220px;
+  height: 220px;
+  margin: 10px;
+}
+
+.resultImage img {
+  width: 220px;
+  border-radius: 30px;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.resultHeadline {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 15px 10px 15px;
+  color: white;
+}
+
+.resultBriefContent {
+  font-size: 12px;
+  margin: 10px 15px 10px 15px;
+  color: white;
+}
+
+a {
+  text-decoration: none;
+}
+
+.resultDisplayBlock:hover {
+  box-shadow: 1px 1px 2px black, 0 0 25px rgb(255, 238, 0), 0 0 5px rgb(139, 109, 0);
+}

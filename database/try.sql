@@ -1,0 +1,3 @@
+ALTER TABLE public.tag ALTER COLUMN tag_content SET NOT NULL;
+ALTER TABLE public.tag ALTER COLUMN post_id DROP NOT NULL;
+ALTER TABLE public.tag ALTER COLUMN recipe_id DROP NOT NULL;
