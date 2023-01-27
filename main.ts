@@ -9,7 +9,12 @@ import dotenv from "dotenv";
 import http from "http";
 import { checkPassword, hashPassword } from "./hash";
 import { resolveModuleName } from "typescript";
+<<<<<<< HEAD
 import { stepsRoutes } from "./stepsRouter";
+=======
+import { stepsRoutes } from "./steps";
+import { searchRoutes } from "./search";
+>>>>>>> c52811be4794aeaefe1242b472a21719ee0b507e
 // import { Server as SocketIO } from "socket.io";
 
 const app = express();
@@ -22,10 +27,6 @@ export const client = new Client({
 });
 
 client.connect();
-
-// //Socket.io
-// const server = new http.Server(app);
-// const io = new SocketIO(server);
 
 //formidable's default setting
 const uploadDir = "uploads";
@@ -225,6 +226,7 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
+<<<<<<< HEAD
 //user來到recipe是看這個page的
 app.get("/recipes", async (req: Request, res: Response) => {
   // res.sendFile(path.join(p, "recipe.html"));
@@ -280,19 +282,13 @@ app.get("/profile", (req: Request, res: Response) => {
 // app.get("/currentUser",(req,res)=>{
 //   res.json(req.session)
 // })
+=======
+app.get("/search", (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "searchResult.html"));
+});
+>>>>>>> c52811be4794aeaefe1242b472a21719ee0b507e
 
-// const isLoginGuard = (req:Request,res:Response,next:NextFunction)=>{
-//   if (req.session.userId){
-//     next();
-//   }else{
-//     res.redirect("/login.html");
-//   }
-// };
-
-// app.use(
-//   isLoginGuard,
-//   express.static("protected")
-// );
+app.use("/search", searchRoutes);
 
 const PORT = 8080;
 
