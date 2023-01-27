@@ -46,7 +46,7 @@
         </div>
       </div>
   
-      <div class="search-header hidden">
+      <!-- <div class="search-header hidden">
         <div class="search-container">
           <form class="searchForm" id="searchForm">
             <input class="searchBar" id="searchBar" type="text" placeholder="what are you searching for?"></input>
@@ -54,7 +54,7 @@
           </form>
           <i class="fa-solid fa-delete-left cancel"></i>
         </div>
-      </div>
+      </div> -->
   
 
     <div class="separator"></div>
@@ -62,111 +62,48 @@
         <div class="bannerContainer">
             <div class="searchResultBanner"><img src="./searchResultBanner.jpg"></div>
         </div>
+        
         <div class="searchPanel">
-            <!-- <form id="searchTest">
-                <input class="search" type="text" id="search"/>
-                <button class="searchSubmit" id="searchSubmit"></button>
-            </form> -->
+            <form class="searchForm" id="searchForm">
+                <input class="searchBar" id="searchBar" type="text" placeholder="what are you searching for?"></input>
+                <button class="searchSubmit" type="submit" id="searchSubmit">Search</button>
+              </form>
         </div>
-        <div class="filter">
-            <select name="language" id="language">
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="c++" disabled>C++</option>
-                <option value="java" selected>Java</option>
-            </select>
-            <select name="language" id="language">
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="c++" disabled>C++</option>
-                <option value="java" selected>Java</option>
-            </select>
-            <select name="language" id="language">
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="c++" disabled>C++</option>
-                <option value="java" selected>Java</option>
-            </select>
-            <select name="language" id="language">
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="c++" disabled>C++</option>
-                <option value="java" selected>Java</option>
-            </select>
-            <select name="language" id="language">
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="c++" disabled>C++</option>
-                <option value="java" selected>Java</option>
-            </select>
+        <div class="buttonPanel">
+            <div class="tagLine1">
+                <button id="allRecipes">All Recipes</button>
+                <button class="buttonType1" id="western">Western Dessert</button>
+                <button class="buttonType1" id="japanAndKorea">Japanese and Korean Dessert</button>
+                <button class="buttonType1" id="HongKongDessert" >Hong Kong Dessert</button>
+                <!-- <button class="buttonType2" id="redBean">red bean</button>
+                <button class="buttonType2" id="cheese">Cheese</button> -->
         </div>
-        <div class="result">
-            <a href="#">
-                <div class="resultDisplayBlock">
-                    <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
-                    <div class="resultHeadline">Easy Strawberry Cake</div>
-                    <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
-                        like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
-                        the icing.</div>
-                </div>
-            </a>
-            <a href="#">
-                <div class="resultDisplayBlock">
-                    <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
-                    <div class="resultHeadline">Easy Strawberry Cake</div>
-                    <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
-                        like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
-                        the icing.</div>
-                </div>
-            </a>
-            <a href="#">
-                <div class="resultDisplayBlock">
-                    <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
-                    <div class="resultHeadline">Easy Strawberry Cake</div>
-                    <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
-                        like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
-                        the icing.</div>
-                </div>
-            </a>
-            <a href="#">
-                <div class="resultDisplayBlock">
-                    <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
-                    <div class="resultHeadline">Easy Strawberry Cake</div>
-                    <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
-                        like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
-                        the icing.</div>
-                </div>
-            </a>
-            <a href="#">
-                <div class="resultDisplayBlock">
-                    <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
-                    <div class="resultHeadline">Easy Strawberry Cake</div>
-                    <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
-                        like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
-                        the icing.</div>
-                </div>
-            </a>
-            <a href="#">
-                <div class="resultDisplayBlock">
-                    <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
-                    <div class="resultHeadline">Easy Strawberry Cake</div>
-                    <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
-                        like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
-                        the icing.</div>
-                </div>
-            </a>
-            <a href="#">
-                <div class="resultDisplayBlock">
-                    <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
-                    <div class="resultHeadline">Easy Strawberry Cake</div>
-                    <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
-                        like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
-                        the icing.</div>
-                </div>
-            </a>
-
-
+            <div class="tagLine2">
+                <button class="buttonType1" id="newYear">New Year</button>
+                <!-- <button class="buttonType2" id="strawberry">strawberry</button>
+                <button class="buttonType2" id="chocolate">chocolate</button> -->
+                <button class="cooking_level" id="easy">easy</button>
+                <button class="cooking_level" id="medium">medium</button>
+                <button class="cooking_level" id="difficult">difficult</button>
+                <button class="clear" id="clear">Clear</button>
+            </div>
         </div>
+        <div class="result" id="result">
+            <!-- <a href="#">
+                <div class="resultDisplayBlock">
+                    <div class="imgBlock">
+                        <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
+                    </div>
+                    <div class="textBlock">
+                      <div class="cookingLv"></div>
+                        <div class="resultHeadline">Easy Strawberry Cake </div>
+                        <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
+                            like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
+                            the icing.</div>
+                    </div>
+                </div>
+            </a> -->
+        </div> 
     </div>
 
     <script src="./searchResult.js"></script>
