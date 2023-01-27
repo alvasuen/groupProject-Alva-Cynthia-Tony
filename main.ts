@@ -11,7 +11,7 @@ import { checkPassword, hashPassword } from "./hash";
 import { resolveModuleName } from "typescript";
 // import { stepsRoutes } from "./steps";
 // import { searchRoutes } from "./search";
-import { nextTick } from "process";
+// import { nextTick } from "process";
 // import { Server as SocketIO } from "socket.io";
 
 const app = express();
@@ -229,6 +229,7 @@ app.get("/recipes", async (req: Request, res: Response) => {
   const recipes = await client.query(`SELECT * FROM recipes`);
   res.json(recipes.rows);
 });
+
 // app.use("/recipe", stepsRoutes);
 //這個只是用來拿data的
 app.get("/recipe", async (req: Request, res: Response) => {
@@ -275,6 +276,9 @@ app.get("/profile", (req: Request, res: Response) => {
   }
 });
 
+app.get("/search", (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "searchResult.html"));
+});
 
 //send all recipes and posts to client
 app.get("/search_data", async (req: Request, res: Response) => {
@@ -476,7 +480,8 @@ app.post("/search", async (req: Request, res: Response) => {
 
   res.json({
     success: true,
-    content: summaryData0
+    content: summaryData0,
+    message: "Can't find the recipe? Join our community and create your own!"
   })
 
 }catch(err:any) {

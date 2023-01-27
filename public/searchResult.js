@@ -217,13 +217,10 @@ searchBtn.addEventListener("click", async (event) => {
     body: JSON.stringify({ content: searchContent.value }),
   });
 
-  searchMode = true;
-
   let json = await res.json();
+  console.log(json)
 
-  console.log(json);
-
-  if (!json.success) {
+  if (!json.success ||json.content.length == 0) {
     alert(`${json.message}`);
   } else if (json.success) {
     for (let i = 0; i < json.content.length; i++) {
