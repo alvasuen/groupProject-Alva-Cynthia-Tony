@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 import http from "http";
 import { checkPassword, hashPassword } from "./hash";
 import { resolveModuleName } from "typescript";
-import { stepsRoutes } from "./steps";
+import { stepsRoutes } from "./stepsRouter";
 // import { Server as SocketIO } from "socket.io";
 
 const app = express();
@@ -67,7 +67,7 @@ export function formidable_promise(req: express.Request) {
 //main page
 let p = path.join(__dirname, "public");
 app.use(express.static(p));
-app.use("/", stepsRoutes);
+app.use("/recipes", stepsRoutes);
 
 //session req.session
 app.use(
@@ -222,6 +222,58 @@ app.post("/signup", async (req: Request, res: Response) => {
     result.isSignUp = false;
     result.errMess = "Unexpected error!";
     res.json(result);
+  }
+});
+
+//user來到recipe是看這個page的
+app.get("/recipes", async (req: Request, res: Response) => {
+  // res.sendFile(path.join(p, "recipe.html"));
+  const recipes = await client.query(`SELECT * FROM recipes`);
+  res.json(recipes.rows);
+});
+// app.use("/recipe", stepsRoutes);
+//這個只是用來拿data的
+app.get("/recipe", async (req: Request, res: Response) => {
+  // res.sendFile(path.join(p, "recipe.html"));
+  try {
+    const rec_id = req.query.id;
+
+    const steps_number = await client.query(
+      `SELECT step_number FROM steps WHERE recipe_id = $1`,
+      [rec_id]
+    );
+
+    const step_description = await client.query(
+      `SELECT step_description FROM steps WHERE recipe_id= $1`,
+      [rec_id]
+    );
+
+    const image = await client.query(
+      `SELECT image FROM steps WHERE recipe_id = $1`,
+      [rec_id]
+    );
+
+    res.json({
+      steps_number: steps_number.rows,
+      step_description: step_description.rows,
+      image: image.rows,
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
+
+//load profile post
+app.get("/profile", (req: Request, res: Response) => {
+  try {
+    const user_id = req.query.id;
+  } catch (err) {
+    console.log(err);
+    res.json({
+      success: false,
+    });
   }
 });
 
