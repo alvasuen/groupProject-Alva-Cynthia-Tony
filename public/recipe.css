@@ -236,8 +236,28 @@ body {
 }
 
 .page-background {
-  padding: 55px 150px;
+  width: 500px;
+  height: 500px;
+  /* padding: 55px 150px; */
   background-color: rgb(247, 242, 242);
 
   border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  margin-top: 10px;
+}
+
+.text-box > p {
+  text-align: center;
+  display: inline-block;
 }

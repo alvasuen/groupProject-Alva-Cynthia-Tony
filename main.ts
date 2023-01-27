@@ -84,7 +84,6 @@ export function formidable_promise(req: express.Request) {
 //main page
 let p = path.join(__dirname, "public");
 app.use(express.static(p));
-app.use("/", stepsRoutes);
 
 //session req.session
 app.use(
@@ -145,10 +144,12 @@ app.post("/login", async (req: Request, res: Response) => {
           //for js
           result.isLogin = true;
           result.isError = false;
+          // console.log(loginResult.rows[0],'132')
           result.user.username = loginResult.rows[0].username;
           //for session
           req.session.userId = loginResult.rows[0].user_id;
           req.session.isLogin = true;
+          // console.log(req.session,'136')
           //for response
           res.json(result);
           return;
@@ -176,13 +177,9 @@ app.post("/login", async (req: Request, res: Response) => {
 
 //logout
 app.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      res.json({ err });
-      return;
-    }
-    res.json({ success: true });
-  });
+  delete req.session.isLogin;
+  delete req.session.userId;
+  res.json({ success: true });
 });
 
 //signup
@@ -308,11 +305,222 @@ app.get("/search", (req: Request, res: Response) => {
   res.sendFile(path.join(p, "searchResult.html"));
 });
 
-app.use("/search", searchRoutes);
+//send all recipes and posts to client
+app.get("/search_data", async (req: Request, res: Response) => {
+  try {
+    //get data from database
+    let rawDataRep = await client.query(`SELECT * FROM "recipes"`);
+    let rawDataPo = await client.query(`SELECT * FROM "posts"`);
+    if (rawDataRep.rowCount === 0) {
+      res.json({
+        message: "Oops!No record!",
+        success: false,
+      });
+      return;
+    }
+    if (rawDataPo.rowCount === 0) {
+      res.json({
+        message: "Oops!No record!",
+        success: false,
+      });
+      return;
+    }
+    //send to client
+    let rawData1 = rawDataRep;
+
+    let rawData2 = rawDataPo;
+
+    res.json({
+      content: { recipes: rawData1, posts: rawData2 },
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "unexpected error",
+      success: false,
+    });
+  }
+});
+
+app.post("/tag1", async (req: Request, res: Response) => {
+  let tagContent = req.body.content;
+  console.log(tagContent);
+  try {
+    const tagResult = await client.query(
+      `SELECT * FROM tag WHERE tag_content = $1`,
+      [tagContent]
+    );
+    // console.log(tagResult.rows,'279')
+    const tagId = tagResult.rows[0].tag_id;
+    const recipeData = await client.query(
+      `SELECT * FROM recipes INNER JOIN tag_relate ON tag_relate.rep_id = recipes.recipe_id WHERE tag_id = $1`,
+      [tagId]
+    );
+    // console.log(recipeData.rows);
+    res.json({
+      content: recipeData.rows,
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      success: false,
+      message: "Error! Please try again!",
+    });
+  }
+});
+
+app.post("/tag3", async (req: Request, res: Response) => {
+  let tagContent = req.body.content;
+  console.log(tagContent);
+  try {
+    const recipeData = await client.query(
+      `SELECT * FROM recipes WHERE cooking_level = $1`,
+      [tagContent]
+    );
+    res.json({
+      content: recipeData.rows,
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      success: false,
+      message: "Error! Please try again!",
+    });
+  }
+});
+
+app.post("/search", async (req: Request, res: Response) => {
+  let searchContent = req.body.content;
+  console.log(searchContent);
+  try {
+    //steps
+    let resultFromSteps = await client.query(
+      `SELECT DISTINCT recipe_id FROM steps WHERE step_description ~* $1`,
+      [searchContent]
+    );
+
+    //recipe name
+    let resultFromName = await client.query(
+      `SELECT * FROM recipes WHERE recipe_name ~* $1`,
+      [searchContent]
+    );
+
+    //cooking level
+    let resultFromLevel = await client.query(
+      `SELECT * FROM recipes WHERE cooking_level ~* $1`,
+      [searchContent]
+    );
+
+    //tag
+    let sub_sql = "SELECT tag_id FROM tag WHERE tag_content ~* $1";
+    let resultFromTag = await client.query(
+      `SELECT * FROM recipes INNER JOIN tag_relate ON tag_relate.rep_id = recipes.recipe_id WHERE tag_id IN (${sub_sql})`,
+      [searchContent]
+    );
+
+    //ingredient
+    let ingredientResult = await client.query(
+      `SELECT ingredient_id FROM ingredient WHERE ingredient ~* $1`,
+      [searchContent]
+    );
+
+    //Extract the ingredient id
+    let ingredientId = [];
+    for (let i = 0; i < ingredientResult.rowCount; i++) {
+      let a = ingredientResult.rows[i].ingredient_id;
+      ingredientId.push(a);
+    }
+
+    let resultFromIngre0 = [];
+    for (let i = 0; i < ingredientId.length; i++) {
+      let b = await client.query(
+        `SELECT * FROM recipes INNER JOIN rep_ingredients ON rep_ingredients.recipe_id = recipes.recipe_id WHERE ingredient_id = $1`,
+        [ingredientId[i]]
+      );
+      resultFromIngre0.push(b);
+    }
+
+    let resultFromIngre = [];
+    for (let i = 0; i < resultFromIngre0.length; i++) {
+      let c = resultFromIngre0[i].rows;
+      resultFromIngre.push(c);
+    }
+
+    let summaryData = [];
+
+    //search from step description in step TABLE
+    if (resultFromSteps.rowCount > 0) {
+      let data = resultFromSteps.rows;
+
+      let recipeData1 = [];
+      for (let i = 0; i < data.length; i++) {
+        let searchMatch = await client.query(
+          `SELECT * FROM recipes WHERE recipe_id = $1`,
+          [data[i].recipe_id]
+        );
+        recipeData1.push(...searchMatch.rows);
+      }
+      summaryData.push(...recipeData1);
+    }
+
+    //search from recipe name
+    // console.log(resultFromName,'434')
+    if (resultFromName.rowCount > 0) {
+      summaryData.push(...resultFromName.rows);
+    }
+
+    //search from cooking level
+
+    if (resultFromLevel.rowCount > 0) {
+      summaryData.push(...resultFromLevel.rows);
+    }
+
+    // console.log(resultFromLevel)
+
+    //search from tag
+    if (resultFromTag.rowCount > 0) {
+      summaryData.push(...resultFromTag.rows);
+    }
+
+    //search from ingredients
+    if (resultFromIngre.length > 0) {
+      let resultFromIngre1 = resultFromIngre.flat();
+      summaryData.push(...resultFromIngre1);
+      console.log(...resultFromIngre1);
+    }
+
+    const summaryData0 = [
+      ...new Map(summaryData.map((m) => [m.recipe_id, m])).values(),
+    ];
+    // console.log(summaryData);
+
+    // console.log(summaryData0)
+
+    res.json({
+      success: true,
+      content: summaryData0,
+      message: "Can't find the recipe? Join our community and create your own!",
+    });
+  } catch (err: any) {
+    console.log(err);
+    res.json({
+      success: false,
+      message: "Can't find the recipe? Join our community and create your own!",
+    });
+  }
+});
+
+// app.use("/search", searchRoutes);
+
+app.use((req: Request, res: Response) => {
+  res.status(404).end("404 Error");
+});
 
 const PORT = 8080;
 
-//Socket.io
 app.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}/`);
 });
