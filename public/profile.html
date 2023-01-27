@@ -15,6 +15,32 @@
     />
   <link rel="stylesheet" href="profile.css">
 <body>
+   <!-- header Bar -->
+    <div class="header">
+      <div class="logo"><img src="./websiteLogo.png" /></div>
+
+      <div class="menu-wrapper">
+        <a>RECIPES</a>
+        <a>MEMOWALL</a>
+        <a>SHOP</a>
+        <a>SPECIAL EVENT</a>
+      </div>
+
+      <div class="right-icon">
+        <a><i class="fa-solid fa-magnifying-glass search"></i></a>
+        <a><i class="fa-solid fa-user"></i></a>
+      </div>
+    </div>
+
+    <div class="search-header hidden">
+      <div class="search-container">
+        <form>
+          <input type="text" placeholder="what are you searching for?" />
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </form>
+        <i class="fa-solid fa-delete-left search-cancel"></i>
+      </div>
+    </div>
 
   <!-- add post -->
 
@@ -29,20 +55,14 @@
           </div>
       </div>
 
-      <form
-          action="/memos"
-          method="POST"
-          id="memo-form"
-          enctype="multipart/form-data"
-        >
-      <div class="generate-post-main">
-           <div class="post" contenteditable="true"></div>
-          <textarea class="hidden post-input" name="content"></textarea>
-              <input type="file" name="image" />
-              <input type="submit" value="Submit" />
+      <form id="createPostForm">
+        <div class="generate-post-main">
+           <!-- <div class="post" contenteditable="true"></div> -->
+          <textarea class="post-input" name="content" placeholder="Post content" ></textarea>
+              <input id="uploadFile" type="file" name="photo" />
+              <input id="submit" type="submit" value="Submit" />
         </div>
       </form>
-
     </div>
   </div>
 
@@ -77,6 +97,7 @@
             <button>SAVED</button>
         </div>
 
+        <div id="profile-post">
         <div class="grid">
             <img src="./upload/demo.jpg">
         </div>
@@ -103,19 +124,10 @@
         <div class="grid"></div>
         <div class="grid"></div>
 
-        <div class="grid"></div>
-        <div class="grid"></div>
-        <div class="grid"></div>
-
-         <div class="grid"></div>
-        <div class="grid"></div>
-        <div class="grid"></div>
+        </div>
 
     </div>
   </div>
-
-  
-
   <script src="./profile.js"></script>
 </body>
 

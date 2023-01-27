@@ -10,27 +10,8 @@ body {
 
 .header-img img {
   width: 100%;
+  height: fit-content;
   border-bottom: #c28d06 3px solid;
-}
-
-.wall-container {
-  display: grid;
-  grid-template-columns: 150px auto 150px;
-}
-
-.demo {
-  color: white;
-}
-
-.addpost {
-  width: 120px;
-  padding: 4px;
-  background-color: white;
-  color: #0b3e5a;
-  border: #c28d06 solid white;
-  cursor: pointer;
-  font-size: 12px;
-  margin: 10px;
 }
 
 /* add post */
@@ -40,7 +21,7 @@ body {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   z-index: 9999;
   position: fixed;
 }
@@ -85,31 +66,43 @@ body {
 }
 
 .post-input {
-  height: 200px;
+  height: 250px;
   width: 350px;
 }
 
+.created-tag {
+  margin-bottom: 10px;
+}
+
+.tag-name {
+  font-size: 10px;
+  margin: 5px;
+  background-color: #31424b;
+  color: white;
+  cursor: pointer;
+}
+
 .tag-generator {
-  width: 350px;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
 }
 
 .tag-submit {
   width: 100px;
-  height: 35px;
+  height: 25px;
+  margin-left: 10px;
 }
 
-.generate-post-main textarea {
+.post-input {
   margin-top: 20px;
   margin-bottom: 10px;
 }
 
 .generate-post-main input {
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .hidden {
@@ -117,6 +110,25 @@ body {
 }
 
 /* add post */
+
+.forum-container {
+  display: grid;
+  grid-template-columns: 100px auto 100px;
+}
+
+.demo {
+}
+
+.addpost {
+  width: 80px;
+  padding: 4px;
+  background-color: white;
+  color: #0b3e5a;
+  border: #c28d06 solid white;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 10px;
+}
 
 .main {
   display: flex;
@@ -198,12 +210,12 @@ body {
   cursor: pointer;
 }
 
-.p2-tag {
+.p2-tag-container {
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-.p2-tag button {
+.p2-tag {
   font-size: 20px;
   margin: 5px;
   background-color: #31424b;

@@ -6,15 +6,15 @@ import fs from "fs";
 import path from "path";
 import { Client } from "pg";
 import dotenv from "dotenv";
-import http from "http";
+// import http from "http";
 import { checkPassword, hashPassword } from "./hash";
-import { resolveModuleName } from "typescript";
+// import { resolveModuleName } from "typescript";
 import { stepsRoutes } from "./steps";
 import { searchRoutes } from "./search";
-// import { Server as SocketIO } from "socket.io";
-
-const app = express();
+// import multer from "multer";
 dotenv.config();
+
+// import { Server as SocketIO } from "socket.io";
 
 export const client = new Client({
   database: process.env.DB_NAME,
@@ -23,6 +23,26 @@ export const client = new Client({
 });
 
 client.connect();
+
+const app = express();
+app.use(express.urlencoded()); // req.body
+app.use(express.json()); // RESTful, method + verb, example: GET / memos
+
+app.use(express.static("public"));
+app.use(express.static("uploads"));
+
+// const storage = multer.diskStorage({
+//   destination: function (reg, file, cb) {
+//     cb(null, path.resolve("./uploads"));
+//   }, // storage position: ./uploads
+//   filename: function (req, file, cb) {
+//     cb(null, `${file.fieldname}-${Date.now()}.${file.mimetype.split("/")[1]}`);
+//   }, // => how to name the filename
+// });
+
+// const upload = multer({ storage });
+
+// app.use("/post", postRoutes);
 
 //formidable's default setting
 const uploadDir = "uploads";
@@ -75,14 +95,14 @@ app.use(
     resave: true,
     //need to build session for the first connection
     saveUninitialized: true,
-    cookie: { maxAge: 30000 },
+    //cookie: { maxAge: 30000 }, // login time: after 30000 ms auto logout
   })
 );
 
 declare module "express-session" {
   interface SessionData {
     userId?: number;
-    count?: number;
+    // count?: number;
     isLogin?: boolean;
   }
 }
@@ -127,7 +147,7 @@ app.post("/login", async (req: Request, res: Response) => {
           result.isError = false;
           result.user.username = loginResult.rows[0].username;
           //for session
-          req.session.userId = loginResult.rows[0].id;
+          req.session.userId = loginResult.rows[0].user_id;
           req.session.isLogin = true;
           //for response
           res.json(result);
@@ -219,6 +239,68 @@ app.post("/signup", async (req: Request, res: Response) => {
     result.isSignUp = false;
     result.errMess = "Unexpected error!";
     res.json(result);
+  }
+});
+
+// connect to wall.html
+// app.get("/post", (req: Request, res: Response) => {
+//   res.sendFile(path.join(p, "wall.html"));
+// });
+
+// create memo, photo store in the ./uploads, and req.json take the file
+app.post("/post", async (req: Request, res: Response) => {
+  try {
+    console.log(req.session);
+
+    const content = req.body.text;
+    const image = req.body.photo;
+    const id = req.session.userId;
+    const tags = req.body.tags;
+
+    let postId = await client.query(
+      `insert into posts (content, image, user_id) values
+        ($1, $2, $3) returning post_id`,
+      [content, image, id]
+    );
+    console.log(postId.rows[0].post_id, "265");
+
+    for (const property in tags) {
+      await client.query(
+        `insert into tag (tag_content) values
+        ($1)`,
+        [tags[property]]
+      );
+      console.log(tags[property]);
+    }
+
+    const username = await client.query(
+      `select username from users where user_id = $1`,
+      [id]
+    );
+    const icon = await client.query(
+      `select icon from users where user_id = $1`,
+      [id]
+    );
+    console.log("test", icon);
+    const createdDate = await client.query(
+      `select created_at from posts where post_id = $1`,
+      [postId.rows[0].post_id]
+    );
+
+    res.json({
+      success: true,
+      post: {
+        content: content,
+        image: image,
+        username: username,
+        tags: tags,
+        icon: icon,
+        createdDate: createdDate,
+      },
+    });
+  } catch (ex) {
+    console.log(ex);
+    res.json({ success: false });
   }
 });
 
