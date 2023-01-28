@@ -1,6 +1,5 @@
 let showRepMode = false;
 
-
 //
 // const search = document.querySelector(".search");
 // search.addEventListener("click", function () {
