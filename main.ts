@@ -112,7 +112,11 @@ declare module "express-session" {
 
 //login
 app.get("/login", (req: Request, res: Response) => {
+  if(!req.session.isLogin){
   res.sendFile(path.join(p, "login.html"));
+}else{
+  res.sendFile(path.join(p, "index.html"))
+}
 });
 
 //Local login
@@ -196,7 +200,11 @@ app.get("/logout", (req, res) => {
 
 //signup
 app.get("/signup", (req: Request, res: Response) => {
+  if (!req.session.isLogin){
   res.sendFile(path.join(p, "signup.html"));
+  }else{
+    res.sendFile(path.join(p, "index.html"))
+  }
 });
 
 app.post("/signup", async (req: Request, res: Response) => {
@@ -529,7 +537,60 @@ app.post("/search", async (req: Request, res: Response) => {
   }
 });
 
-// app.use("/search", searchRoutes);
+//savedRecipes
+app.post("/saveRecipe", async (req:Request, res:Response)=>{
+console.log(req.body.id);
+try{
+if (!req.session.isLogin){
+  res.json({
+    message:"Please login first!",
+    success:false
+  })
+}else{
+  let user_id = req.session.userId;
+  let recipe_id = req.body.id;
+  await client.query(
+    `INSERT INTO saved_recipe (user_id, recipe_id) 
+        VALUES ($1, $2)`,
+    [user_id, recipe_id]
+  );
+  await client.query(
+    `UPDATE recipes SET saved_count = saved_count+1 WHERE recipe_id = $1 ;`,
+    [recipe_id]
+  );
+  res.json({success:true});
+}
+}catch (err){
+  console.log(err);
+  res.json({
+    message: "Unexpected error! Please try again!",
+    success: false
+  })
+}
+})
+
+app.get("/checkRepLike", async (req:Request, res:Response)=>{
+  if(req.session.isLogin){
+  let recipeData = await client.query(
+    `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+    [req.session.userId]
+  );
+  let arr=[];
+  for(let i=0; i<recipeData.rowCount;i++){
+    arr.push(recipeData.rows[i].recipe_id)
+  }
+  res.json({
+    success:true,
+    content: arr
+  })
+}else{
+  res.json({
+    message: "Please login first!"
+  })
+}
+})
+
+
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));

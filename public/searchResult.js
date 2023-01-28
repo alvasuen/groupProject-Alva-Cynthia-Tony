@@ -1,5 +1,6 @@
 let showRepMode = false;
 
+
 //
 // const search = document.querySelector(".search");
 // search.addEventListener("click", function () {
@@ -26,7 +27,13 @@ allRecipesBtn.addEventListener("click", async () => {
     if (!json.success) {
       alert(`${json.message}`);
     } else {
+      let saveResult = await fetch ("/checkRepLike");
+      let saveResult_json = await saveResult.json();
+      let savedRecipes = saveResult_json.content;
+
       for (let i = 0; i < json.content.recipes.rowCount; i++) {
+        let likeAndResult = document.createElement("div");
+        likeAndResult.className="likeAndResult";
         let a = document.createElement("a");
         a.href = `http://localhost:8080/recipe.html?id=${json.content.recipes.rows[i].recipe_id}`;
         let newBlock = document.createElement("div");
@@ -50,8 +57,13 @@ allRecipesBtn.addEventListener("click", async () => {
         newResultBriefContent.className = "resultBriefContent";
         newResultBriefContent.innerHTML =
           json.content.recipes.rows[i].recipe_description;
+        let saveBtn = document.createElement("button");
+        saveBtn.className="saveBtn"
+        saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>Save`;
+        saveBtn.id = json.content.recipes.rows[i].recipe_id;
 
-        document.getElementById("result").appendChild(a);
+        document.getElementById("result").appendChild(likeAndResult);
+        likeAndResult.appendChild(a)
         a.appendChild(newBlock);
         newBlock.appendChild(newImageBlock);
         newBlock.appendChild(newTextBlock);
@@ -61,7 +73,34 @@ allRecipesBtn.addEventListener("click", async () => {
         newTextBlock.appendChild(newCookingLv);
         newTextBlock.appendChild(newResultHeadline);
         newTextBlock.appendChild(newResultBriefContent);
+        likeAndResult.appendChild(saveBtn);
+
+        if (savedRecipes.includes(json.content.recipes.rows[i].recipe_id)){
+          saveBtn.style.color = "red"
+        }
+
       }
+
+      //save a recipe - turn the button to red and update DB
+      let saveBtns = document.querySelectorAll(".saveBtn");
+        saveBtns.forEach((btn)=>{
+          btn.addEventListener('click',async (event)=>{
+          event.preventDefault();
+          btn.style.color="red";
+          let id = btn.id
+          console.log({id})
+          let result = await fetch ("/saveRecipe",{
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({id}),
+          })
+          let json = await result.json();
+          // console.log(json);
+          if(!json.success){
+            alert(json.message)
+          }
+        })
+      })
       document.getElementById("result").scrollIntoView();
     }
   } else if (showRepMode) {
@@ -97,7 +136,13 @@ buttons.forEach((button) => {
     if (!json.success) {
       alert(`${json.message}`);
     } else if (json.success) {
+      let saveResult = await fetch ("/checkRepLike");
+      let saveResult_json = await saveResult.json();
+      let savedRecipes = saveResult_json.content;
+
       for (let i = 0; i < json.content.length; i++) {
+        let likeAndResult = document.createElement("div");
+        likeAndResult.className="likeAndResult";
         let a = document.createElement("a");
         a.href = `http://localhost:8080/recipe.html?id=${json.content[i].recipe_id}`;
         let newBlock = document.createElement("div");
@@ -119,8 +164,13 @@ buttons.forEach((button) => {
         let newResultBriefContent = document.createElement("div");
         newResultBriefContent.className = "resultBriefContent";
         newResultBriefContent.innerHTML = json.content[i].recipe_description;
+        let saveBtn = document.createElement("button");
+        saveBtn.className="saveBtn"
+        saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>Save`;
+        saveBtn.id = json.content[i].recipe_id;
 
-        document.getElementById("result").appendChild(a);
+        document.getElementById("result").appendChild(likeAndResult);
+        likeAndResult.appendChild(a)
         a.appendChild(newBlock);
         newBlock.appendChild(newImageBlock);
         newBlock.appendChild(newTextBlock);
@@ -130,7 +180,33 @@ buttons.forEach((button) => {
         newTextBlock.appendChild(newCookingLv);
         newTextBlock.appendChild(newResultHeadline);
         newTextBlock.appendChild(newResultBriefContent);
+        newTextBlock.appendChild(saveBtn);
+        likeAndResult.appendChild(saveBtn);
+
+        if (savedRecipes.includes(json.content[i].recipe_id)){
+          saveBtn.style.color = "red"
+        }
       }
+      
+      let saveBtns = document.querySelectorAll(".saveBtn");
+      saveBtns.forEach((btn)=>{
+        btn.addEventListener('click',async (event)=>{
+        event.preventDefault();
+        btn.style.color="red";
+        let id = btn.id
+        console.log({id})
+        let result = await fetch ("/saveRecipe",{
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({id}),
+        })
+        let json = await result.json();
+        // console.log(json);
+        if(!json.success){
+          alert(json.message)
+        }
+      })
+    })
       document.getElementById("result").scrollIntoView();
     }
   });
@@ -159,7 +235,13 @@ buttons3.forEach((button) => {
     if (!json.success) {
       alert(`${json.message}`);
     } else if (json.success) {
+      let saveResult = await fetch ("/checkRepLike");
+      let saveResult_json = await saveResult.json();
+      let savedRecipes = saveResult_json.content;
+
       for (let i = 0; i < json.content.length; i++) {
+        let likeAndResult = document.createElement("div");
+        likeAndResult.className="likeAndResult";
         let a = document.createElement("a");
         a.href = `http://localhost:8080/recipe.html?id=${json.content[i].recipe_id}`;
         let newBlock = document.createElement("div");
@@ -181,8 +263,13 @@ buttons3.forEach((button) => {
         let newResultBriefContent = document.createElement("div");
         newResultBriefContent.className = "resultBriefContent";
         newResultBriefContent.innerHTML = json.content[i].recipe_description;
+        let saveBtn = document.createElement("button");
+        saveBtn.className="saveBtn"
+        saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>Save`;
+        saveBtn.id = json.content[i].recipe_id;
 
-        document.getElementById("result").appendChild(a);
+        document.getElementById("result").appendChild(likeAndResult);
+        likeAndResult.appendChild(a)
         a.appendChild(newBlock);
         newBlock.appendChild(newImageBlock);
         newBlock.appendChild(newTextBlock);
@@ -192,7 +279,33 @@ buttons3.forEach((button) => {
         newTextBlock.appendChild(newCookingLv);
         newTextBlock.appendChild(newResultHeadline);
         newTextBlock.appendChild(newResultBriefContent);
+        newTextBlock.appendChild(saveBtn);
+        likeAndResult.appendChild(saveBtn);
+
+        if (savedRecipes.includes(json.content[i].recipe_id)){
+          saveBtn.style.color = "red"
+        }
       }
+
+      let saveBtns = document.querySelectorAll(".saveBtn");
+        saveBtns.forEach((btn)=>{
+          btn.addEventListener('click',async (event)=>{
+          event.preventDefault();
+          btn.style.color="red";
+          let id = btn.id
+          console.log({id})
+          let result = await fetch ("/saveRecipe",{
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({id}),
+          })
+          let json = await result.json();
+          // console.log(json);
+          if(!json.success){
+            alert(json.message)
+          }
+        })
+      })
       document.getElementById("result").scrollIntoView();
     }
   });
@@ -226,7 +339,13 @@ searchBtn.addEventListener("click", async (event) => {
   if (!json.success ||json.content.length == 0) {
     alert(`${json.message}`);
   } else if (json.success) {
+    let saveResult = await fetch ("/checkRepLike");
+      let saveResult_json = await saveResult.json();
+      let savedRecipes = saveResult_json.content;
+
     for (let i = 0; i < json.content.length; i++) {
+      let likeAndResult = document.createElement("div");
+      likeAndResult.className="likeAndResult";
       let a = document.createElement("a");
       a.href = `http://localhost:8080/recipe.html?id=${json.content[i].recipe_id}`;
       let newBlock = document.createElement("div");
@@ -248,8 +367,13 @@ searchBtn.addEventListener("click", async (event) => {
       let newResultBriefContent = document.createElement("div");
       newResultBriefContent.className = "resultBriefContent";
       newResultBriefContent.innerHTML = json.content[i].recipe_description;
+      let saveBtn = document.createElement("button");
+      saveBtn.className="saveBtn"
+      saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>Save`;
+      saveBtn.id = json.content[i].recipe_id;
 
-      document.getElementById("result").appendChild(a);
+      document.getElementById("result").appendChild(likeAndResult);
+      likeAndResult.appendChild(a)
       a.appendChild(newBlock);
       newBlock.appendChild(newImageBlock);
       newBlock.appendChild(newTextBlock);
@@ -259,8 +383,35 @@ searchBtn.addEventListener("click", async (event) => {
       newTextBlock.appendChild(newCookingLv);
       newTextBlock.appendChild(newResultHeadline);
       newTextBlock.appendChild(newResultBriefContent);
+      newTextBlock.appendChild(saveBtn);
+      likeAndResult.appendChild(saveBtn);
+
+      if (savedRecipes.includes(json.content[i].recipe_id)){
+        saveBtn.style.color = "red"
+      }
     }
   }
+
+  let saveBtns = document.querySelectorAll(".saveBtn");
+        saveBtns.forEach((btn)=>{
+          btn.addEventListener('click',async (event)=>{
+          event.preventDefault();
+          btn.style.color="red";
+          let id = btn.id
+          console.log({id})
+          let result = await fetch ("/saveRecipe",{
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({id}),
+          })
+          let json = await result.json();
+          // console.log(json);
+          if(!json.success){
+            alert(json.message)
+          }
+        })
+      })
+
   document.getElementById("result").scrollIntoView();
 });
 
@@ -278,6 +429,8 @@ let myScrollFunc = function() {
 };
 
 window.addEventListener("scroll", myScrollFunc);
+
+
 
 //header - profile button
 let profileBtn = document.querySelector("#profileRedirect")
@@ -302,3 +455,23 @@ window.onload = async (event) =>{
     profileBtn.innerHTML=`<i class="fa-solid fa-user"></i>`
   }
 }
+
+
+// let saveBtns = document.querySelectorAll(".saveBtn");
+// saveBtns.forEach((saveBtn)=>{
+//   saveBtn.addEventListener("click", async (event)=>{
+//     event.preventDefault();
+//     console.log("123")
+//     saveBtn.style.color="red";
+//     let id = saveBtn.parentNode.parentNode
+//     console.log({id})
+//     let result = await fetch ("/saveRecipe",{
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: id,
+//     })
+//     result = await res.json();
+//   })
+// })
+
+
