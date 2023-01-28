@@ -521,7 +521,7 @@ app.post("/search", async (req: Request, res: Response) => {
 // app.use("/search", searchRoutes);
 
 app.use((req: Request, res: Response) => {
-  res.status(404).end("404 Error");
+  res.status(404).sendFile(path.join(p, "index.html"));
 });
 
 const PORT = 8080;
