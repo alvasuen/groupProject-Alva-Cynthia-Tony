@@ -6,17 +6,15 @@ import fs from "fs";
 import path from "path";
 import { Client } from "pg";
 import dotenv from "dotenv";
-import http from "http";
+// import http from "http";
 import { checkPassword, hashPassword } from "./hash";
-import { resolveModuleName } from "typescript";
-// import { stepsRoutes } from "./steps";
-// import { searchRoutes } from "./search";
-// import { nextTick } from "process";
-// import { Server as SocketIO } from "socket.io";
-
-const app = express();
-
+// import { resolveModuleName } from "typescript";
+import { stepsRoutes } from "./steps";
+import { searchRoutes } from "./search";
+// import multer from "multer";
 dotenv.config();
+
+// import { Server as SocketIO } from "socket.io";
 
 export const client = new Client({
   database: process.env.DB_NAME,
@@ -26,7 +24,25 @@ export const client = new Client({
 
 client.connect();
 
-app.use(express.json());
+const app = express();
+app.use(express.urlencoded()); // req.body
+app.use(express.json()); // RESTful, method + verb, example: GET / memos
+
+app.use(express.static("public"));
+app.use(express.static("uploads"));
+
+// const storage = multer.diskStorage({
+//   destination: function (reg, file, cb) {
+//     cb(null, path.resolve("./uploads"));
+//   }, // storage position: ./uploads
+//   filename: function (req, file, cb) {
+//     cb(null, `${file.fieldname}-${Date.now()}.${file.mimetype.split("/")[1]}`);
+//   }, // => how to name the filename
+// });
+
+// const upload = multer({ storage });
+
+// app.use("/post", postRoutes);
 
 //formidable's default setting
 const uploadDir = "uploads";
@@ -69,7 +85,6 @@ export function formidable_promise(req: express.Request) {
 let p = path.join(__dirname, "public");
 app.use(express.static(p));
 
-
 //session req.session
 app.use(
   expressSession({
@@ -79,6 +94,7 @@ app.use(
     resave: true,
     //need to build session for the first connection
     saveUninitialized: true,
+    //cookie: { maxAge: 30000 }, // login time: after 30000 ms auto logout
   })
 );
 
@@ -161,10 +177,10 @@ app.post("/login", async (req: Request, res: Response) => {
 
 //logout
 app.post("/logout", (req, res) => {
-  delete req.session.isLogin
-  delete req.session.userId
+  delete req.session.isLogin;
+  delete req.session.userId;
   res.json({ success: true });
-  });
+});
 
 //signup
 app.get("/signup", (req: Request, res: Response) => {
@@ -223,56 +239,65 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
-//user來到recipe是看這個page的
-app.get("/recipes", async (req: Request, res: Response) => {
-  // res.sendFile(path.join(p, "recipe.html"));
-  const recipes = await client.query(`SELECT * FROM recipes`);
-  res.json(recipes.rows);
-});
+// connect to wall.html
+// app.get("/post", (req: Request, res: Response) => {
+//   res.sendFile(path.join(p, "wall.html"));
+// });
 
-// app.use("/recipe", stepsRoutes);
-//這個只是用來拿data的
-app.get("/recipe", async (req: Request, res: Response) => {
-  // res.sendFile(path.join(p, "recipe.html"));
+// create memo, photo store in the ./uploads, and req.json take the file
+app.post("/post", async (req: Request, res: Response) => {
   try {
-    const rec_id = req.query.id;
+    console.log(req.session);
 
-    const steps_number = await client.query(
-      `SELECT step_number FROM steps WHERE recipe_id = $1`,
-      [rec_id]
+    const content = req.body.text;
+    const image = req.body.photo;
+    const id = req.session.userId;
+    const tags = req.body.tags;
+
+    let postId = await client.query(
+      `insert into posts (content, image, user_id) values
+        ($1, $2, $3) returning post_id`,
+      [content, image, id]
     );
+    console.log(postId.rows[0].post_id, "265");
 
-    const step_description = await client.query(
-      `SELECT step_description FROM steps WHERE recipe_id= $1`,
-      [rec_id]
+    for (const property in tags) {
+      await client.query(
+        `insert into tag (tag_content) values
+        ($1)`,
+        [tags[property]]
+      );
+      console.log(tags[property]);
+    }
+
+    const username = await client.query(
+      `select username from users where user_id = $1`,
+      [id]
     );
-
-    const image = await client.query(
-      `SELECT image FROM steps WHERE recipe_id = $1`,
-      [rec_id]
+    const icon = await client.query(
+      `select icon from users where user_id = $1`,
+      [id]
+    );
+    console.log("test", icon);
+    const createdDate = await client.query(
+      `select created_at from posts where post_id = $1`,
+      [postId.rows[0].post_id]
     );
 
     res.json({
-      steps_number: steps_number.rows,
-      step_description: step_description.rows,
-      image: image.rows,
       success: true,
+      post: {
+        content: content,
+        image: image,
+        username: username,
+        tags: tags,
+        icon: icon,
+        createdDate: createdDate,
+      },
     });
-  } catch (err) {
-    console.log(err);
+  } catch (ex) {
+    console.log(ex);
     res.json({ success: false });
-  }
-});
-
-//load profile post
-app.get("/profile", (req: Request, res: Response) => {
-  try {
-    const user_id = req.query.id;
-  } catch (err) {
-    console.log(err);
-    res.json({
-      success: false,
-    });
   }
 });
 
@@ -377,119 +402,114 @@ app.post("/search", async (req: Request, res: Response) => {
       [searchContent]
     );
 
-
     //recipe name
     let resultFromName = await client.query(
       `SELECT * FROM recipes WHERE recipe_name ~* $1`,
       [searchContent]
     );
-  
+
     //cooking level
     let resultFromLevel = await client.query(
       `SELECT * FROM recipes WHERE cooking_level ~* $1`,
       [searchContent]
     );
-  
+
     //tag
-    let sub_sql = 'SELECT tag_id FROM tag WHERE tag_content ~* $1'
+    let sub_sql = "SELECT tag_id FROM tag WHERE tag_content ~* $1";
     let resultFromTag = await client.query(
       `SELECT * FROM recipes INNER JOIN tag_relate ON tag_relate.rep_id = recipes.recipe_id WHERE tag_id IN (${sub_sql})`,
       [searchContent]
     );
-
 
     //ingredient
     let ingredientResult = await client.query(
       `SELECT ingredient_id FROM ingredient WHERE ingredient ~* $1`,
       [searchContent]
     );
-    
+
     //Extract the ingredient id
-    let ingredientId = []
-    for (let i=0; i<ingredientResult.rowCount; i++){
-      let a = ingredientResult.rows[i].ingredient_id
+    let ingredientId = [];
+    for (let i = 0; i < ingredientResult.rowCount; i++) {
+      let a = ingredientResult.rows[i].ingredient_id;
       ingredientId.push(a);
     }
 
-    let resultFromIngre0 = []
-    for (let i=0; i<ingredientId.length;i++){
+    let resultFromIngre0 = [];
+    for (let i = 0; i < ingredientId.length; i++) {
       let b = await client.query(
-          `SELECT * FROM recipes INNER JOIN rep_ingredients ON rep_ingredients.recipe_id = recipes.recipe_id WHERE ingredient_id = $1`,
-          [ingredientId[i]]
-        );
+        `SELECT * FROM recipes INNER JOIN rep_ingredients ON rep_ingredients.recipe_id = recipes.recipe_id WHERE ingredient_id = $1`,
+        [ingredientId[i]]
+      );
       resultFromIngre0.push(b);
     }
 
-    let resultFromIngre= [];
-    for (let i=0; i<resultFromIngre0.length;i++){
-      let c = resultFromIngre0[i].rows
-      resultFromIngre.push(c)
+    let resultFromIngre = [];
+    for (let i = 0; i < resultFromIngre0.length; i++) {
+      let c = resultFromIngre0[i].rows;
+      resultFromIngre.push(c);
     }
 
     let summaryData = [];
-  
+
     //search from step description in step TABLE
-    if(resultFromSteps.rowCount > 0){
+    if (resultFromSteps.rowCount > 0) {
       let data = resultFromSteps.rows;
-            
-      let recipeData1 = []
-      for (let i =0; i< data.length;i++){
-       let searchMatch = await client.query(
-         `SELECT * FROM recipes WHERE recipe_id = $1`,
-         [data[i].recipe_id]
-       );
-       recipeData1.push(...searchMatch.rows);
+
+      let recipeData1 = [];
+      for (let i = 0; i < data.length; i++) {
+        let searchMatch = await client.query(
+          `SELECT * FROM recipes WHERE recipe_id = $1`,
+          [data[i].recipe_id]
+        );
+        recipeData1.push(...searchMatch.rows);
       }
-      summaryData.push(...recipeData1)
-  }
-
-  
-  //search from recipe name
-  // console.log(resultFromName,'434') 
-  if(resultFromName.rowCount > 0){
-     summaryData.push(...resultFromName.rows)
-    }
-    
-   
-  //search from cooking level
- 
-  if(resultFromLevel.rowCount > 0){
-     summaryData.push(...resultFromLevel.rows)
+      summaryData.push(...recipeData1);
     }
 
-  // console.log(resultFromLevel)
-
-  //search from tag
-  if(resultFromTag.rowCount > 0){
-     summaryData.push(...resultFromTag.rows)
+    //search from recipe name
+    // console.log(resultFromName,'434')
+    if (resultFromName.rowCount > 0) {
+      summaryData.push(...resultFromName.rows);
     }
 
+    //search from cooking level
 
-  //search from ingredients
-  if(resultFromIngre.length > 0){
-    let resultFromIngre1= resultFromIngre.flat();
-     summaryData.push(...resultFromIngre1)
-     console.log(...resultFromIngre1)
+    if (resultFromLevel.rowCount > 0) {
+      summaryData.push(...resultFromLevel.rows);
     }
-    
 
-  const summaryData0 = [...new Map (summaryData.map((m)=> [m.recipe_id, m])).values()];
-  // console.log(summaryData);
-  
-  // console.log(summaryData0)
+    // console.log(resultFromLevel)
 
-  res.json({
-    success: true,
-    content: summaryData0,
-    message: "Can't find the recipe? Join our community and create your own!"
-  })
+    //search from tag
+    if (resultFromTag.rowCount > 0) {
+      summaryData.push(...resultFromTag.rows);
+    }
 
-}catch(err:any) {
-  console.log(err)
-  res.json({
-    success: false,
-    message: "Can't find the recipe? Join our community and create your own!"
-  })
+    //search from ingredients
+    if (resultFromIngre.length > 0) {
+      let resultFromIngre1 = resultFromIngre.flat();
+      summaryData.push(...resultFromIngre1);
+      console.log(...resultFromIngre1);
+    }
+
+    const summaryData0 = [
+      ...new Map(summaryData.map((m) => [m.recipe_id, m])).values(),
+    ];
+    // console.log(summaryData);
+
+    // console.log(summaryData0)
+
+    res.json({
+      success: true,
+      content: summaryData0,
+      message: "Can't find the recipe? Join our community and create your own!",
+    });
+  } catch (err: any) {
+    console.log(err);
+    res.json({
+      success: false,
+      message: "Can't find the recipe? Join our community and create your own!",
+    });
   }
 });
 
@@ -500,7 +520,6 @@ app.use((req: Request, res: Response) => {
 });
 
 const PORT = 8080;
-
 
 app.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}/`);

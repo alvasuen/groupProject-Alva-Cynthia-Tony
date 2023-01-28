@@ -12,50 +12,49 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="./wall.css" />
+    <link rel="stylesheet" href="./forum.css" />
   </head>
   <body>
+    <!-- add post -->
+    <div class="generate-post-container hidden">
+      <div class="generate-post">
+        <div class="generate-post-header">
+          <div>Create a new post</div>
+          <div class="close-create-post">
+            <div>
+              <i class="fa-solid fa-delete-left cancel"></i>
+            </div>
+          </div>
+        </div>
+
+        <form id="createPostForm">
+          <div class="generate-post-main">
+            <!-- <div class="post" contenteditable="true"></div> -->
+            <textarea
+              class="post-input"
+              name="content"
+              placeholder="Post content"
+            ></textarea>
+            <div class="created-tag"></div>
+            <div class="tag-generator">
+              <textarea class="tag-content" name="tag" placeholder="tag"></textarea>
+              <button class="tag-submit">Create tag</button>
+            </div>
+
+            <input id="uploadFile" type="file" name="photo" required />
+            <input id="submit" type="submit" value="Submit" />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- add post -->
     <div class="header-img">
       <img src="./upload/demo-header.png" />
     </div>
 
-    <div class="wall-container">
-      <!-- add post -->
-
-      <div class="generate-post-container hidden">
-        <div class="generate-post">
-          <div class="generate-post-header">
-            <div>Create a new post</div>
-            <div class="close-create-post">
-              <div>
-                <i class="fa-solid fa-delete-left cancel"></i>
-              </div>
-            </div>
-          </div>
-
-          <form id="createPostForm">
-            <div class="generate-post-main">
-              <!-- <div class="post" contenteditable="true"></div> -->
-              <textarea
-                class="post-input"
-                name="content"
-                placeholder="Post content"
-              ></textarea>
-              <div class="tag-generator">
-                <textarea name="tag" placeholder="tag"></textarea>
-                <button class="tag-submit">Create tag</button>
-              </div>
-
-              <input id="uploadFile" type="file" name="photo" />
-              <input id="submit" type="submit" value="Submit" />
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- add post -->
-      <!-- panel maybe -->
-      <div class="demo">
+    <div class="forum-container">
+ <div class="demo">
         <button class="addpost">CREATE</button>
       </div>
 
@@ -63,13 +62,13 @@
       <div class="main">
         <!-- post html -->
         <div class="p2-container">
+          
           <div class="p2-img-container">
             <img src="./foodSearch1.jpg" />
           </div>
 
           <div class="p2-right-container">
             <div class="p2-right">
-              <div class="p2-title">Strawberry Cake DIY</div>
               <div class="p2-username-date">
                 <div class="p2-username-icon">
                   <img class="p2-icon" src="./upload/demo.jpg" />
@@ -84,20 +83,22 @@
                 <i class="fa-regular fa-bookmark"></i>
               </div>
 
-              <div class="p2-tag">
-                <button>#cake</button>
-                <button>#strawberry</button>
-                <button>#easy</button>
-                <button>#top10</button>
+              <div class="p2-tag-container">
+                <button class="p2-tag">#cake</button>
+                <button class="p2-tag">#strawberry</button>
+                <button class="p2-tag">#easy</button>
+                <button class="p2-tag">#top10</button>
               </div>
 
               <div class="p2-content">
-                <div>
+                <div class="p2-content-content">
                   12月至3月是士多啤梨的當造季節，除了要去果欄買大大粒鮮甜士多啤梨外，當然要歎返不同士多啤梨甜品！今次就為大家推薦香港8間網店、酒店及連鎖店士多啤梨蛋糕，有巴斯克芝士蛋糕、草莓盒子、拿破崙等選擇，用上日本甜王、淡雪等士多啤梨，用來做生日蛋糕慶祝一流
                 </div>
               </div>
+
             </div>
           </div>
+
         </div>
 
         <div class="row"></div>
@@ -124,11 +125,11 @@
                 <i class="fa-regular fa-bookmark"></i>
               </div>
 
-              <div class="p2-tag">
-                <button>#cake</button>
-                <button>#strawberry</button>
-                <button>#easy</button>
-                <button>#top10</button>
+              <div class="p2-tag-container">
+                <button class="p2-tag">#cake</button>
+                <button class="p2-tag">#strawberry</button>
+                <button class="p2-tag">#easy</button>
+                <button class="p2-tag">#top10</button>
               </div>
 
               <div class="p2-content">
@@ -149,7 +150,7 @@
 
           <div class="p2-right-container">
             <div class="p2-right">
-              <div class="p2-title">Strawberry Cake DIY</div>
+            
               <div class="p2-username-date">
                 <div class="p2-username-icon">
                   <img class="p2-icon" src="./upload/demo.jpg" />
@@ -164,11 +165,11 @@
                 <i class="fa-regular fa-bookmark"></i>
               </div>
 
-              <div class="p2-tag">
-                <button>#cake</button>
-                <button>#strawberry</button>
-                <button>#easy</button>
-                <button>#top10</button>
+             <div class="p2-tag-container">
+                <button class="p2-tag">#cake</button>
+                <button class="p2-tag">#strawberry</button>
+                <button class="p2-tag">#easy</button>
+                <button class="p2-tag">#top10</button>
               </div>
 
               <div class="p2-content">
@@ -181,9 +182,11 @@
         </div>
         <div class="row"></div>
       </div>
+
       <div class="demo"></div>
     </div>
+    </div>
 
-    <script src="./wall.js"></script>
+    <script src="./forum.js"></script>
   </body>
 </html>
