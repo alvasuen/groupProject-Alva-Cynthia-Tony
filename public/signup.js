@@ -16,3 +16,8 @@ signupForm.addEventListener("submit", async (e) => {
   }
   signupForm.reset();
 });
+
+let profileBtn = document.querySelector("#profileRedirect");
+profileBtn.addEventListener("click",()=>{
+  alert("Please sign up first!");
+})

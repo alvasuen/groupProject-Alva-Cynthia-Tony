@@ -30,6 +30,12 @@ a{
   text-decoration: none;
 }
 
+#profileRedirect{
+  font-family:"Cormorant Garamond", serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 .logo img {
   max-height: 60px;
   margin-left: 40px;

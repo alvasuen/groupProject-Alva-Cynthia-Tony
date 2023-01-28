@@ -8,6 +8,7 @@
 //   document.querySelector(".search-header").classList.add("hidden");
 // });
 
+
 //header - profile button
 let profileBtn = document.querySelector("#profileRedirect")
 profileBtn.addEventListener('click', async ()=> {
