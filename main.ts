@@ -11,6 +11,7 @@ import { checkPassword, hashPassword } from "./hash";
 // import { resolveModuleName } from "typescript";
 import { stepsRoutes } from "./steps";
 import { searchRoutes } from "./search";
+// import { Request } from "cross-fetch";
 // import multer from "multer";
 dotenv.config();
 
@@ -590,6 +591,12 @@ app.get("/checkRepLike", async (req:Request, res:Response)=>{
 }
 })
 
+// app.delete("/deleteSavedRecipe", async (req:Request, res:Response)=>{
+//   await client.query(
+//     `DELETE FROM saved_recipe WHERE recipe_id=$1 AND user_id=$2;`,
+//     [req.body.id, req.session.userId]
+//   );
+// })
 
 
 app.use((req: Request, res: Response) => {

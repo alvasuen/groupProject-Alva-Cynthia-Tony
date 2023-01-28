@@ -22,14 +22,18 @@ allRecipesBtn.addEventListener("click", async () => {
     let rawData = await fetch("/search_data");
     console.log(rawData);
     let json = await rawData.json();
+    console.log(json);
 
     if (!json.success) {
       alert(`${json.message}`);
     } else {
+      //check whether saved or not
       let saveResult = await fetch ("/checkRepLike");
       let saveResult_json = await saveResult.json();
       let savedRecipes = saveResult_json.content;
+      console.log({savedRecipes})
 
+      //load memo
       for (let i = 0; i < json.content.recipes.rowCount; i++) {
         let likeAndResult = document.createElement("div");
         likeAndResult.className="likeAndResult";
@@ -60,6 +64,7 @@ allRecipesBtn.addEventListener("click", async () => {
         saveBtn.className="saveBtn"
         saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>Save`;
         saveBtn.id = json.content.recipes.rows[i].recipe_id;
+        saveBtn.style.color = "black"
 
         document.getElementById("result").appendChild(likeAndResult);
         likeAndResult.appendChild(a)
@@ -74,9 +79,11 @@ allRecipesBtn.addEventListener("click", async () => {
         newTextBlock.appendChild(newResultBriefContent);
         likeAndResult.appendChild(saveBtn);
 
+        //if it has already been saved, turn the button red
+        if(saveResult_json.success){
         if (savedRecipes.includes(json.content.recipes.rows[i].recipe_id)){
           saveBtn.style.color = "red"
-        }
+        }}
 
       }
 
@@ -85,9 +92,10 @@ allRecipesBtn.addEventListener("click", async () => {
         saveBtns.forEach((btn)=>{
           btn.addEventListener('click',async (event)=>{
           event.preventDefault();
+          // if (btn.style.color = black){
           btn.style.color="red";
           let id = btn.id
-          console.log({id})
+          // console.log({id})
           let result = await fetch ("/saveRecipe",{
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -98,6 +106,14 @@ allRecipesBtn.addEventListener("click", async () => {
           if(!json.success){
             alert(json.message)
           }
+        // }else if (btn.style.color = red){
+        //   btn.style.color="red";
+        //   let result2 = await fetch ("/deleteSavedRecipe",{
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({id}),
+        //   })
+        // }
         })
       })
       document.getElementById("result").scrollIntoView();
@@ -182,9 +198,10 @@ buttons.forEach((button) => {
         newTextBlock.appendChild(saveBtn);
         likeAndResult.appendChild(saveBtn);
 
+        if(saveResult_json.success){
         if (savedRecipes.includes(json.content[i].recipe_id)){
           saveBtn.style.color = "red"
-        }
+        }}
       }
       
       let saveBtns = document.querySelectorAll(".saveBtn");
@@ -281,9 +298,10 @@ buttons3.forEach((button) => {
         newTextBlock.appendChild(saveBtn);
         likeAndResult.appendChild(saveBtn);
 
+        if(saveResult_json.success){
         if (savedRecipes.includes(json.content[i].recipe_id)){
           saveBtn.style.color = "red"
-        }
+        }}
       }
 
       let saveBtns = document.querySelectorAll(".saveBtn");
@@ -385,9 +403,10 @@ searchBtn.addEventListener("click", async (event) => {
       newTextBlock.appendChild(saveBtn);
       likeAndResult.appendChild(saveBtn);
 
+      if(saveResult_json.success){
       if (savedRecipes.includes(json.content[i].recipe_id)){
         saveBtn.style.color = "red"
-      }
+      }}
     }
   }
 
