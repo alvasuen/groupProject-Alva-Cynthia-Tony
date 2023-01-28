@@ -1,10 +1,10 @@
 let showRepMode = false;
 
 //
-const search = document.querySelector(".search");
-search.addEventListener("click", function () {
-  document.querySelector(".search-header").classList.remove("hidden");
-});
+// const search = document.querySelector(".search");
+// search.addEventListener("click", function () {
+//   document.querySelector(".search-header").classList.remove("hidden");
+// });
 
 // const cancel = document.querySelector(".cancel");
 // cancel.addEventListener("click", function () {
@@ -28,7 +28,7 @@ allRecipesBtn.addEventListener("click", async () => {
     } else {
       for (let i = 0; i < json.content.recipes.rowCount; i++) {
         let a = document.createElement("a");
-        a.href = "#";
+        a.href = `http://localhost:8080/recipe.html?id=${json.content.recipes.rows[i].recipe_id}`;
         let newBlock = document.createElement("div");
         newBlock.className = "resultDisplayBlock";
         let newImageBlock = document.createElement("div");
@@ -62,6 +62,7 @@ allRecipesBtn.addEventListener("click", async () => {
         newTextBlock.appendChild(newResultHeadline);
         newTextBlock.appendChild(newResultBriefContent);
       }
+      document.getElementById("result").scrollIntoView();
     }
   } else if (showRepMode) {
     let result = document.getElementById("result");
@@ -98,7 +99,7 @@ buttons.forEach((button) => {
     } else if (json.success) {
       for (let i = 0; i < json.content.length; i++) {
         let a = document.createElement("a");
-        a.href = "#";
+        a.href = `http://localhost:8080/recipe.html?id=${json.content[i].recipe_id}`;
         let newBlock = document.createElement("div");
         newBlock.className = "resultDisplayBlock";
         let newImageBlock = document.createElement("div");
@@ -130,6 +131,7 @@ buttons.forEach((button) => {
         newTextBlock.appendChild(newResultHeadline);
         newTextBlock.appendChild(newResultBriefContent);
       }
+      document.getElementById("result").scrollIntoView();
     }
   });
   let clearBtn = document.getElementById("clear");
@@ -159,7 +161,7 @@ buttons3.forEach((button) => {
     } else if (json.success) {
       for (let i = 0; i < json.content.length; i++) {
         let a = document.createElement("a");
-        a.href = "#";
+        a.href = `http://localhost:8080/recipe.html?id=${json.content[i].recipe_id}`;
         let newBlock = document.createElement("div");
         newBlock.className = "resultDisplayBlock";
         let newImageBlock = document.createElement("div");
@@ -191,6 +193,7 @@ buttons3.forEach((button) => {
         newTextBlock.appendChild(newResultHeadline);
         newTextBlock.appendChild(newResultBriefContent);
       }
+      document.getElementById("result").scrollIntoView();
     }
   });
   let clearBtn = document.getElementById("clear");
@@ -225,7 +228,7 @@ searchBtn.addEventListener("click", async (event) => {
   } else if (json.success) {
     for (let i = 0; i < json.content.length; i++) {
       let a = document.createElement("a");
-      a.href = "#";
+      a.href = `http://localhost:8080/recipe.html?id=${json.content[i].recipe_id}`;
       let newBlock = document.createElement("div");
       newBlock.className = "resultDisplayBlock";
       let newImageBlock = document.createElement("div");
@@ -258,4 +261,20 @@ searchBtn.addEventListener("click", async (event) => {
       newTextBlock.appendChild(newResultBriefContent);
     }
   }
+  document.getElementById("result").scrollIntoView();
 });
+
+
+//top button
+let topBtn = document.getElementById("toTheTop");
+
+let myScrollFunc = function() {
+  let y = window.scrollY;
+  if (y >= 200) {
+    topBtn.className = "toTheTop show"
+  } else {
+    topBtn.className = "toTheTop hide"
+  }
+};
+
+window.addEventListener("scroll", myScrollFunc);

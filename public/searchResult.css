@@ -99,16 +99,29 @@ body {
 /* header Bar */
 
 .separator {
-  height: 100px;
+  height: 80px;
   background-color: transparent;
 }
 
 .mainContainer {
-  padding-left: 150px;
-  padding-right: 150px;
+  /* padding-left: 150px;
+  padding-right: 150px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.searchResultBanner {
+  width: 100%;
+  overflow: hidden;
+  height: 350px;
+  display: flex;
+  justify-content: center;
+}
+
+.searchResultBanner img{
+  width: fit-content;
+
 }
 
 .buttonPanel{
@@ -142,20 +155,12 @@ body {
   width: 800px;
   font-size: 20px;
   letter-spacing: 3px;
-  /* border: 0; */
   border: black;
   background-color: #efeee8;
   outline: none;
+  border-radius: 10px;
 }
 
-.searchResultBanner {
-  width: 1500px;
-  overflow: hidden;
-  height: 320px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
 
 label{
   color: white;
@@ -186,8 +191,8 @@ select:focus {
   flex-wrap: wrap;
   justify-content: center;
   padding-bottom: 100px;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 150px;
+  padding-right: 150px;
 }
 
 .resultDisplayBlock {
@@ -252,4 +257,27 @@ a {
 
 .resultDisplayBlock:hover {
   box-shadow: 1px 1px 2px black, 0 0 25px rgb(255, 238, 0), 0 0 5px rgb(139, 109, 0);
+}
+
+.goToTheTop{
+  width: 50px;
+  height:50px;
+  border-radius: 50%;
+  background-color: aliceblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  color:black;
+}
+
+.hide {
+  opacity: 0;
+  left: -100%;
+}
+.show {
+  opacity: 1;
+  left: 0;
 }
