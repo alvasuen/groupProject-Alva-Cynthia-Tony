@@ -195,6 +195,11 @@ app.post("/signup", async (req: Request, res: Response) => {
 
   let formidable_result: any = await formidable_promise(req);
   try {
+    if(formidable_result.fields.password.length<8 || formidable_result.fields.psw_repeat.length <8){
+      result.errMess = "Your password must have a minimum of 8 characters!";
+      result.isSignUp = false;
+      res.json(result);
+    }else{
     const signUpCheck = await client.query(
       `SELECT * FROM "users" WHERE login_email = $1`,
       [formidable_result.fields.email]
@@ -230,7 +235,7 @@ app.post("/signup", async (req: Request, res: Response) => {
         result.errMess = "Unexpected error, please try again!";
         res.json(result);
       }
-    }
+    }}
   } catch (err) {
     console.log(err);
     result.isSignUp = false;
