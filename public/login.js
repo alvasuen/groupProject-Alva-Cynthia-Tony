@@ -11,7 +11,7 @@ loginForm.addEventListener("submit", async (e) => {
   let res_json = await res.json();
   console.log(res_json);
   if (res_json.isLogin) {
-    location.href = "./index.html";
+  location.href = "./index.html";
   } else {
     alert(`${res_json.errMess}`);
   }

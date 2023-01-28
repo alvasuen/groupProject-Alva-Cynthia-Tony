@@ -28,8 +28,10 @@ const app = express();
 app.use(express.urlencoded()); // req.body
 app.use(express.json()); // RESTful, method + verb, example: GET / memos
 
+
 app.use(express.static("public"));
 app.use(express.static("uploads"));
+
 
 // const storage = multer.diskStorage({
 //   destination: function (reg, file, cb) {
@@ -101,10 +103,12 @@ app.use(
 declare module "express-session" {
   interface SessionData {
     userId?: number;
+    username?: string;
     // count?: number;
     isLogin?: boolean;
   }
 }
+
 
 //login
 app.get("/login", (req: Request, res: Response) => {
@@ -148,6 +152,7 @@ app.post("/login", async (req: Request, res: Response) => {
           result.user.username = loginResult.rows[0].username;
           //for session
           req.session.userId = loginResult.rows[0].user_id;
+          req.session.username = loginResult.rows[0].username;
           req.session.isLogin = true;
           // console.log(req.session,'136')
           //for response
@@ -175,12 +180,19 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/currentUser",(req,res)=>{
+  console.log(req.session)
+  res.json(req.session)
+})
+
+
 //logout
 app.post("/logout", (req, res) => {
   delete req.session.isLogin;
   delete req.session.userId;
   res.json({ success: true });
-});
+  });
+  
 
 //signup
 app.get("/signup", (req: Request, res: Response) => {
@@ -245,9 +257,9 @@ app.post("/signup", async (req: Request, res: Response) => {
 });
 
 // connect to wall.html
-// app.get("/post", (req: Request, res: Response) => {
-//   res.sendFile(path.join(p, "wall.html"));
-// });
+app.get("/post", (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "wall.html"));
+});
 
 // create memo, photo store in the ./uploads, and req.json take the file
 app.post("/post", async (req: Request, res: Response) => {
@@ -378,7 +390,6 @@ app.post("/tag1", async (req: Request, res: Response) => {
 
 app.post("/tag3", async (req: Request, res: Response) => {
   let tagContent = req.body.content;
-  console.log(tagContent);
   try {
     const recipeData = await client.query(
       `SELECT * FROM recipes WHERE cooking_level = $1`,
