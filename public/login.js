@@ -18,3 +18,7 @@ loginForm.addEventListener("submit", async (e) => {
   loginForm.reset();
 });
 
+let profileBtn = document.querySelector("#profileRedirect");
+profileBtn.addEventListener("click",()=>{
+  alert("Please login!");
+})

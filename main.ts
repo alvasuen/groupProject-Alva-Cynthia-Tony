@@ -187,7 +187,7 @@ app.get("/currentUser",(req,res)=>{
 
 
 //logout
-app.post("/logout", (req, res) => {
+app.get("/logout", (req, res) => {
   delete req.session.isLogin;
   delete req.session.userId;
   res.json({ success: true });
