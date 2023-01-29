@@ -593,6 +593,25 @@ app.get("/checkRepLike", async (req:Request, res:Response)=>{
 }
 })
 
+app.put("/profile/change_icon", async (req: Request, res: Response) => {
+  console.log(req.body.icon);
+  try {
+    await client.query(
+      `UPDATE users SET icon = req.body.icon WHERE user_id = $1 ;`,
+      [req.session.userId]
+    );
+    res.json({
+      success: true
+    })
+  } catch (err) {
+    console.log(err);
+    res.json({
+      success: false,
+      message: "Sever error, please try again later!"
+    });
+  }
+});
+
 // app.delete("/deleteSavedRecipe", async (req:Request, res:Response)=>{
 //   await client.query(
 //     `DELETE FROM saved_recipe WHERE recipe_id=$1 AND user_id=$2;`,
