@@ -105,6 +105,7 @@ declare module "express-session" {
   interface SessionData {
     userId?: number;
     username?: string;
+    icon?: string;
     // count?: number;
     isLogin?: boolean;
   }
@@ -158,6 +159,7 @@ app.post("/login", async (req: Request, res: Response) => {
           //for session
           req.session.userId = loginResult.rows[0].user_id;
           req.session.username = loginResult.rows[0].username;
+          req.session.icon = loginResult.rows[0].icon;
           req.session.isLogin = true;
           // console.log(req.session,'136')
           //for response
