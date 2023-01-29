@@ -1,4 +1,4 @@
-//change to select the original profile picture
+//idea: user㩒icon轉相就唔使加粒掣就位哈哈, 下面querySelector可以改select用<a>包住嘅"img"
 const addNewPost = document.querySelector(".pretendToBeTheOriginalIcon");
 addNewPost.addEventListener("click", function () {
   document.querySelector(".generate-post-container").classList.remove("hidden");
