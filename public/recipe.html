@@ -10,32 +10,41 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="./recipe.css" />
     <title>Document</title>
   </head>
   <body>
     <div class="container">
       <div class="header">
-        <div class="header-left">
-          <div class="icon">ONE NIGHT COOK</div>
-          <div class="recipe-catalogs">
-            <!-- <img src="#" /> -->
-            <a class="main-link">recipe</a>
-          </div>
+        <div class="logo"><img src="./websiteLogo.png" /></div>
 
-          <div class="eshop">
-            <!-- <img src="#" /> -->
-            <a class="main-link">memowall</a>
-          </div>
-          <input class="search" type="text" placeholder="Recipe" />
+        <div class="menu-wrapper">
+          <a>RECIPES</a>
+          <a>MEMOWALL</a>
+          <a>SHOP</a>
+          <a>SPECIAL EVENT</a>
         </div>
 
-        <div class="header-right">
-          <div class="login">
-            <form>
-              <input type="submit" value="login" />
-            </form>
-          </div>
+        <div class="right-icon">
+          <a><i class="fa-solid fa-magnifying-glass search"></i></a>
+          <a><i class="fa-solid fa-user"></i></a>
+        </div>
+      </div>
+
+      <div class="search-header hidden">
+        <div class="search-container">
+          <form>
+            <input type="text" placeholder="what are you searching for?" />
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </form>
+          <i class="fa-solid fa-delete-left search-cancel"></i>
         </div>
       </div>
 

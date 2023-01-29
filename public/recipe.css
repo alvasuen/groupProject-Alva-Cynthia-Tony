@@ -1,115 +1,98 @@
 body {
+  font-family: "Cormorant Garamond", serif;
   background-color: #053e5a;
+  margin: 0;
+  position: relative;
 }
 
-/* Rea Bar */
+/* Search Bar */
 .header {
+  z-index: 9999;
   position: fixed;
-  width: 100%;
   display: flex;
   justify-content: space-between;
-  height: 80px;
-  background-color: #efefee;
-  /* background-color: #d69a02; */
-  /* background-color: #f9f9f9; */
-  color: #262626;
-  /* margin: -10px; */
-  z-index: 999;
-}
-
-.header-left {
-  display: flex;
   align-items: center;
-  flex-direction: row;
+  background-color: #efeee8;
   height: 80px;
-  margin-left: 10px;
-  /* float: left; */
-}
-
-.icon {
-  margin-left: 10px;
-}
-
-.main-link {
-  cursor: pointer;
-  text-transform: uppercase;
-  display: inline-block;
-  position: relative;
-  text-decoration: none;
-  color: #262626;
-}
-
-.main-link::after {
-  content: "";
-  position: absolute;
   width: 100%;
-  transform: scaleX(0);
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  color: #262626;
-  background-color: #636363;
-  transform-origin: bottom right;
-  transition: transform 0.25s ease-out;
+  line-height: 22px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  color: #042d42;
 }
 
-.main-link:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
-  color: #262626;
+.logo img {
+  max-height: 60px;
+  margin-left: 40px;
+  cursor: pointer;
 }
 
-.header-nav-bar img {
-  padding: 10px;
-}
-
-.recipe-catalogs {
+.menu-wrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200px;
-  border-right: 1px solid gray;
-  border-left: 1px solid gray;
-  margin: 10px;
-}
-
-.eshop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200px;
-  border-right: 1px solid gray;
-}
-
-.search {
-  width: 300px;
-  height: 30px;
-  border-radius: 45px;
-  border: 0px;
-  padding: 10px;
-  margin-left: 30px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
   flex-direction: row;
-  height: 80px;
-  margin-right: 10px;
-  /* float: right; */
 }
 
-.login {
+.menu-wrapper a {
+  margin-left: 100px;
+  font-size: 12px;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  letter-spacing: 9px;
+  color: #042d42;
+  cursor: pointer;
+}
+
+.menu-wrapper a:hover {
+  color: #ab7b03 !important;
+  border-bottom: #042d42 1px solid;
+}
+
+.right-icon a {
+  margin-right: 40px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.search-header {
+  z-index: 9999;
+  position: fixed;
   display: flex;
-  align-items: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #efeee8;
+  height: 80px;
+  width: 100%;
+  line-height: 22px;
+  margin-top: 80px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  color: #042d42;
+  border-top: #042d42 1px solid;
 }
 
-.login input {
-  width: 100px;
-  font-size: 15px;
-  background-color: transparent;
+.search-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-container input {
+  width: 1000px;
+  font-size: 20px;
+  letter-spacing: 3px;
+  border: 0;
   border: transparent;
-  text-transform: uppercase;
+  background-color: transparent;
+  outline: none;
+}
+
+.search-container i {
+  margin-left: 100px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
 }
 
 :root {

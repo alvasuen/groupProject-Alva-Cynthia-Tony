@@ -95,8 +95,6 @@ body {
   display: none;
 }
 
-/* header Bar */
-
 .user-profile {
   display: flex;
   flex-direction: column;
