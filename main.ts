@@ -597,8 +597,8 @@ app.put("/profile/change_icon", async (req: Request, res: Response) => {
   console.log(req.body.icon);
   try {
     await client.query(
-      `UPDATE users SET icon = req.body.icon WHERE user_id = $1 ;`,
-      [req.session.userId]
+      `UPDATE users SET icon = $1 WHERE user_id = $2 ;`,
+      [req.body.icon, req.session.userId]
     );
     res.json({
       success: true
