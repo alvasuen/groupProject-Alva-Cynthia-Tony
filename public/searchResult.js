@@ -22,7 +22,6 @@ allRecipesBtn.addEventListener("click", async () => {
     let rawData = await fetch("/search_data");
     console.log(rawData);
     let json = await rawData.json();
-    console.log(json);
 
     if (!json.success) {
       alert(`${json.message}`);
@@ -151,6 +150,7 @@ buttons.forEach((button) => {
     if (!json.success) {
       alert(`${json.message}`);
     } else if (json.success) {
+      // drawResultBox(json.content[i].recipe_id, json.content[i].cooking_level, json.content[i].image, json.content[i].recipe_name,json.content[i].recipe_description)
       let saveResult = await fetch ("/checkRepLike");
       let saveResult_json = await saveResult.json();
       let savedRecipes = saveResult_json.content;
@@ -473,23 +473,4 @@ window.onload = async (event) =>{
     profileBtn.innerHTML=`<i class="fa-solid fa-user"></i>`
   }
 }
-
-
-// let saveBtns = document.querySelectorAll(".saveBtn");
-// saveBtns.forEach((saveBtn)=>{
-//   saveBtn.addEventListener("click", async (event)=>{
-//     event.preventDefault();
-//     console.log("123")
-//     saveBtn.style.color="red";
-//     let id = saveBtn.parentNode.parentNode
-//     console.log({id})
-//     let result = await fetch ("/saveRecipe",{
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: id,
-//     })
-//     result = await res.json();
-//   })
-// })
-
 

@@ -225,7 +225,7 @@ app.post("/signup", async (req: Request, res: Response) => {
         [formidable_result.fields.email]
       );
       if (signUpCheck.rowCount > 0) {
-        result.errMess = "Sign Up rejected!";
+        result.errMess = "This email has been registered already!";
         result.isSignUp = false;
         res.json(result);
       } else {
