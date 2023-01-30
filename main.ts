@@ -29,10 +29,8 @@ const app = express();
 app.use(express.urlencoded()); // req.body
 app.use(express.json()); // RESTful, method + verb, example: GET / memos
 
-
 app.use(express.static("public"));
 app.use(express.static("uploads"));
-
 
 // const storage = multer.diskStorage({
 //   destination: function (reg, file, cb) {
@@ -110,14 +108,13 @@ declare module "express-session" {
   }
 }
 
-
 //login
 app.get("/login", (req: Request, res: Response) => {
-  if(!req.session.isLogin){
-  res.sendFile(path.join(p, "login.html"));
-}else{
-  res.sendFile(path.join(p, "index.html"))
-}
+  if (!req.session.isLogin) {
+    res.sendFile(path.join(p, "login.html"));
+  } else {
+    res.sendFile(path.join(p, "index.html"));
+  }
 });
 
 //Local login
@@ -185,26 +182,24 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-app.get("/currentUser",(req,res)=>{
-  console.log(req.session)
-  res.json(req.session)
-})
-
+app.get("/currentUser", (req, res) => {
+  console.log(req.session);
+  res.json(req.session);
+});
 
 //logout
 app.get("/logout", (req, res) => {
   delete req.session.isLogin;
   delete req.session.userId;
   res.json({ success: true });
-  });
-  
+});
 
 //signup
 app.get("/signup", (req: Request, res: Response) => {
-  if (!req.session.isLogin){
-  res.sendFile(path.join(p, "signup.html"));
-  }else{
-    res.sendFile(path.join(p, "index.html"))
+  if (!req.session.isLogin) {
+    res.sendFile(path.join(p, "signup.html"));
+  } else {
+    res.sendFile(path.join(p, "index.html"));
   }
 });
 
@@ -216,47 +211,51 @@ app.post("/signup", async (req: Request, res: Response) => {
 
   let formidable_result: any = await formidable_promise(req);
   try {
-    if(formidable_result.fields.password.length<8 || formidable_result.fields.psw_repeat.length <8){
+    if (
+      formidable_result.fields.password.length < 8 ||
+      formidable_result.fields.psw_repeat.length < 8
+    ) {
       result.errMess = "Your password must have a minimum of 8 characters!";
       result.isSignUp = false;
       res.json(result);
-    }else{
-    const signUpCheck = await client.query(
-      `SELECT * FROM "users" WHERE login_email = $1`,
-      [formidable_result.fields.email]
-    );
-    if (signUpCheck.rowCount > 0) {
-      result.errMess = "Sign Up rejected!";
-      result.isSignUp = false;
-      res.json(result);
     } else {
-      try {
-        const login_email = formidable_result.fields.email;
-        const password = formidable_result.fields.password;
-        const username = formidable_result.fields.username;
-        const repeatPassword = formidable_result.fields.psw_repeat;
-        const hash = await hashPassword(formidable_result.fields.password);
-        if (password == repeatPassword) {
-          await client.query(
-            //check row count
-            `INSERT INTO "users" (login_email, password, username) 
+      const signUpCheck = await client.query(
+        `SELECT * FROM "users" WHERE login_email = $1`,
+        [formidable_result.fields.email]
+      );
+      if (signUpCheck.rowCount > 0) {
+        result.errMess = "Sign Up rejected!";
+        result.isSignUp = false;
+        res.json(result);
+      } else {
+        try {
+          const login_email = formidable_result.fields.email;
+          const password = formidable_result.fields.password;
+          const username = formidable_result.fields.username;
+          const repeatPassword = formidable_result.fields.psw_repeat;
+          const hash = await hashPassword(formidable_result.fields.password);
+          if (password == repeatPassword) {
+            await client.query(
+              //check row count
+              `INSERT INTO "users" (login_email, password, username) 
         VALUES ($1, $2, $3)`,
-            [login_email, hash, username]
-          );
-          result.isSignUp = true;
-          res.json(result);
-        } else {
+              [login_email, hash, username]
+            );
+            result.isSignUp = true;
+            res.json(result);
+          } else {
+            result.isSignUp = false;
+            result.errMess = "Password not match!";
+            res.json(result);
+          }
+        } catch (err) {
+          console.log(err);
           result.isSignUp = false;
-          result.errMess = "Password not match!";
+          result.errMess = "Unexpected error, please try again!";
           res.json(result);
         }
-      } catch (err) {
-        console.log(err);
-        result.isSignUp = false;
-        result.errMess = "Unexpected error, please try again!";
-        res.json(result);
       }
-    }}
+    }
   } catch (err) {
     console.log(err);
     result.isSignUp = false;
@@ -265,8 +264,41 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
+//Recipe Step
+app.get("/recipe", async (req: Request, res: Response) => {
+  // res.sendFile(path.join(p, "recipe.html"));
+  try {
+    const rec_id = req.query.id;
+
+    const steps_number = await client.query(
+      `SELECT step_number FROM steps WHERE recipe_id = $1`,
+      [rec_id]
+    );
+
+    const step_description = await client.query(
+      `SELECT step_description FROM steps WHERE recipe_id= $1`,
+      [rec_id]
+    );
+
+    const image = await client.query(
+      `SELECT image FROM steps WHERE recipe_id = $1`,
+      [rec_id]
+    );
+
+    res.json({
+      steps_number: steps_number.rows,
+      step_description: step_description.rows,
+      image: image.rows,
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
+
 // connect to wall.html
-app.get("/post", (req: Request, res: Response) => {
+app.get("/post", async (req: Request, res: Response) => {
   res.sendFile(path.join(p, "wall.html"));
 });
 
@@ -539,57 +571,220 @@ app.post("/search", async (req: Request, res: Response) => {
 });
 
 //savedRecipes
-app.post("/saveRecipe", async (req:Request, res:Response)=>{
-console.log(req.body.id);
-try{
-if (!req.session.isLogin){
-  res.json({
-    message:"Please login first!",
-    success:false
-  })
-}else{
-  let user_id = req.session.userId;
-  let recipe_id = req.body.id;
-  await client.query(
-    `INSERT INTO saved_recipe (user_id, recipe_id) 
+app.post("/saveRecipe", async (req: Request, res: Response) => {
+  console.log(req.body.id);
+  try {
+    if (!req.session.isLogin) {
+      res.json({
+        message: "Please login first!",
+        success: false,
+      });
+    } else {
+      let user_id = req.session.userId;
+      let recipe_id = req.body.id;
+      await client.query(
+        `INSERT INTO saved_recipe (user_id, recipe_id) 
         VALUES ($1, $2)`,
-    [user_id, recipe_id]
-  );
-  await client.query(
-    `UPDATE recipes SET saved_count = saved_count+1 WHERE recipe_id = $1 ;`,
-    [recipe_id]
-  );
-  res.json({success:true});
-}
-}catch (err){
-  console.log(err);
-  res.json({
-    message: "Unexpected error! Please try again!",
-    success: false
-  })
-}
-})
-
-app.get("/checkRepLike", async (req:Request, res:Response)=>{
-  if(req.session.isLogin){
-  let recipeData = await client.query(
-    `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
-    [req.session.userId]
-  );
-  let arr=[];
-  for(let i=0; i<recipeData.rowCount;i++){
-    arr.push(recipeData.rows[i].recipe_id)
+        [user_id, recipe_id]
+      );
+      await client.query(
+        `UPDATE recipes SET saved_count = saved_count+1 WHERE recipe_id = $1 ;`,
+        [recipe_id]
+      );
+      res.json({ success: true });
+    }
+  } catch (err) {
+    console.log(err);
+    res.json({
+      message: "Unexpected error! Please try again!",
+      success: false,
+    });
   }
-  res.json({
-    success:true,
-    content: arr
-  })
-}else{
-  res.json({
-    message: "Please login first!"
-  })
-}
-})
+});
+
+//load profile post
+app.get("/profile", async (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "profile.html"));
+});
+
+app.get("/profile/:id", async (req: Request, res: Response) => {
+  try {
+    let user_id = req.session.userId;
+    if (req.session.isLogin) {
+      const getAllPostId = await client.query(
+        `SELECT post_id FROM posts WHERE user_id = $1`,
+        [user_id]
+      );
+      if (getAllPostId.rowCount > 0) {
+        // console.log("getAllPostId: ", getAllPostId);
+        let imgArray = [];
+        if (getAllPostId.rowCount > 0) {
+          for (let index = 0; index < getAllPostId.rowCount; index++) {
+            let getPostImg = await client.query(
+              `SELECT image FROM posts WHERE post_id = $1`,
+              [getAllPostId.rows[index].post_id]
+            );
+            imgArray.push(...getPostImg.rows);
+          }
+        }
+
+        res.status(200).json({
+          postId: getAllPostId.rows,
+          image: imgArray,
+          success: true,
+        });
+      } else {
+        res.status(200).end("Haven't posted any posts");
+      }
+    } else {
+      res.status(301).end("Please login first.");
+    }
+  } catch (error) {
+    res.status(500).end("Can't load the post.");
+  }
+});
+
+app.get("/savedPosts", async (req: Request, res: Response) => {
+  try {
+    let user_id = req.session.userId;
+    if (req.session.isLogin) {
+      let allSavedPost = await client.query(
+        `SELECT post_id FROM saved_posts WHERE user_id = $1`,
+        [user_id]
+      );
+
+      if (allSavedPost.rowCount > 0) {
+        let allSavedPostImage = [];
+        for (let index = 0; index < allSavedPost.rowCount; index++) {
+          let allImages = await client.query(
+            `SELECT image FROM posts WHERE post_id = $1`,
+            [allSavedPost.rows[index].post_id]
+          );
+          allSavedPostImage.push(...allImages.rows);
+        }
+        // console.log("allSavedPost:", allSavedPost.rows);
+        // console.log("allSavedPostImage:", allSavedPostImage);
+        res.status(200).json({
+          allSavedPost: allSavedPost.rows,
+          allSavedPostImage: allSavedPostImage,
+          success: true,
+        });
+      } else {
+        res.status(200).end("Haven't saved any posts");
+      }
+    }
+  } catch (err) {
+    res.status(500).end("Sorry! Can't load any saved posts.");
+  }
+});
+
+app.get("/postedPost", async (req: Request, res: Response) => {
+  try {
+    let user_id = req.session.userId;
+    if (req.session.isLogin) {
+      const getAllPostId = await client.query(
+        `SELECT post_id FROM posts WHERE user_id = $1`,
+        [user_id]
+      );
+      const userName = await client.query(
+        `SELECT username FROM users WHERE user_id = $1`,
+        [user_id]
+      );
+
+      if (getAllPostId.rowCount > 0) {
+        // console.log("getAllPostId: ", getAllPostId);
+        let imgArray = [];
+        if (getAllPostId.rowCount > 0) {
+          for (let index = 0; index < getAllPostId.rowCount; index++) {
+            let getPostImg = await client.query(
+              `SELECT image FROM posts WHERE post_id = $1`,
+              [getAllPostId.rows[index].post_id]
+            );
+            imgArray.push(...getPostImg.rows);
+          }
+        }
+        // else {
+        //   res.sendFile(path.join(p, "profile.html"));
+        // }
+        // console.log(imgArray);
+
+        res.status(200).json({
+          postId: getAllPostId.rows,
+          image: imgArray,
+          userName: userName.rows,
+          success: true,
+        });
+      } else {
+        res.status(200).end("Haven't posted any posts");
+      }
+    } else {
+      res.status(301).end("Please login first.");
+    }
+  } catch (error) {
+    res.status(500).end("Can't load the post.");
+  }
+});
+
+//Read Saved Recipes
+app.get("/saveRecipe", async (req: Request, res: Response) => {
+  try {
+    if (req.session.isLogin) {
+      let user_id = req.session.userId;
+      let saveRecipesId = await client.query(
+        `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+        [user_id]
+      );
+
+      if (saveRecipesId.rowCount > 0) {
+        let saveRecipeArray = [];
+        console.log("saveRecipes.rowCount:", saveRecipesId.rowCount);
+        for (let index = 0; index < saveRecipesId.rowCount; index++) {
+          // saveRecipeArray.push(saveRecipes.rows[index].recipe_id);
+          let recipeImage = await client.query(
+            `SELECT image, recipe_id FROM recipes WHERE recipe_id = $1`,
+            [saveRecipesId.rows[index].recipe_id]
+          );
+          console.log(saveRecipesId.rows[index].recipe_id);
+
+          saveRecipeArray.push(...recipeImage.rows);
+        }
+
+        res.status(200).json({
+          saveRecipeArray,
+          saveRecipesId: saveRecipesId.rows,
+          success: true,
+        });
+      } else {
+        res.sendStatus(200).end("Haven't saved any recipes");
+      }
+    } else {
+      res.status(301).end("Please login First.");
+    }
+  } catch (error) {
+    res.status(500).end(`Can't load the save recipes ${error}`);
+  }
+});
+
+app.get("/checkRepLike", async (req: Request, res: Response) => {
+  if (req.session.isLogin) {
+    let recipeData = await client.query(
+      `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+      [req.session.userId]
+    );
+    let arr = [];
+    for (let i = 0; i < recipeData.rowCount; i++) {
+      arr.push(recipeData.rows[i].recipe_id);
+    }
+    res.json({
+      success: true,
+      content: arr,
+    });
+  } else {
+    res.json({
+      message: "Please login first!",
+    });
+  }
+});
 
 // app.delete("/deleteSavedRecipe", async (req:Request, res:Response)=>{
 //   await client.query(
@@ -597,7 +792,6 @@ app.get("/checkRepLike", async (req:Request, res:Response)=>{
 //     [req.body.id, req.session.userId]
 //   );
 // })
-
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
