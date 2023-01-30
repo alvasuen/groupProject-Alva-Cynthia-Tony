@@ -8,6 +8,19 @@ cancel.addEventListener("click", function () {
   document.querySelector(".generate-post-container").classList.add("hidden");
 });
 
+//header - profile button
+let profileBtn = document.querySelector("#profileRedirect");
+profileBtn.addEventListener("click", async () => {
+  let res = await fetch("/currentUser");
+  let json = await res.json();
+  // console.log(json);
+  if (json.isLogin) {
+    location.href = "./profile.html";
+  } else {
+    location.href = "./login.html";
+  }
+});
+
 let i = 1;
 const createTag = document.querySelector(".tag-submit");
 const tags = createTag.addEventListener("click", function (event) {
@@ -90,6 +103,18 @@ async function savePost() {
 }
 
 window.onload = async () => {
+  let res = await fetch("/currentUser");
+  let json = await res.json();
+  let createBtn = document.querySelector(".demo");
+  if (json.isLogin) {
+    profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
+    profileBtn.href = "./profile.html";
+    createBtn.innerHTML = `<button class="addpost">CREATE</button>`;
+  } else {
+    profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
+    createBtn.innerHTML = "";
+  }
+
   await loadPosts();
 
   likePost();
@@ -355,7 +380,7 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     p2Content.appendChild(p2ContentContent);
     document.querySelector(".main").appendChild(row);
 
-    window.onload();
+    location.href = "./forum.html";
   }
 });
 

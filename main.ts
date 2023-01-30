@@ -9,14 +9,8 @@ import dotenv from "dotenv";
 // import http from "http";
 import { checkPassword, hashPassword } from "./hash";
 // import { resolveModuleName } from "typescript";
-<<<<<<< HEAD
 // import { stepsRoutes } from "./steps";
 // import { searchRoutes } from "./search";
-=======
-import { stepsRoutes } from "./steps";
-import { searchRoutes } from "./search";
-// import { Request } from "cross-fetch";
->>>>>>> 0c693ccd8230f5dbe2a067bde611dcd2d3db6549
 // import multer from "multer";
 dotenv.config();
 
