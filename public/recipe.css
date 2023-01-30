@@ -20,6 +20,16 @@ body {
   color: #042d42;
 }
 
+a {
+  text-decoration: none;
+}
+
+#profileRedirect {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 .logo img {
   max-height: 60px;
   margin-left: 40px;
@@ -197,9 +207,25 @@ body {
   flex-direction: column;
 }
 
+.title-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 3px solid #ab7b03;
+  margin: 5px 0px;
+}
+
+.cover-img-box {
+  margin-top: 30px;
+}
+
 .step-cover-page {
+  /* width: 300px;
+  border: 5px #042d42 solid;
+  margin-bottom: 20px;
+  margin-top: 10px; */
   width: 400px;
-  margin-bottom: 80px;
+  margin-bottom: 40px;
   margin-top: 10px;
 }
 
@@ -207,11 +233,14 @@ body {
 .recipe-step-title {
   font-family: "Cormorant Garamond", serif;
   text-transform: uppercase;
-  font-size: 20px;
+  font-size: 25px;
+  margin-top: 20px;
 }
 
 .recipe-step-title {
-  font-size: 60px;
+  font-size: 30px;
+  padding-bottom: 25px;
+  text-align: center;
 }
 
 .step-1 {

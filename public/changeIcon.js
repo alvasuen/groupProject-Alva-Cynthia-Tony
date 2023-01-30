@@ -40,14 +40,14 @@ document.querySelector("#uploadFile").addEventListener("change", async () => {
 });
 
 document.querySelector("#submit").addEventListener("click", async (event) => {
-//   event.preventDefault();
+  //   event.preventDefault();
   let files = document.getElementById("uploadFile").files;
   let temp1 = await getBase64(files[0]);
   let temp = ["data:image/jpeg;base64", temp1.toString()];
   let image = temp.join().toString();
   console.log(image);
 
-  const res = await fetch("/profile/change_icon", {
+  const res = await fetch("/change_icon", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -56,7 +56,7 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
   });
 
   let json = await res.json();
-  if(!json.success){
-    alert(json.message)
+  if (!json.success) {
+    alert(json.message);
   }
 });

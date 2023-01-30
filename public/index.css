@@ -26,12 +26,12 @@ body {
   color: #042d42;
 }
 
-a{
+a {
   text-decoration: none;
 }
 
-#profileRedirect{
-  font-family:"Cormorant Garamond", serif;
+#profileRedirect {
+  font-family: "Cormorant Garamond", serif;
   font-size: 16px;
   font-weight: bold;
 }
@@ -115,7 +115,8 @@ a{
 
 /* Main Photo */
 .main-photo {
-  width: 100%;
+  width: 100vw;
+  height: 56.25vw;
   margin-top: 80px;
 }
 
@@ -320,4 +321,3 @@ a{
   color: #b78403;
   font-size: 20px;
 }
-
