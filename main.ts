@@ -9,8 +9,14 @@ import dotenv from "dotenv";
 // import http from "http";
 import { checkPassword, hashPassword } from "./hash";
 // import { resolveModuleName } from "typescript";
+<<<<<<< HEAD
 // import { stepsRoutes } from "./steps";
 // import { searchRoutes } from "./search";
+=======
+import { stepsRoutes } from "./steps";
+import { searchRoutes } from "./search";
+// import { Request } from "cross-fetch";
+>>>>>>> 0c693ccd8230f5dbe2a067bde611dcd2d3db6549
 // import multer from "multer";
 dotenv.config();
 
@@ -101,6 +107,8 @@ app.use(
 declare module "express-session" {
   interface SessionData {
     userId?: number;
+    username?: string;
+    icon?: string;
     // count?: number;
     isLogin?: boolean;
   }
@@ -108,7 +116,11 @@ declare module "express-session" {
 
 //login
 app.get("/login", (req: Request, res: Response) => {
-  res.sendFile(path.join(p, "login.html"));
+  if (!req.session.isLogin) {
+    res.sendFile(path.join(p, "login.html"));
+  } else {
+    res.sendFile(path.join(p, "index.html"));
+  }
 });
 
 //Local login
@@ -148,6 +160,8 @@ app.post("/login", async (req: Request, res: Response) => {
           result.user.username = loginResult.rows[0].username;
           //for session
           req.session.userId = loginResult.rows[0].user_id;
+          req.session.username = loginResult.rows[0].username;
+          req.session.icon = loginResult.rows[0].icon;
           req.session.isLogin = true;
           // console.log(req.session,'136')
           //for response
@@ -175,8 +189,13 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/currentUser", (req, res) => {
+  console.log(req.session);
+  res.json(req.session);
+});
+
 //logout
-app.post("/logout", (req, res) => {
+app.get("/logout", (req, res) => {
   delete req.session.isLogin;
   delete req.session.userId;
   res.json({ success: true });
@@ -184,7 +203,11 @@ app.post("/logout", (req, res) => {
 
 //signup
 app.get("/signup", (req: Request, res: Response) => {
-  res.sendFile(path.join(p, "signup.html"));
+  if (!req.session.isLogin) {
+    res.sendFile(path.join(p, "signup.html"));
+  } else {
+    res.sendFile(path.join(p, "index.html"));
+  }
 });
 
 app.post("/signup", async (req: Request, res: Response) => {
@@ -195,40 +218,49 @@ app.post("/signup", async (req: Request, res: Response) => {
 
   let formidable_result: any = await formidable_promise(req);
   try {
-    const signUpCheck = await client.query(
-      `SELECT * FROM "users" WHERE login_email = $1`,
-      [formidable_result.fields.email]
-    );
-    if (signUpCheck.rowCount > 0) {
-      result.errMess = "Sign Up rejected!";
+    if (
+      formidable_result.fields.password.length < 8 ||
+      formidable_result.fields.psw_repeat.length < 8
+    ) {
+      result.errMess = "Your password must have a minimum of 8 characters!";
       result.isSignUp = false;
       res.json(result);
     } else {
-      try {
-        const login_email = formidable_result.fields.email;
-        const password = formidable_result.fields.password;
-        const username = formidable_result.fields.username;
-        const repeatPassword = formidable_result.fields.psw_repeat;
-        const hash = await hashPassword(formidable_result.fields.password);
-        if (password == repeatPassword) {
-          await client.query(
-            //check row count
-            `INSERT INTO "users" (login_email, password, username) 
+      const signUpCheck = await client.query(
+        `SELECT * FROM "users" WHERE login_email = $1`,
+        [formidable_result.fields.email]
+      );
+      if (signUpCheck.rowCount > 0) {
+        result.errMess = "Sign Up rejected!";
+        result.isSignUp = false;
+        res.json(result);
+      } else {
+        try {
+          const login_email = formidable_result.fields.email;
+          const password = formidable_result.fields.password;
+          const username = formidable_result.fields.username;
+          const repeatPassword = formidable_result.fields.psw_repeat;
+          const hash = await hashPassword(formidable_result.fields.password);
+          if (password == repeatPassword) {
+            await client.query(
+              //check row count
+              `INSERT INTO "users" (login_email, password, username) 
         VALUES ($1, $2, $3)`,
-            [login_email, hash, username]
-          );
-          result.isSignUp = true;
-          res.json(result);
-        } else {
+              [login_email, hash, username]
+            );
+            result.isSignUp = true;
+            res.json(result);
+          } else {
+            result.isSignUp = false;
+            result.errMess = "Password not match!";
+            res.json(result);
+          }
+        } catch (err) {
+          console.log(err);
           result.isSignUp = false;
-          result.errMess = "Password not match!";
+          result.errMess = "Unexpected error, please try again!";
           res.json(result);
         }
-      } catch (err) {
-        console.log(err);
-        result.isSignUp = false;
-        result.errMess = "Unexpected error, please try again!";
-        res.json(result);
       }
     }
   } catch (err) {
@@ -239,10 +271,43 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
+//Recipe Step
+app.get("/recipe", async (req: Request, res: Response) => {
+  // res.sendFile(path.join(p, "recipe.html"));
+  try {
+    const rec_id = req.query.id;
+
+    const steps_number = await client.query(
+      `SELECT step_number FROM steps WHERE recipe_id = $1`,
+      [rec_id]
+    );
+
+    const step_description = await client.query(
+      `SELECT step_description FROM steps WHERE recipe_id= $1`,
+      [rec_id]
+    );
+
+    const image = await client.query(
+      `SELECT image FROM steps WHERE recipe_id = $1`,
+      [rec_id]
+    );
+
+    res.json({
+      steps_number: steps_number.rows,
+      step_description: step_description.rows,
+      image: image.rows,
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
+
 // connect to wall.html
-// app.get("/post", (req: Request, res: Response) => {
-//   res.sendFile(path.join(p, "wall.html"));
-// });
+app.get("/post", async (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "wall.html"));
+});
 
 // create memo, photo store in the ./uploads, and req.json take the file
 app.post("/post", async (req: Request, res: Response) => {
@@ -515,7 +580,6 @@ app.post("/tag1", async (req: Request, res: Response) => {
 
 app.post("/tag3", async (req: Request, res: Response) => {
   let tagContent = req.body.content;
-  console.log(tagContent);
   try {
     const recipeData = await client.query(
       `SELECT * FROM recipes WHERE cooking_level = $1`,
@@ -655,10 +719,250 @@ app.post("/search", async (req: Request, res: Response) => {
   }
 });
 
-// app.use("/search", searchRoutes);
+//savedRecipes
+app.post("/saveRecipe", async (req: Request, res: Response) => {
+  console.log(req.body.id);
+  try {
+    if (!req.session.isLogin) {
+      res.json({
+        message: "Please login first!",
+        success: false,
+      });
+    } else {
+      let user_id = req.session.userId;
+      let recipe_id = req.body.id;
+      await client.query(
+        `INSERT INTO saved_recipe (user_id, recipe_id) 
+        VALUES ($1, $2)`,
+        [user_id, recipe_id]
+      );
+      await client.query(
+        `UPDATE recipes SET saved_count = saved_count+1 WHERE recipe_id = $1 ;`,
+        [recipe_id]
+      );
+      res.json({ success: true });
+    }
+  } catch (err) {
+    console.log(err);
+    res.json({
+      message: "Unexpected error! Please try again!",
+      success: false,
+    });
+  }
+});
+
+//load profile post
+app.get("/profile", async (req: Request, res: Response) => {
+  res.sendFile(path.join(p, "profile.html"));
+});
+
+app.get("/profile/:id", async (req: Request, res: Response) => {
+  try {
+    let user_id = req.session.userId;
+    if (req.session.isLogin) {
+      const getAllPostId = await client.query(
+        `SELECT post_id FROM posts WHERE user_id = $1`,
+        [user_id]
+      );
+      if (getAllPostId.rowCount > 0) {
+        // console.log("getAllPostId: ", getAllPostId);
+        let imgArray = [];
+        if (getAllPostId.rowCount > 0) {
+          for (let index = 0; index < getAllPostId.rowCount; index++) {
+            let getPostImg = await client.query(
+              `SELECT image FROM posts WHERE post_id = $1`,
+              [getAllPostId.rows[index].post_id]
+            );
+            imgArray.push(...getPostImg.rows);
+          }
+        }
+
+        res.status(200).json({
+          postId: getAllPostId.rows,
+          image: imgArray,
+          success: true,
+        });
+      } else {
+        res.status(200).end("Haven't posted any posts");
+      }
+    } else {
+      res.status(301).end("Please login first.");
+    }
+  } catch (error) {
+    res.status(500).end("Can't load the post.");
+  }
+});
+
+app.get("/savedPosts", async (req: Request, res: Response) => {
+  try {
+    let user_id = req.session.userId;
+    if (req.session.isLogin) {
+      let allSavedPost = await client.query(
+        `SELECT post_id FROM saved_posts WHERE user_id = $1`,
+        [user_id]
+      );
+
+      if (allSavedPost.rowCount > 0) {
+        let allSavedPostImage = [];
+        for (let index = 0; index < allSavedPost.rowCount; index++) {
+          let allImages = await client.query(
+            `SELECT image FROM posts WHERE post_id = $1`,
+            [allSavedPost.rows[index].post_id]
+          );
+          allSavedPostImage.push(...allImages.rows);
+        }
+        // console.log("allSavedPost:", allSavedPost.rows);
+        // console.log("allSavedPostImage:", allSavedPostImage);
+        res.status(200).json({
+          allSavedPost: allSavedPost.rows,
+          allSavedPostImage: allSavedPostImage,
+          success: true,
+        });
+      } else {
+        res.status(200).end("Haven't saved any posts");
+      }
+    }
+  } catch (err) {
+    res.status(500).end("Sorry! Can't load any saved posts.");
+  }
+});
+
+app.get("/postedPost", async (req: Request, res: Response) => {
+  try {
+    let user_id = req.session.userId;
+    if (req.session.isLogin) {
+      const getAllPostId = await client.query(
+        `SELECT post_id FROM posts WHERE user_id = $1`,
+        [user_id]
+      );
+      const userName = await client.query(
+        `SELECT username FROM users WHERE user_id = $1`,
+        [user_id]
+      );
+
+      if (getAllPostId.rowCount > 0) {
+        // console.log("getAllPostId: ", getAllPostId);
+        let imgArray = [];
+        if (getAllPostId.rowCount > 0) {
+          for (let index = 0; index < getAllPostId.rowCount; index++) {
+            let getPostImg = await client.query(
+              `SELECT image FROM posts WHERE post_id = $1`,
+              [getAllPostId.rows[index].post_id]
+            );
+            imgArray.push(...getPostImg.rows);
+          }
+        }
+        // else {
+        //   res.sendFile(path.join(p, "profile.html"));
+        // }
+        // console.log(imgArray);
+
+        res.status(200).json({
+          postId: getAllPostId.rows,
+          image: imgArray,
+          userName: userName.rows,
+          success: true,
+        });
+      } else {
+        res.status(200).end("Haven't posted any posts");
+      }
+    } else {
+      res.status(301).end("Please login first.");
+    }
+  } catch (error) {
+    res.status(500).end("Can't load the post.");
+  }
+});
+
+//Read Saved Recipes
+app.get("/saveRecipe", async (req: Request, res: Response) => {
+  try {
+    if (req.session.isLogin) {
+      let user_id = req.session.userId;
+      let saveRecipesId = await client.query(
+        `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+        [user_id]
+      );
+
+      if (saveRecipesId.rowCount > 0) {
+        let saveRecipeArray = [];
+        console.log("saveRecipes.rowCount:", saveRecipesId.rowCount);
+        for (let index = 0; index < saveRecipesId.rowCount; index++) {
+          // saveRecipeArray.push(saveRecipes.rows[index].recipe_id);
+          let recipeImage = await client.query(
+            `SELECT image, recipe_id FROM recipes WHERE recipe_id = $1`,
+            [saveRecipesId.rows[index].recipe_id]
+          );
+          console.log(saveRecipesId.rows[index].recipe_id);
+
+          saveRecipeArray.push(...recipeImage.rows);
+        }
+
+        res.status(200).json({
+          saveRecipeArray,
+          saveRecipesId: saveRecipesId.rows,
+          success: true,
+        });
+      } else {
+        res.sendStatus(200).end("Haven't saved any recipes");
+      }
+    } else {
+      res.status(301).end("Please login First.");
+    }
+  } catch (error) {
+    res.status(500).end(`Can't load the save recipes ${error}`);
+  }
+});
+
+app.get("/checkRepLike", async (req: Request, res: Response) => {
+  if (req.session.isLogin) {
+    let recipeData = await client.query(
+      `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+      [req.session.userId]
+    );
+    let arr = [];
+    for (let i = 0; i < recipeData.rowCount; i++) {
+      arr.push(recipeData.rows[i].recipe_id);
+    }
+    res.json({
+      success: true,
+      content: arr,
+    });
+  } else {
+    res.json({
+      message: "Please login first!",
+    });
+  }
+});
+
+app.put("/profile/change_icon", async (req: Request, res: Response) => {
+  console.log(req.body.icon);
+  try {
+    await client.query(
+      `UPDATE users SET icon = $1 WHERE user_id = $2 ;`,
+      [req.body.icon, req.session.userId]
+    );
+    res.json({
+      success: true
+    })
+  } catch (err) {
+    console.log(err);
+    res.json({
+      success: false,
+      message: "Sever error, please try again later!"
+    });
+  }
+});
+
+// app.delete("/deleteSavedRecipe", async (req:Request, res:Response)=>{
+//   await client.query(
+//     `DELETE FROM saved_recipe WHERE recipe_id=$1 AND user_id=$2;`,
+//     [req.body.id, req.session.userId]
+//   );
+// })
 
 app.use((req: Request, res: Response) => {
-  res.status(404).end("404 Error");
+  res.status(404).sendFile(path.join(p, "index.html"));
 });
 
 const PORT = 8080;

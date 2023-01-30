@@ -3,7 +3,6 @@
 //   document.querySelector(".generate-post-container").classList.remove("hidden");
 // });
 
-<<<<<<< HEAD
 const cancel = document.querySelector(".cancel");
 cancel.addEventListener("click", function () {
   document.querySelector(".generate-post-container").classList.add("hidden");
@@ -19,95 +18,115 @@ cancel2.addEventListener("click", function () {
   document.querySelector(".search-header").classList.add("hidden");
 });
 
-// const profilePostTemplate = (post) => `<div class="grid">
-//             <img src=${image}>
-//         </div>`;
+const gridParent = document.querySelector("#profile-post");
 
-// file to base64
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      let encoded = reader.result.toString().replace(/^data:(.*,)?/, "");
-      if (encoded.length % 4 > 0) {
-        encoded += "=".repeat(4 - (encoded.length % 4));
-      }
-      resolve(encoded);
-    };
-    reader.onerror = (error) => reject(error);
-  });
-}
-
-document.querySelector("#submit").addEventListener("click", async (event) => {
-  event.preventDefault();
-  let content = document.querySelector("#createPostForm");
-  let textContent = content.content.value;
-  let files = document.getElementById("uploadFile").files;
-  // if (files.length > 0) {
-  let temp1 = await getBase64(files[0]);
-  let temp = ["data:image/jpeg;base64", temp1.toString()];
-  console.log(temp1);
-  let image = temp.join().toString();
-  console.log(image);
-
-  const res = await fetch("/post", {
-    // send the data to browser
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      photo: image,
-      text: textContent,
-    }),
-  });
-
-  // response data from browser, style:(json)
-  let result = await res.json();
-  if (result.success) {
-    // Create post
-    let a = document.createElement("div");
-    a.className = "grid";
-    let img = document.createElement("img");
-    img.src = result.post.image;
-    console.log(result.post.image);
-    a.appendChild(img);
-    document.querySelector("#profile-post").appendChild(a);
-  }
-});
-// let profilePost = document.querySelector(".profile-post");
-// const newPostHTML = profilePostTemplate(result.post);
-// profilePost.innerHTML += newPostHTML;
-
-// const newPostHTML = profilePostTemplate(result.post.image);
-// document.querySelector("#profile-post").innerHTML += newPostHTML;
-
-// document
-//   .querySelector("#createPostForm")
-//   .addEventListener("submit", async function () {
-//     event.preventDefault();
-//     const form = event.target;
-//     let formData = new FormData();
-//     formData.append("content", form.content.value);
-//     formData.append("photo", form.photo.files[0]);
-
-//     const result = await res.json();
-//     if (result.success) {
-//       let profilePost = document.querySelector(".profile-post");
-//       const newPostHTML = profilePostTemplate(result.post);
-//       profilePost.innerHTML += newPostHTML;
-//     }
-//   });
-=======
-// const cancel = document.querySelector(".cancel");
-// cancel.addEventListener("click", function () {
-//   document.querySelector(".generate-post-container").classList.add("hidden");
+const createPost = document.querySelector(".addpost");
+// createPost.addEventListener("click", async function () {
+// const res = await fetch("/post");
+// const result = await res.json();
+// const b = document.createElement("a");
+// b.href = `http://localhost:8080/forum.html`;
+// createPost.appendChild(b);
 // });
 
-async function loadPost(id) {
-  const res = await fetch("/profile?id=" + id);
-  const user_post = await res.json();
+//For create new grid
+function createGrid(image, href) {
+  let grid = document.createElement("div");
+  grid.classList.add("grid");
+  let img = document.createElement("img");
+  img.classList.add("image");
+  img.src = image;
+  let a = document.createElement("a");
+  a.href = href;
+  a.appendChild(img);
+  grid.appendChild(a);
+  gridParent.appendChild(grid);
+}
 
-  if (user_post.success) {
+//It will show the user post part when the page loaded
+async function onLoad() {
+  try {
+    gridParent.innerHTML = "";
+    const res = await fetch("/postedPost");
+    const allPost = await res.json();
+    console.log("AllPOST: ", allPost);
+
+    for (let index = 0; index < allPost.postId.length; index++) {
+      let image = allPost.image[index].image;
+      let href = `http://localhost:8080/post.html?id=${allPost.postId[index].post_id}`;
+      createGrid(image, href);
+      // console.log("index", index);
+    }
+    let posts = document.querySelector(".user-posts");
+    let postAmount = allPost.postId.length + " " + "Posts";
+    let innerText = document.createTextNode(postAmount);
+    posts.appendChild(innerText);
+    let username = document.querySelector(".username");
+    let name = allPost.userName[0].username;
+    let innerName = document.createTextNode(name);
+    username.appendChild(innerName);
+  } catch (err) {
+    console.log("Error message:" + err);
   }
 }
->>>>>>> ce35b4b9ca6411d0709ababec82bf7ca1e3f4ec9
+
+//Read the posted post
+const post = document.querySelector(".post-btn");
+post.addEventListener("click", async function () {
+  try {
+    gridParent.innerHTML = "";
+    const res = await fetch("/postedPost");
+    const allPost = await res.json();
+    console.log("AllPOST: ", allPost);
+
+    for (let index = 0; index < allPost.postId.length; index++) {
+      let image = allPost.image[index].image;
+      let href = `http://localhost:8080/post.html?id=${allPost.postId[index].post_id}`;
+      createGrid(image, href);
+      // console.log("index", index);
+    }
+  } catch (err) {
+    console.log("Error message:" + err);
+  }
+});
+
+//Read the saved recipes
+const recipe = document.querySelector(".recipe-btn");
+recipe.addEventListener("click", async function () {
+  try {
+    gridParent.innerHTML = "";
+    const res = await fetch("/saveRecipe");
+    const resImages = await res.json();
+    console.log("resImg:", resImages);
+    // console.log("Front:" + resImages);
+    for (let index = 0; index < resImages.saveRecipeArray.length; index++) {
+      let image = resImages.saveRecipeArray[index].image;
+      let href = `http://localhost:8080/recipe.html?id=${resImages.saveRecipesId[index].recipe_id}`;
+      createGrid(image, href);
+    }
+  } catch (err) {
+    console.log("Error message: ", err);
+  }
+});
+
+//Read the saved posts
+const saved = document.querySelector(".saved-btn");
+saved.addEventListener("click", async function () {
+  try {
+    gridParent.innerHTML = "";
+    const res = await fetch("/savedPosts");
+    const allSavedPost = await res.json();
+    console.log(allSavedPost);
+    for (let index = 0; index < allSavedPost.allSavedPost.length; index++) {
+      let image = allSavedPost.allSavedPostImage[index].image;
+      let href = `http://localhost:8080/post.html?id=${allSavedPost.allSavedPost[index].post_id}`;
+      createGrid(image, href);
+    }
+  } catch (err) {
+    console.log("Error message: ", err);
+  }
+});
+
+window.onload = async (e) => {
+  await onLoad();
+};

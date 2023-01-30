@@ -29,22 +29,21 @@
   <body>
     <!-- header Bar -->
     <div class="header">
-      <div class="logo"><img src="./websiteLogo.png" /></div>
+      <div class="logo"><a href="http://localhost:8080/"><img src="./websiteLogo.png" /></a></div>
 
       <div class="menu-wrapper">
-        <a>RECIPES</a>
-        <a>MEMOWALL</a>
+        <a href="http://localhost:8080/search">RECIPES</a>
+        <a>COMMUNITY</a>
         <a>SHOP</a>
-        <a>SPECIAL EVENT</a>
+        <a>CONTACT US</a>
       </div>
 
       <div class="right-icon">
-        <a><i class="fa-solid fa-magnifying-glass search"></i></a>
-        <a><i class="fa-solid fa-user"></i></a>
+        <a id="profileRedirect"></a>
       </div>
     </div>
 
-    <div class="search-header hidden">
+    <!-- <div class="search-header hidden">
       <div class="search-container">
         <form>
           <input type="text" placeholder="what are you searching for?" />
@@ -52,7 +51,7 @@
         </form>
         <i class="fa-solid fa-delete-left cancel"></i>
       </div>
-    </div>
+    </div> -->
 
     <!-- main photo -->
     <div>

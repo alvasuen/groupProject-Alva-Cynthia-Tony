@@ -11,26 +11,32 @@
 </head>
 
 <body>
-    <!-- Search Bar -->
+    <!-- header Bar -->
     <div class="header">
-        <div class="header-left">
-            <div class="icon">ONE NIGHT COOK</div>
-            <div class="recipe-catalogs">
-                <a>RECIPE</a>
-            </div>
-            <div class="eshop">
-                <a>eSHOP</a>
-            </div>
-            <input class="search" type="text" placeholder="Recipe" />
+        <div class="logo"><a href="http://localhost:8080/"><img src="./websiteLogo.png" /></a></div>
+  
+        <div class="menu-wrapper">
+          <a>RECIPES</a>
+          <a>COMMUNITY</a>
+          <a>SHOP</a>
+          <a>CONTACT US</a>
         </div>
-        <div class="header-right">
-            <div class="login">
-                <form>
-                    <input type="submit" value="login" />
-                </form>
-            </div>
+  
+        <div class="right-icon">
+          <!-- <a><i class="fa-solid fa-magnifying-glass search"></i></a> -->
+          <a id="profileRedirect"><i class="fa-solid fa-user"></i></a>
         </div>
-    </div>
+      </div>
+  
+      <!-- <div class="search-header hidden">
+        <div class="search-container">
+          <form>
+            <input type="text" placeholder="what are you searching for?" />
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </form>
+          <i class="fa-solid fa-delete-left cancel"></i>
+        </div>
+      </div> -->
 
     <div class="separator"></div>
         <div class="container">
@@ -39,7 +45,7 @@
                     <p class="textTitle">New Member</p>
                     <p class="textContent">By joining us you will be able to communicate with our members, and keep
                         track of the recipes you have put a bookmark in.</p>
-                    <button class="newAcBtn">Create Account</button>
+                    <a href="http://localhost:8080/signup"><button class="newAcBtn">Create Account</button></a>
                 </div>
 
                 <div class="loginContainer">
@@ -51,10 +57,12 @@
                         <input class="pwInput" type="password" name="password" placeholder="Password" required>
                         <input class="loginBtn" type="submit" value="Login" />
                     </form>
+                    <div class="googleLogin">
                     <button>
                         <span><i class="fa-brands fa-google"></i></span>
                         <span>Sign in with Google</span>
                     </button>
+                    </div>
 
                 </div>
             </div>

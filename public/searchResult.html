@@ -31,19 +31,20 @@
 <body>
     <!-- header Bar -->
     <div class="header">
-        <div class="logo"><img src="./websiteLogo.png" /></div>
+        <div class="logo"><a href="http://localhost:8080/"><img src="./websiteLogo.png" /></a></div>
   
         <div class="menu-wrapper">
           <a>RECIPES</a>
-          <a>MEMOWALL</a>
+          <a>COMMUNITY</a>
           <a>SHOP</a>
-          <a>SPECIAL EVENT</a>
+          <a>CONTACT US</a>
         </div>
   
         <div class="right-icon">
-          <a><i class="fa-solid fa-magnifying-glass search"></i></a>
-          <a><i class="fa-solid fa-user"></i></a>
-        </div>
+          <!-- <a><i class="fa-solid fa-magnifying-glass search"></i></a> -->
+          <a id="profileRedirect">
+          </a> 
+      </div>
       </div>
   
       <!-- <div class="search-header hidden">
@@ -55,20 +56,22 @@
           <i class="fa-solid fa-delete-left cancel"></i>
         </div>
       </div> -->
-  
 
     <div class="separator"></div>
     <div class="mainContainer">
-        <div class="bannerContainer">
-            <div class="searchResultBanner"><img src="./searchResultBanner.jpg"></div>
+        <div class="bannerContainer" id="banner">
+            <div class="searchResultBanner">
+              <img src="./searchResultBanner.jpg">
+            </div>
+            <div class="searchPanel">
+              <form class="searchForm" id="searchForm">
+                  <input class="searchBar" id="searchBar" type="text" placeholder="what are you looking for?"></input>
+                  <button class="searchSubmit" type="submit" id="searchSubmit">Search</button>
+                </form>
+          </div>
         </div>
         
-        <div class="searchPanel">
-            <form class="searchForm" id="searchForm">
-                <input class="searchBar" id="searchBar" type="text" placeholder="what are you searching for?"></input>
-                <button class="searchSubmit" type="submit" id="searchSubmit">Search</button>
-              </form>
-        </div>
+        
         <div class="buttonPanel">
             <div class="tagLine1">
                 <button id="allRecipes">All Recipes</button>
@@ -89,7 +92,8 @@
             </div>
         </div>
         <div class="result" id="result">
-            <!-- <a href="#">
+          <!-- <div class="likeAndResult">
+            <a href="#">
                 <div class="resultDisplayBlock">
                     <div class="imgBlock">
                         <div class="resultImage" id="resultImage-1"><img src="./foodSearch1.jpg"></div>
@@ -100,10 +104,16 @@
                         <div class="resultBriefContent">Easy Strawberry Cake with cream cheese frosting tastes and looks
                             like a bakery cake, but is easier than from scratch! It’s full of strawberries in the cake and
                             the icing.</div>
+                          
                     </div>
                 </div>
-            </a> -->
+            </a>
+            <button class="saveBtn"><i class="fa-regular fa-bookmark"></i>Save</button>
+            </div> -->
         </div> 
+        
+          <a href="#banner" id="toTheTop" class="toTheTop hide"><div class="goToTheTop"><b>TOP</b></div></a>
+        
     </div>
 
     <script src="./searchResult.js"></script>
