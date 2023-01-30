@@ -9,14 +9,8 @@ import dotenv from "dotenv";
 // import http from "http";
 import { checkPassword, hashPassword } from "./hash";
 // import { resolveModuleName } from "typescript";
-<<<<<<< HEAD
 // import { stepsRoutes } from "./steps";
 // import { searchRoutes } from "./search";
-=======
-import { stepsRoutes } from "./steps";
-import { searchRoutes } from "./search";
-// import { Request } from "cross-fetch";
->>>>>>> 0c693ccd8230f5dbe2a067bde611dcd2d3db6549
 // import multer from "multer";
 dotenv.config();
 
@@ -292,10 +286,22 @@ app.get("/recipe", async (req: Request, res: Response) => {
       [rec_id]
     );
 
+    const rec_name = await client.query(
+      `SELECT recipe_name FROM recipes WHERE recipe_id = $1`,
+      [rec_id]
+    );
+
+    const rec_cover_page = await client.query(
+      `SELECT image FROM recipes WHERE recipe_id = $1`,
+      [rec_id]
+    );
+
     res.json({
       steps_number: steps_number.rows,
       step_description: step_description.rows,
       image: image.rows,
+      rec_name: rec_name.rows,
+      rec_cover_page: rec_cover_page.rows,
       success: true,
     });
   } catch (err) {
@@ -938,18 +944,18 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
 app.put("/profile/change_icon", async (req: Request, res: Response) => {
   console.log(req.body.icon);
   try {
-    await client.query(
-      `UPDATE users SET icon = $1 WHERE user_id = $2 ;`,
-      [req.body.icon, req.session.userId]
-    );
+    await client.query(`UPDATE users SET icon = $1 WHERE user_id = $2 ;`, [
+      req.body.icon,
+      req.session.userId,
+    ]);
     res.json({
-      success: true
-    })
+      success: true,
+    });
   } catch (err) {
     console.log(err);
     res.json({
       success: false,
-      message: "Sever error, please try again later!"
+      message: "Sever error, please try again later!",
     });
   }
 });

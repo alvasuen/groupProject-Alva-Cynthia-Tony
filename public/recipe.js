@@ -33,53 +33,87 @@ async function loadInit(id) {
   const res = await fetch("/recipe?id=" + id);
   // console.log("res: " + res);
   const steps = await res.json();
-
+  console.log(steps);
   if (steps.success) {
-    console.log("steps: " + steps);
-    totalPage = steps.steps_number.length;
-    console.log("pages: " + totalPage);
+    // console.log("steps: " + steps);
+    totalPage = steps.steps_number.length + 2;
+    // console.log("pages: " + totalPage);
+
+    //Change the recipe name
+    let recNameParent = document.querySelector(".recipe-step-title");
+    console.log(steps.rec_name[0].recipe_name);
+    recNameParent.innerHTML = "";
+    let recName = document.createTextNode(steps.rec_name[0].recipe_name);
+    recNameParent.appendChild(recName);
+
+    //Change the recipe cover image
+    // let recCoverImg = document.querySelector(".step-cover-page");
+    // recCoverImg.src = `${steps.rec_cover_page[0].image}`;
 
     for (let index = 0; index < totalPage; index++) {
       //Create new elements for STEPs
       // let mySteps = document.querySelector("#book");
-      let refNode = document.querySelector(".last-cover");
-      let bookPage = document.createElement("div");
-      bookPage.classList.add("book-page");
-      bookPage.classList.add("one-page");
-      let pageBackground = document.createElement("div");
-      pageBackground.classList.add("page-background");
-      let innerPBImg = document.createElement("div");
-      innerPBImg.classList.add("img-box");
-      let img = document.createElement("img");
-      img.classList.add("step-1");
-      let innerPBText = document.createElement("div");
-      innerPBText.classList.add("text-box");
-      console.log("INDEX: " + index);
-      let textContent = steps.step_description[index].step_description;
-      let innerPBTContent = document.createTextNode(
-        steps.step_description[index].step_description
-      );
-      // let newC = textContent.split(",");
-      // console.log(newC);
-      //將img element put 入 innerPBImg 這個div
-      innerPBImg.appendChild(img);
-      //將 p element put 入 innerPBText 這個div
-      innerPBText.appendChild(innerPBTContent);
-      //將innerPBImg 及 innerPBText 的div，put入pageBackground 的div
-      pageBackground.appendChild(innerPBImg);
-      pageBackground.appendChild(innerPBText);
-      //將pageBackground 的div put 入 bookPage
-      bookPage.appendChild(pageBackground);
-      //將新的node 插入 refNode 前面
-      book.insertBefore(bookPage, refNode);
-      console.log("TIMES:" + index);
-      if (steps.image.length > 0) {
-        //Add the path of image into the img element
-        img.src = `${steps.image[index].image}`;
+      if (index <= totalPage - 3) {
+        //Change the recipe steps
+        let refNode = document.querySelector(".last-cover");
+        let bookPage = document.createElement("div");
+        bookPage.classList.add("book-page");
+        bookPage.classList.add("one-page");
+        let pageBackground = document.createElement("div");
+        pageBackground.classList.add("page-background");
+        let innerPBImg = document.createElement("div");
+        innerPBImg.classList.add("img-box");
+        let img = document.createElement("img");
+        img.classList.add("step-1");
+        let innerPBText = document.createElement("div");
+        innerPBText.classList.add("text-box");
+        console.log("INDEX: " + index);
+
+        let textContent = steps.step_description[index].step_description;
+        let innerPBTContent = document.createTextNode(textContent);
+        // let newC = textContent.split(",");
+        // console.log(newC);
+        //將img element put 入 innerPBImg 這個div
+        innerPBImg.appendChild(img);
+        //將 p element put 入 innerPBText 這個div
+        innerPBText.appendChild(innerPBTContent);
+        //將innerPBImg 及 innerPBText 的div，put入pageBackground 的div
+        pageBackground.appendChild(innerPBImg);
+        pageBackground.appendChild(innerPBText);
+        //將pageBackground 的div put 入 bookPage
+        bookPage.appendChild(pageBackground);
+        //將新的node 插入 refNode 前面
+        book.insertBefore(bookPage, refNode);
+        console.log("TIMES:" + index);
+        if (steps.image.length > 0) {
+          //Add the path of image into the img element
+          img.src = `${steps.image[index].image}`;
+        } else {
+          img.src = "/upload/recipe-cover.avif";
+        }
       } else {
-        img.src = "/upload/recipe-cover.avif";
+        let refNode = document.querySelector(".last-cover");
+        let bookPage = document.createElement("div");
+        bookPage.classList.add("book-page");
+        bookPage.classList.add("one-page");
+        let pageBackground = document.createElement("div");
+        pageBackground.classList.add("page-background");
+        let innerPBImg = document.createElement("div");
+        innerPBImg.classList.add("img-box");
+        let img = document.createElement("img");
+        img.classList.add("step-1");
+        let innerPBText = document.createElement("div");
+        innerPBText.classList.add("text-box");
+        innerPBImg.appendChild(img);
+        //將 p element put 入 innerPBText 這個div
+        //將innerPBImg 及 innerPBText 的div，put入pageBackground 的div
+        pageBackground.appendChild(innerPBImg);
+        pageBackground.appendChild(innerPBText);
+        //將pageBackground 的div put 入 bookPage
+        bookPage.appendChild(pageBackground);
+        //將新的node 插入 refNode 前面
+        book.insertBefore(bookPage, refNode);
       }
-      // pages[index].style.backgroundImage = "url('" + [index + 1] + ".jpg')";
     }
 
     let pageNo = 0;
@@ -99,10 +133,6 @@ async function loadInit(id) {
     console.log("P:" + pages.length);
     //這一步是讓後一頁，覆蓋前一頁
     for (let index = 0; index < pages.length; index++) {
-      // pages[index].style.zIndex = totalPage - index - 1;
-      // let url = `"${steps.image[index].image}"`;
-      // pages[index].style.backgroundImage = url;
-      // pages[index].style.src = `${steps.image[index].image}`;
       pages[index].style.zIndex = totalPage - index - 1;
     }
 
