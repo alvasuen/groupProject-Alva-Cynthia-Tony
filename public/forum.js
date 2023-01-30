@@ -9,7 +9,6 @@ cancel.addEventListener("click", function () {
 });
 
 let i = 1;
-// let tempArr = [];
 const createTag = document.querySelector(".tag-submit");
 const tags = createTag.addEventListener("click", function (event) {
   event.preventDefault();
@@ -22,63 +21,213 @@ const tags = createTag.addEventListener("click", function (event) {
   i++;
 });
 
-// file to base64
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      let encoded = reader.result.toString().replace(/^data:(.*,)?/, "");
-      if (encoded.length % 4 > 0) {
-        encoded += "=".repeat(4 - (encoded.length % 4));
+async function likePost() {
+  let like = document.querySelectorAll(".fa-heart");
+  for (let i = 0; i < like.length; i++) {
+    like[i].addEventListener("click", async (e) => {
+      e.preventDefault();
+      let id = like[i].classList[2].slice(6);
+      console.log(like[i].classList[2].slice(6));
+      let liked = like[i].classList.value;
+      let result = liked.includes("liked");
+      console.log(result);
+      const res = await fetch("/post/likePost/:id", {
+        // send the data to browser
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id,
+          liked: result,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        if (like[i].classList.contains("liked")) {
+          like[i].classList.remove("liked");
+        } else {
+          like[i].classList.add("liked");
+        }
+        let likedCount = document.querySelector("span");
+        // likedCount.className = "likedCount";
+        // likedCount.textContent = json.likedCount[0].liked_count;
+        likedCount.innerHTML = "";
+        let innerText = document.createTextNode(json.likedCount[0].liked_count);
+        likedCount.appendChild(innerText);
+        console.log(json.likedCount[0].liked_count);
       }
-      resolve(encoded);
-    };
-    reader.onerror = (error) => reject(error);
-  });
+    });
+  }
 }
 
-const postTemplate = (post) => {
-  `<div class="p2-container">
-          <div class="p2-img-container">
-            <img src="${post.image}" />
-          </div>
+async function savePost() {
+  let bookmark = document.querySelectorAll(".fa-bookmark");
+  for (let i = 0; i < bookmark.length; i++) {
+    bookmark[i].addEventListener("click", async (e) => {
+      e.preventDefault();
+      let id = bookmark[i].classList[2].slice(9);
+      let bookmarked = bookmark[i].classList.value;
+      let result = bookmarked.includes("saved");
+      console.log(result);
+      const res = await fetch("/post/savePost/:id", {
+        // send the data to browser
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id,
+          saved: result,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        if (bookmark[i].classList.contains("saved")) {
+          bookmark[i].classList.remove("saved");
+        } else {
+          bookmark[i].classList.add("saved");
+        }
+      }
+    });
+  }
+}
 
-          <div class="p2-right-container">
-            <div class="p2-right">
-              <div class="p2-username-date">
-                <div class="p2-username-icon">
-                  <img class="p2-icon" src="${post.icon.rows[0].icon}" />
-                  <div class="p2-username">${post.username.rows[0].username}</div>
-                </div>
-                <div class="gap"></div>
-                <div class="p2-date">${post.createdDate.rows[0].created_at}</div>
-              </div>
+window.onload = async () => {
+  await loadPosts();
 
-              <div class="p2-function">
-                <i class="fa-regular fa-heart"></i>
-                <i class="fa-regular fa-bookmark"></i>
-              </div>
+  likePost();
 
-              <div class="p2-tag-container">
-                <button class="p2-tag">#cake</button>
-                <button class="p2-tag">#strawberry</button>
-                <button class="p2-tag">#easy</button>
-                <button class="p2-tag">#top10</button>
-              </div>
-
-              <div class="p2-content">
-                <div>
-                  ${post.content}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row"></div>`;
+  savePost();
 };
 
+async function loadPosts() {
+  const res = await fetch("/posts");
+  const json = await res.json();
+  if (json.success) {
+    console.log(json);
+    let forum = document.querySelector(".main");
+    forum.innerHTML = "";
+
+    for (let i = json.post.posts.length - 1; i >= 0; i--) {
+      // forum += createPost(json.post[i]);
+      let p2Container = document.createElement("div");
+      p2Container.className = "p2-container";
+      let p2ImgContainer = document.createElement("div");
+      p2ImgContainer.className = "p2-img-container";
+      let img = document.createElement("img");
+      img.src = json.post.posts[i].image;
+
+      let p2RightContainer = document.createElement("div");
+      p2RightContainer.className = "p2-right-container";
+      let p2Right = document.createElement("div");
+      p2Right.className = "p2-right";
+      let p2UsernameDate = document.createElement("div");
+      p2UsernameDate.className = "p2-username-date";
+      let p2UsernameIcon = document.createElement("div");
+      p2UsernameIcon.className = "p2-username-icon";
+      let p2Icon = document.createElement("img");
+      p2Icon.className = "p2-icon";
+      p2Icon.src = json.post.posts[i].icon;
+
+      let p2Username = document.createElement("div");
+      p2Username.className = "p2-username";
+      p2Username.innerHTML = json.post.posts[i].username;
+
+      let gap = document.createElement("div");
+      gap.className = "gap";
+      let p2Date = document.createElement("div");
+      p2Date.className = "p2-date";
+      p2Date.innerHTML = json.post.posts[i].created_at.slice(0, 10);
+
+      let p2Function = document.createElement("div");
+      p2Function.className = "p2-function";
+
+      let likeContainer = document.createElement("div");
+      likeContainer.className = "like-container";
+
+      let faHeart = document.createElement("i");
+      faHeart.className = `fa-solid fa-heart heart-${json.post.posts[i].post_id}`;
+      console.log(json);
+      for (let j = 0; j < json.checkLiked.checkLiked.length; j++) {
+        if (
+          json.post.posts[i].post_id == json.checkLiked.checkLiked[j].post_id &&
+          json.checkLiked.checkLiked[j].liked == true &&
+          json.isLogin == true
+        ) {
+          faHeart.className = `fa-solid fa-heart heart-${json.post.posts[i].post_id} liked`;
+        } else {
+          faHeart.className = `fa-solid fa-heart heart-${json.post.posts[i].post_id}`;
+        }
+      }
+
+      let likedCount = document.createElement("span");
+      likedCount.className = "likedCount";
+      likedCount.textContent = json.post.posts[i].liked_count;
+      // likedCount.style.fontFamily = "Courier New, Courier, monospace";
+
+      let faBookMark = document.createElement("i");
+      faBookMark.className = `fa-solid fa-bookmark bookmark-${json.post.posts[i].post_id}`;
+      for (let j = 0; j < json.checkSaved.checkSaved.length; j++) {
+        if (
+          json.post.posts[i].post_id == json.checkSaved.checkSaved[j].post_id &&
+          json.checkSaved.checkSaved[j].saved == true &&
+          json.isLogin == true
+        ) {
+          faBookMark.className = `fa-solid fa-bookmark bookmark-${json.post.posts[i].post_id} saved`;
+        } else {
+          faBookMark.className = `fa-solid fa-bookmark bookmark-${json.post.posts[i].post_id}`;
+        }
+      }
+
+      let p2TagContainer = document.createElement("div");
+      p2TagContainer.className = "p2-tag-container";
+
+      // generate tags
+      let dbTag = Object.values(json.tags.tags);
+      for (let j = 0; j < dbTag.length; j++) {
+        if (json.post.posts[i].post_id == json.tags.tags[j].post_id) {
+          let obj = json.tags.tags[j].tag_content;
+          let p2Tag = document.createElement("button");
+          p2Tag.className = "p2-tag";
+          p2Tag.innerHTML = obj;
+          p2TagContainer.appendChild(p2Tag);
+        }
+      }
+
+      let p2Content = document.createElement("div");
+      p2Content.className = "p2-content";
+      let p2ContentContent = document.createElement("div");
+      p2ContentContent.className = "p2-content-content";
+      p2ContentContent.innerHTML = json.post.posts[i].content;
+
+      let row = document.createElement("div");
+      row.className = "row";
+
+      forum.appendChild(p2Container);
+      p2Container.appendChild(p2ImgContainer);
+      p2ImgContainer.appendChild(img);
+
+      p2Container.appendChild(p2RightContainer);
+      p2RightContainer.appendChild(p2Right);
+      p2Right.appendChild(p2UsernameDate);
+      p2UsernameDate.appendChild(p2UsernameIcon);
+      p2UsernameIcon.appendChild(p2Icon);
+      p2UsernameIcon.appendChild(p2Username);
+      p2UsernameDate.appendChild(gap);
+      p2UsernameDate.appendChild(p2Date);
+      p2Right.appendChild(p2Function);
+
+      p2Function.appendChild(likeContainer);
+      likeContainer.appendChild(faHeart);
+      likeContainer.appendChild(likedCount);
+      p2Function.appendChild(faBookMark);
+      p2Right.appendChild(p2TagContainer);
+      // p2TagContainer.appendChild(p2Tag); forum.js:92
+      p2Right.appendChild(p2Content);
+      p2Content.appendChild(p2ContentContent);
+      forum.appendChild(row);
+    }
+  }
+}
+
+// create post
 document.querySelector("#submit").addEventListener("click", async (event) => {
   event.preventDefault();
   let content = document.querySelector("#createPostForm");
@@ -88,16 +237,14 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
   // if (files.length > 0) {
   let temp1 = await getBase64(files[0]);
   let temp = ["data:image/jpeg;base64", temp1.toString()];
-  console.log(temp1);
   let image = temp.join().toString();
-  console.log(image);
 
   let obj = {};
   let tags = document.querySelectorAll(".tag-name");
   for (let tag of tags) {
     obj = Object.assign(obj, { [`${tag.id}`]: tag.textContent });
   }
-  console.log(obj);
+  // console.log(obj);
 
   const res = await fetch("/post", {
     // send the data to browser
@@ -113,12 +260,12 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
   //   response data from browser, style:(json)
   const result = await res.json();
   if (result.success) {
-    //create post
     let p2Container = document.createElement("div");
     p2Container.className = "p2-container";
     let p2ImgContainer = document.createElement("div");
     p2ImgContainer.className = "p2-img-container";
     let img = document.createElement("img");
+    console.log();
     img.src = result.post.image;
 
     let p2RightContainer = document.createElement("div");
@@ -136,6 +283,8 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     let p2Username = document.createElement("div");
     p2Username.className = "p2-username";
     p2Username.innerHTML = result.post.username.rows[0].username;
+    console.log(result);
+    console.log(result.post);
 
     let gap = document.createElement("div");
     gap.className = "gap";
@@ -146,30 +295,33 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     let p2Function = document.createElement("div");
     p2Function.className = "p2-function";
 
+    let likeContainer = document.createElement("div");
+    likeContainer.className = "like-container";
 
     let faHeart = document.createElement("i");
-    faHeart.className = "fa-regular fa-heart";
+    faHeart.className = `fa-solid fa-heart heart-${result.post.postId}`;
 
+    let likedCount = document.createElement("span");
+    likedCount.className = "likedCount";
+    likedCount.textContent = result.post.likedCount.rows[0].liked_count;
+    // likedCount.style.fontFamily = "Courier New, Courier, monospace";
 
     let faBookMark = document.createElement("i");
-    faBookMark.className = "fa-regular fa-bookmark";
+    faBookMark.className = `fa-solid fa-bookmark bookmark-${result.post.postId}`;
+    // faBookMark.textContent = result.post.username.rows[0].saved_count;
 
     let p2TagContainer = document.createElement("div");
     p2TagContainer.className = "p2-tag-container";
 
     let obj = Object.values(result.post.tags);
-    console.log(obj);
+
     for (let i = 0; i < obj.length; i++) {
       let p2Tag = document.createElement("button");
       p2Tag.className = "p2-tag";
       p2Tag.innerHTML = obj[i];
       p2TagContainer.appendChild(p2Tag);
-      console.log(obj[i]);
-      //   console.log(p2Tag.innerHTML + "123");
+      // console.log(obj[i]);
     }
-    // let p2Tag = document.createElement("button");
-    // p2Tag.className = "p2-tag";
-    // p2Tag.innerHTML = "cake";
 
     let p2Content = document.createElement("div");
     p2Content.className = "p2-content";
@@ -193,28 +345,32 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     p2UsernameDate.appendChild(gap);
     p2UsernameDate.appendChild(p2Date);
     p2Right.appendChild(p2Function);
-    p2Function.appendChild(faHeart);
+    p2Function.appendChild(likeContainer);
+    likeContainer.appendChild(faHeart);
+    likeContainer.appendChild(likedCount);
     p2Function.appendChild(faBookMark);
     p2Right.appendChild(p2TagContainer);
     // p2TagContainer.appendChild(p2Tag);
     p2Right.appendChild(p2Content);
     p2Content.appendChild(p2ContentContent);
     document.querySelector(".main").appendChild(row);
+
+    window.onload();
   }
 });
 
-// let forum = document.querySelector(".main");
-// const newPostHTML = postTemplate(result.post);
-// forum.innerHTML += newPostHTML;
-
-//   let result = await res.json();
-//   if (result.success) {
-//     // Create post
-//     let a = document.createElement("div");
-//     a.className = "grid";
-//     let img = document.createElement("img");
-//     img.src = result.post.image;
-//     console.log(result.post.image);
-//     a.appendChild(img);
-//     document.querySelector("#profile-post").appendChild(a);
-//   }
+// file to base64
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      let encoded = reader.result.toString().replace(/^data:(.*,)?/, "");
+      if (encoded.length % 4 > 0) {
+        encoded += "=".repeat(4 - (encoded.length % 4));
+      }
+      resolve(encoded);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+}

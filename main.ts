@@ -9,8 +9,8 @@ import dotenv from "dotenv";
 // import http from "http";
 import { checkPassword, hashPassword } from "./hash";
 // import { resolveModuleName } from "typescript";
-import { stepsRoutes } from "./steps";
-import { searchRoutes } from "./search";
+// import { stepsRoutes } from "./steps";
+// import { searchRoutes } from "./search";
 // import multer from "multer";
 dotenv.config();
 
@@ -247,7 +247,7 @@ app.post("/signup", async (req: Request, res: Response) => {
 // create memo, photo store in the ./uploads, and req.json take the file
 app.post("/post", async (req: Request, res: Response) => {
   try {
-    console.log(req.session);
+    // console.log(req.session);
 
     const content = req.body.text;
     const image = req.body.photo;
@@ -259,15 +259,20 @@ app.post("/post", async (req: Request, res: Response) => {
         ($1, $2, $3) returning post_id`,
       [content, image, id]
     );
-    console.log(postId.rows[0].post_id, "265");
+    // console.log(postId.rows[0].post_id, "265");
 
     for (const property in tags) {
-      await client.query(
+      let tagId = await client.query(
         `insert into tag (tag_content) values
-        ($1)`,
+        ($1) returning tag_id`,
         [tags[property]]
       );
-      console.log(tags[property]);
+      // console.log(tagId.rows[0].tag_id);
+
+      await client.query(
+        `insert into tag_relate (tag_id, post_id) values ($1, $2)`,
+        [tagId.rows[0].tag_id, postId.rows[0].post_id]
+      );
     }
 
     const username = await client.query(
@@ -278,26 +283,163 @@ app.post("/post", async (req: Request, res: Response) => {
       `select icon from users where user_id = $1`,
       [id]
     );
-    console.log("test", icon);
+    // console.log("test", icon);
     const createdDate = await client.query(
       `select created_at from posts where post_id = $1`,
+      [postId.rows[0].post_id]
+    );
+    const likedCount = await client.query(
+      `select liked_count from posts where post_id = $1`,
       [postId.rows[0].post_id]
     );
 
     res.json({
       success: true,
       post: {
+        postId: postId.rows[0].post_id,
         content: content,
         image: image,
         username: username,
         tags: tags,
         icon: icon,
         createdDate: createdDate,
+        likedCount: likedCount,
       },
     });
   } catch (ex) {
     console.log(ex);
     res.json({ success: false });
+  }
+});
+
+// load all posts from the json
+app.get("/posts", async (req: Request, res: Response) => {
+  const posts = await client.query(
+    `select * from posts inner join users on posts.user_id = users.user_id`
+  );
+  const tags = await client.query(
+    `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
+  );
+  const checkLiked = await client.query(
+    `select * from liked_posts where user_id = $1`,
+    [req.session.userId]
+  );
+  const checkSaved = await client.query(
+    `select * from saved_posts where user_id = $1`,
+    [req.session.userId]
+  );
+
+  res.json({
+    success: true,
+    post: {
+      posts: posts.rows,
+    },
+    tags: {
+      tags: tags.rows,
+    },
+    checkLiked: {
+      checkLiked: checkLiked.rows,
+    },
+    checkSaved: {
+      checkSaved: checkSaved.rows,
+    },
+    isLogin: req.session.isLogin,
+  });
+});
+
+// update liked count
+app.put("/post/likePost/:id", async (req: Request, res: Response) => {
+  console.log(req.body.id);
+  console.log(req.body.liked);
+  try {
+    const userId = req.session.userId;
+    if (!req.body.liked) {
+      const checkLiked = await client.query(
+        `select * from liked_posts where user_id =$1 and post_id=$2`,
+        [userId, req.body.id]
+      );
+
+      if (checkLiked.rowCount == 0) {
+        const liked = await client.query(
+          `update posts set liked_count=liked_count+1 where post_id = $1`,
+          [req.body.id]
+        );
+        const updateLikePost = await client.query(
+          `insert into liked_posts (user_id, post_id, liked) values ($1,$2, true)`,
+          [userId, req.body.id]
+        );
+      } else {
+        const liked = await client.query(
+          `update posts set liked_count=liked_count+1 where post_id = $1`,
+          [req.body.id]
+        );
+        const updateLiked = await client.query(
+          `update liked_posts set liked = true where post_id = $1 and user_id = $2`,
+          [req.body.id, userId]
+        );
+      }
+    } else {
+      const unliked = await client.query(
+        `update posts set liked_count=liked_count-1 where post_id = $1`,
+        [req.body.id]
+      );
+      const updateLiked = await client.query(
+        `update liked_posts set liked = false where post_id = $1 and user_id =$2`,
+        [req.body.id, userId]
+      );
+    }
+    const likedCount = await client.query(
+      `select liked_count from posts where post_id =$1`,
+      [req.body.id]
+    );
+    res.status(200).json({ success: true, likedCount: likedCount.rows });
+  } catch (err) {
+    res.status(500).end("Error Message:" + err);
+  }
+});
+
+app.put("/post/savePost/:id", async (req: Request, res: Response) => {
+  try {
+    const userId = req.session.userId;
+    if (!req.body.saved) {
+      const checkSaved = await client.query(
+        `select * from saved_posts where user_id =$1 and post_id=$2`,
+        [userId, req.body.id]
+      );
+
+      if (checkSaved.rowCount == 0) {
+        const saved = await client.query(
+          `update posts set saved_count=saved_count+1 where post_id = $1`,
+          [req.body.id]
+        );
+        const updateSavePost = await client.query(
+          `insert into saved_posts (user_id, post_id, saved) values ($1,$2, true)`,
+          [userId, req.body.id]
+        );
+      } else {
+        const saved = await client.query(
+          `update posts set saved_count=saved_count+1 where post_id = $1`,
+          [req.body.id]
+        );
+        const updateSaved = await client.query(
+          `update saved_posts set saved = true where post_id = $1 and user_id = $2`,
+          [req.body.id, userId]
+        );
+      }
+    } else {
+      const unsaved = await client.query(
+        `update posts set saved_count=saved_count-1 where post_id = $1`,
+        [req.body.id]
+      );
+      const updateSaved = await client.query(
+        `update saved_posts set saved = false where post_id = $1 and user_id =$2`,
+        [req.body.id, userId]
+      );
+    }
+
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res.status(500).end("Error Message:" + err);
   }
 });
 
