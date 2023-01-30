@@ -47,7 +47,7 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
   let image = temp.join().toString();
   console.log(image);
 
-  const res = await fetch("/profile/change_icon", {
+  const res = await fetch("/change_icon", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

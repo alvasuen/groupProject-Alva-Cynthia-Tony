@@ -941,7 +941,7 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
   }
 });
 
-app.put("/profile/change_icon", async (req: Request, res: Response) => {
+app.put("/change_icon", async (req: Request, res: Response) => {
   console.log(req.body.icon);
   try {
     await client.query(`UPDATE users SET icon = $1 WHERE user_id = $2 ;`, [
