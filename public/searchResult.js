@@ -32,7 +32,6 @@ allRecipesBtn.addEventListener("click", async () => {
       let savedRecipes = saveResult_json.content;
       console.log({savedRecipes})
 
-      //load memo
       for (let i = 0; i < json.content.recipes.rowCount; i++) {
         let likeAndResult = document.createElement("div");
         likeAndResult.className="likeAndResult";
@@ -91,9 +90,9 @@ allRecipesBtn.addEventListener("click", async () => {
         saveBtns.forEach((btn)=>{
           btn.addEventListener('click',async (event)=>{
           event.preventDefault();
-          // if (btn.style.color = black){
-          btn.style.color="red";
           let id = btn.id
+          if (btn.style.color == "black"){
+          btn.style.color="red";
           // console.log({id})
           let result = await fetch ("/saveRecipe",{
             method: "POST",
@@ -105,14 +104,14 @@ allRecipesBtn.addEventListener("click", async () => {
           if(!json.success){
             alert(json.message)
           }
-        // }else if (btn.style.color = red){
-        //   btn.style.color="red";
-        //   let result2 = await fetch ("/deleteSavedRecipe",{
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({id}),
-        //   })
-        // }
+        }else if (btn.style.color == "red"){
+          btn.style.color="black";
+          let result2 = await fetch ("/deleteSavedRecipe",{
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({id:btn.id}),
+          })
+        }
         })
       })
       document.getElementById("result").scrollIntoView();
@@ -183,6 +182,7 @@ buttons.forEach((button) => {
         saveBtn.className="saveBtn"
         saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>Save`;
         saveBtn.id = json.content[i].recipe_id;
+        saveBtn.style.color = "black"
 
         document.getElementById("result").appendChild(likeAndResult);
         likeAndResult.appendChild(a)
@@ -207,20 +207,31 @@ buttons.forEach((button) => {
       let saveBtns = document.querySelectorAll(".saveBtn");
       saveBtns.forEach((btn)=>{
         btn.addEventListener('click',async (event)=>{
-        event.preventDefault();
-        btn.style.color="red";
-        let id = btn.id
-        console.log({id})
-        let result = await fetch ("/saveRecipe",{
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({id}),
-        })
-        let json = await result.json();
-        // console.log(json);
-        if(!json.success){
-          alert(json.message)
-        }
+          btn.addEventListener('click',async (event)=>{
+            event.preventDefault();
+            let id = btn.id
+            if (btn.style.color == "black"){
+            btn.style.color="red";
+            // console.log({id})
+            let result = await fetch ("/saveRecipe",{
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({id}),
+            })
+            let json = await result.json();
+            // console.log(json);
+            if(!json.success){
+              alert(json.message)
+            }
+          }else if (btn.style.color == "red"){
+            btn.style.color="black";
+            let result2 = await fetch ("/deleteSavedRecipe",{
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({id}),
+            })
+          }
+          })
       })
     })
       document.getElementById("result").scrollIntoView();
@@ -283,6 +294,7 @@ buttons3.forEach((button) => {
         saveBtn.className="saveBtn"
         saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>Save`;
         saveBtn.id = json.content[i].recipe_id;
+        saveBtn.style.color = "black"
 
         document.getElementById("result").appendChild(likeAndResult);
         likeAndResult.appendChild(a)
@@ -308,9 +320,10 @@ buttons3.forEach((button) => {
         saveBtns.forEach((btn)=>{
           btn.addEventListener('click',async (event)=>{
           event.preventDefault();
-          btn.style.color="red";
           let id = btn.id
-          console.log({id})
+          if (btn.style.color == "black"){
+          btn.style.color="red";
+          //console.log({id})
           let result = await fetch ("/saveRecipe",{
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -321,6 +334,14 @@ buttons3.forEach((button) => {
           if(!json.success){
             alert(json.message)
           }
+        }else if (btn.style.color == "red"){
+          btn.style.color="black";
+          let result2 = await fetch ("/deleteSavedRecipe",{
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({id}),
+          })
+        }
         })
       })
       document.getElementById("result").scrollIntoView();
@@ -388,6 +409,7 @@ searchBtn.addEventListener("click", async (event) => {
       saveBtn.className="saveBtn"
       saveBtn.innerHTML = `<i class="fa-regular fa-bookmark"></i>Save`;
       saveBtn.id = json.content[i].recipe_id;
+      saveBtn.style.color = "black"
 
       document.getElementById("result").appendChild(likeAndResult);
       likeAndResult.appendChild(a)
@@ -414,8 +436,9 @@ searchBtn.addEventListener("click", async (event) => {
         saveBtns.forEach((btn)=>{
           btn.addEventListener('click',async (event)=>{
           event.preventDefault();
-          btn.style.color="red";
           let id = btn.id
+          if (btn.style.color == "black"){
+          btn.style.color="red";
           console.log({id})
           let result = await fetch ("/saveRecipe",{
             method: "POST",
@@ -427,6 +450,14 @@ searchBtn.addEventListener("click", async (event) => {
           if(!json.success){
             alert(json.message)
           }
+        }else if (btn.style.color == "red"){
+          btn.style.color="black";
+          let result2 = await fetch ("/deleteSavedRecipe",{
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({id}),
+          })
+        }
         })
       })
 
