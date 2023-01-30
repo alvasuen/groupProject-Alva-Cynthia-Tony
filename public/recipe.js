@@ -12,6 +12,19 @@
 // //Cover page
 // let cover = document.querySelectorAll(".book-cover");
 
+//header - profile button
+let profileBtn = document.querySelector("#profileRedirect");
+profileBtn.addEventListener("click", async () => {
+  let res = await fetch("/currentUser");
+  let json = await res.json();
+  // console.log(json);
+  if (json.isLogin) {
+    location.href = "./profile.html";
+  } else {
+    location.href = "./login.html";
+  }
+});
+
 // // Button
 // // let btn = document.querySelectorAll("#control button");
 let book = document.querySelector("#book");
@@ -206,6 +219,14 @@ async function loadInit(id) {
 }
 
 window.onload = async function () {
+  let res = await fetch("/currentUser");
+  let json = await res.json();
+  if (json.isLogin) {
+    profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
+    // profileBtn.href="./profile.html";
+  } else {
+    profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
+  }
   let params = new URL(document.location).searchParams;
   let id = params.get("id");
   await loadInit(id);
