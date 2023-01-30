@@ -103,6 +103,7 @@ declare module "express-session" {
   interface SessionData {
     userId?: number;
     username?: string;
+    icon?: string;
     // count?: number;
     isLogin?: boolean;
   }
@@ -155,6 +156,7 @@ app.post("/login", async (req: Request, res: Response) => {
           //for session
           req.session.userId = loginResult.rows[0].user_id;
           req.session.username = loginResult.rows[0].username;
+          req.session.icon = loginResult.rows[0].icon;
           req.session.isLogin = true;
           // console.log(req.session,'136')
           //for response
@@ -782,6 +784,25 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
   } else {
     res.json({
       message: "Please login first!",
+    });
+  }
+});
+
+app.put("/profile/change_icon", async (req: Request, res: Response) => {
+  console.log(req.body.icon);
+  try {
+    await client.query(
+      `UPDATE users SET icon = $1 WHERE user_id = $2 ;`,
+      [req.body.icon, req.session.userId]
+    );
+    res.json({
+      success: true
+    })
+  } catch (err) {
+    console.log(err);
+    res.json({
+      success: false,
+      message: "Sever error, please try again later!"
     });
   }
 });
