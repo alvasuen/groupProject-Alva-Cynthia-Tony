@@ -1028,7 +1028,7 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
 app.get("/popularRecipe", async (req:Request, res:Response)=>{
   try{
     let data = await client.query(
-      `SELECT recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`);
+      `SELECT recipe_id, recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`);
     res.json({
       success: true,
       content: data,
