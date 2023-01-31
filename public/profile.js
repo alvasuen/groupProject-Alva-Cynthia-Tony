@@ -76,9 +76,9 @@ async function onLoad() {
     let innerText = document.createTextNode(postAmount);
     posts.appendChild(innerText);
     let username = document.querySelector(".username");
-    // let name = allPost.userName;
-    let name = userName;
-    console.log("User:", name);
+    let name = allPost.userName;
+    // let name = userName;
+    // console.log("User:", name);
     let innerName = document.createTextNode(name);
     username.appendChild(innerName);
   } catch (err) {

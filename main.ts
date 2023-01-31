@@ -186,7 +186,6 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-
 // //Google Login
 // const grantExpress = grant.express({
 //   defaults: {
@@ -234,9 +233,7 @@ app.post("/login", async (req: Request, res: Response) => {
 //   return res.redirect('/')
 // }
 
-
 // app.use(grantExpress as express.RequestHandler);
-
 
 app.get("/currentUser", (req, res) => {
   // console.log(req.session);
@@ -507,16 +504,15 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
       );
     }
     const likedCount = await client.query(
-      `select liked_count from posts where post_id = $1`,[req.body.id]
+      `select liked_count from posts where post_id = $1`,
+      [req.body.id]
     );
     // const liked = await client.query(
     //   `select * from liked_posts where post_id = $1`,[req.body.id]
     // );
-    res
-      .status(200)
-      .json({ success: true, likedCount: likedCount.rows });
+    res.status(200).json({ success: true, likedCount: likedCount.rows });
   } catch (err) {
-    res.status(500).end("Error Message:" + err);
+    res.status(500).json({ err: "Error Message:" + err });
   }
 });
 
@@ -561,7 +557,7 @@ app.put("/post/savePost/:id", async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true });
   } catch (err) {
-    res.status(500).end("Error Message:" + err);
+    res.status(500).json({ err: "Error Message:" });
   }
 });
 
@@ -689,7 +685,6 @@ app.post("/search", async (req: Request, res: Response) => {
       `SELECT ingredient_id FROM ingredient WHERE ingredient ~* $1`,
       [searchContent]
     );
-    
 
     //Extract the ingredient id
     let ingredientId = [];
@@ -838,13 +833,13 @@ app.get("/profile/:id", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.status(200).end("Haven't posted any posts");
+        res.status(200).json({ err: "Haven't posted any posts" });
       }
     } else {
-      res.status(301).end("Please login first.");
+      res.status(301).json({ err: "Please login first." });
     }
   } catch (error) {
-    res.status(500).end("Can't load the post.");
+    res.status(500).json({ err: "Can't load the post." });
   }
 });
 
@@ -874,11 +869,11 @@ app.get("/savedPosts", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.status(200).end("Haven't saved any posts");
+        res.status(200).json({ err: "Haven't saved any posts" });
       }
     }
   } catch (err) {
-    res.status(500).end("Sorry! Can't load any saved posts.");
+    res.status(500).json({ err: "Sorry! Can't load any saved posts." });
   }
 });
 
@@ -919,13 +914,13 @@ app.get("/postedPost", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.status(200).end("Haven't posted any posts");
+        res.status(200).json({ err: "Haven't posted any posts" });
       }
     } else {
-      res.status(301).end("Please login first.");
+      res.status(301).json({ err: "Please login first." });
     }
   } catch (error) {
-    res.status(500).end("Can't load the post.");
+    res.status(500).json({ err: "Can't load the post." });
   }
 });
 
@@ -959,13 +954,13 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.sendStatus(200).end("Haven't saved any recipes");
+        res.sendStatus(200).json({ err: "Haven't saved any recipes" });
       }
     } else {
-      res.status(301).end("Please login First.");
+      res.status(301).json({ err: "Please login First." });
     }
   } catch (error) {
-    res.status(500).end(`Can't load the saved recipes ${error}`);
+    res.status(500).json({ err: `Can't load the saved recipes ${error}` });
   }
 });
 
@@ -1026,20 +1021,20 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
   }
 });
 
-
-app.get("/popularRecipe", async (req:Request, res:Response)=>{
-  try{
+app.get("/popularRecipe", async (req: Request, res: Response) => {
+  try {
     let data = await client.query(
-      `SELECT recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`);
+      `SELECT recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`
+    );
     res.json({
       success: true,
       content: data,
-    })
-  }catch (err){
+    });
+  } catch (err) {
     console.log(err);
-    res.json({success:false})
+    res.json({ success: false });
   }
-})
+});
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
