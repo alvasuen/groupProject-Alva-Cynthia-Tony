@@ -3,8 +3,6 @@
 //   document.querySelector(".generate-post-container").classList.remove("hidden");
 // });
 
-let userName;
-
 let profileBtn = document.querySelector("#profileRedirect");
 profileBtn.addEventListener("click", async () => {
   let res = await fetch("/currentUser");
@@ -16,21 +14,6 @@ profileBtn.addEventListener("click", async () => {
     location.href = "./login.html";
   }
 });
-
-// const cancel = document.querySelector(".cancel");
-// cancel.addEventListener("click", function () {
-//   document.querySelector(".generate-post-container").classList.add("hidden");
-// });
-
-// const search = document.querySelector(".search");
-// search.addEventListener("click", function () {
-//   document.querySelector(".search-header").classList.remove("hidden");
-// });
-
-// const cancel2 = document.querySelector(".search-cancel");
-// cancel2.addEventListener("click", function () {
-//   document.querySelector(".search-header").classList.add("hidden");
-// });
 
 const gridParent = document.querySelector("#profile-post");
 
@@ -75,12 +58,6 @@ async function onLoad() {
     let postAmount = allPost.postId.length + " " + "Posts";
     let innerText = document.createTextNode(postAmount);
     posts.appendChild(innerText);
-    let username = document.querySelector(".username");
-    let name = allPost.userName[0].username;
-    // let name = userName;
-    // console.log("User:", name);
-    let innerName = document.createTextNode(name);
-    username.appendChild(innerName);
   } catch (err) {
     console.log("Error message:" + err);
   }
@@ -146,7 +123,10 @@ saved.addEventListener("click", async function () {
 window.onload = async (e) => {
   let res = await fetch("/currentUser");
   let json = await res.json();
-  userName = json.username;
+  let username = document.querySelector(".username");
+  let name = json.username;
+  let innerName = document.createTextNode(name);
+  username.appendChild(innerName);
   if (json.isLogin) {
     profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
     // profileBtn.href="./profile.html";
