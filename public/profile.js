@@ -7,7 +7,7 @@ let profileBtn = document.querySelector("#profileRedirect");
 profileBtn.addEventListener("click", async () => {
   let res = await fetch("/currentUser");
   let json = await res.json();
-  // console.log(json);
+  console.log("JSON", json);
   if (json.isLogin) {
     location.href = "./profile.html";
   } else {
@@ -15,8 +15,20 @@ profileBtn.addEventListener("click", async () => {
   }
 });
 
-const gridParent = document.querySelector("#profile-post");
+// let imgIcon = document.querySelector(".icon");
+// imgIcon.addEventListener("click", async () => {
+//   let res = await fetch("/currentUser");
+//   let json = await res.json();
+//   console.log("JSON", json);
+//   if (json.isLogin) {
+//     location.href = "./profile.html";
+//   } else {
+//     location.href = "./login.html";
+//   }
+// });
 
+//For Create new elements
+const gridParent = document.querySelector("#profile-post");
 const createPost = document.querySelector(".addpost");
 // createPost.addEventListener("click", async function () {
 // const res = await fetch("/post");
@@ -47,17 +59,34 @@ async function onLoad() {
     const res = await fetch("/postedPost");
     const allPost = await res.json();
     console.log("AllPOST: ", allPost);
-
-    for (let index = 0; index < allPost.postId.length; index++) {
-      let image = allPost.image[index].image;
-      let href = `http://localhost:8080/post.html?id=${allPost.postId[index].post_id}`;
-      createGrid(image, href);
-      // console.log("index", index);
+    console.log(allPost.hasOwnProperty("err"));
+    if (allPost.hasOwnProperty("err")) {
+      let all = document.querySelector(".main-container");
+      let posts = document.querySelector(".user-posts");
+      let zero = "0 Post";
+      let innerText = document.createTextNode(zero);
+      posts.appendChild(innerText);
+      let textBox = document.createElement("div");
+      textBox.classList.add("textBox");
+      let text = document.createElement("p");
+      text.classList.add("text-none");
+      let textContent = document.createTextNode("Haven't posted any post.");
+      text.appendChild(textContent);
+      textBox.appendChild(text);
+      all.appendChild(textBox);
     }
-    let posts = document.querySelector(".user-posts");
-    let postAmount = allPost.postId.length + " " + "Posts";
-    let innerText = document.createTextNode(postAmount);
-    posts.appendChild(innerText);
+    if (allPost.postId.length > 0) {
+      for (let index = 0; index < allPost.postId.length; index++) {
+        let image = allPost.image[index].image;
+        let href = `http://localhost:8080/post.html?id=${allPost.postId[index].post_id}`;
+        createGrid(image, href);
+      }
+      let posts = document.querySelector(".user-posts");
+      //Show the number of total posts
+      let postAmount = allPost.postId.length + " " + "Posts";
+      let innerText = document.createTextNode(postAmount);
+      posts.appendChild(innerText);
+    }
   } catch (err) {
     console.log("Error message:" + err);
   }
@@ -127,6 +156,9 @@ window.onload = async (e) => {
   let name = json.username;
   let innerName = document.createTextNode(name);
   username.appendChild(innerName);
+  //ON profile page's icon
+  let userIcon = document.querySelector(".icon");
+  userIcon.src = json.icon;
   if (json.isLogin) {
     profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
     // profileBtn.href="./profile.html";
@@ -135,3 +167,65 @@ window.onload = async (e) => {
   }
   onLoad();
 };
+
+const addNewPost = document.querySelector(".icon");
+addNewPost.addEventListener("click", function () {
+  document.querySelector(".generate-post-container").classList.remove("hidden");
+});
+
+const cancel = document.querySelector(".cancel");
+cancel.addEventListener("click", function () {
+  document.querySelector(".generate-post-container").classList.add("hidden");
+});
+
+// file to base64
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      let encoded = reader.result.toString().replace(/^data:(.*,)?/, "");
+      if (encoded.length % 4 > 0) {
+        encoded += "=".repeat(4 - (encoded.length % 4));
+      }
+      resolve(encoded);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+}
+
+document.querySelector("#uploadFile").addEventListener("change", async () => {
+  let files = document.getElementById("uploadFile").files;
+  let temp1 = await getBase64(files[0]);
+  let temp = ["data:image/jpeg;base64", temp1.toString()];
+  let image = temp.join().toString();
+  if (files.length > 0) {
+    let img = document.createElement("img");
+    img.src = image;
+    img.style.height = "300px";
+    let iconPreview = document.querySelector(".iconPreview");
+    iconPreview.appendChild(img);
+  }
+});
+
+document.querySelector("#submit").addEventListener("click", async (event) => {
+  //   event.preventDefault();
+  let files = document.getElementById("uploadFile").files;
+  let temp1 = await getBase64(files[0]);
+  let temp = ["data:image/jpeg;base64", temp1.toString()];
+  let image = temp.join().toString();
+  console.log(image);
+
+  const res = await fetch("/change_icon", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      icon: image,
+    }),
+  });
+
+  let json = await res.json();
+  if (!json.success) {
+    alert(json.message);
+  }
+});
