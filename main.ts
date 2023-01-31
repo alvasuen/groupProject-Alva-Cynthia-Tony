@@ -430,17 +430,17 @@ app.post("/post", async (req: Request, res: Response) => {
 // load all posts from the json
 app.get("/posts", async (req: Request, res: Response) => {
   const posts = await client.query(
-    `select * from posts inner join users on posts.user_id = users.user_id`
+    `select * from posts inner join users on posts.user_id = users.user_id ORDER BY post_id ASC`
   );
   const tags = await client.query(
     `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
   );
   const checkLiked = await client.query(
-    `select * from liked_posts where user_id = $1`,
+    `select * from liked_posts where user_id = $1 ORDER BY post_id ASC`,
     [req.session.userId]
   );
   const checkSaved = await client.query(
-    `select * from saved_posts where user_id = $1`,
+    `select * from saved_posts where user_id = $1 ORDER BY post_id ASC`,
     [req.session.userId]
   );
 

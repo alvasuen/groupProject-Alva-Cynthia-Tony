@@ -339,6 +339,7 @@ a {
   font-size: 50px;
   margin-right: 190px;
   letter-spacing: 5px;
+  font-weight: bold;
 }
 
 .footer-content {
@@ -351,7 +352,7 @@ a {
 }
 
 .social-icon {
-  margin-left: 100px;
+  margin-left: 150px;
   display: flex;
   flex-direction: column;
 }
@@ -363,7 +364,7 @@ a {
 
 .contact-container {
   font-size: 20px;
-  margin-right: 150px;
+  margin-right: 160px;
 }
 
 .contact {
@@ -383,5 +384,5 @@ a {
 
 .partners-img {
   width: 160px;
-  margin-right: 10px;
+  margin-right: 50px;
 }

@@ -42,7 +42,7 @@ const tags = createTag.addEventListener("click", function (event) {
   i++;
 });
 
-async function likePost() {
+async function likePost() {3
   let res = await fetch("/currentUser");
   let json = await res.json();
   if (json.isLogin) {
@@ -54,7 +54,13 @@ async function likePost() {
         let id = like[i].classList[2].slice(6);
         console.log(id);
         let liked = like[i].classList.value;
+        console.log(liked, 456);
         let result = liked.includes("liked");
+        if (result) {
+          like[i].classList.remove("liked");
+        } else {
+          like[i].classList.add("liked");
+        }
         console.log(result);
         const res = await fetch("/post/likePost/:id", {
           // send the data to browser
@@ -68,18 +74,19 @@ async function likePost() {
         const json = await res.json();
         if (json.success) {
           console.log(json);
-          if (like[i].classList.contains("liked")) {
-            like[i].classList.remove("liked");
-          } else {
-            like[i].classList.add("liked");
-          }
-          let likedCount = document.querySelector("span");
-          likedCount.innerHTML = "";
-          let innerText = document.createTextNode(
-            json.likedCount[0].liked_count
-          );
-          likedCount.appendChild(innerText);
-          console.log(json.likedCount[0].liked_count);
+          // if (like[i].classList.contains("liked")) {
+          //   like[i].classList.remove("liked");
+          // } else {
+          //   like[i].classList.add("liked");
+          // }
+            let likedCount = document.querySelector("span");
+            console.log(likedCount.classList);
+            likedCount.innerHTML = "";
+            let innerText = document.createTextNode(
+              json.likedCount[0].liked_count
+            );
+            likedCount.appendChild(innerText);
+            console.log(json.likedCount[0].liked_count);
         }
       });
     }
@@ -87,33 +94,37 @@ async function likePost() {
 }
 
 async function savePost() {
-  let bookmark = document.querySelectorAll(".fa-bookmark");
-  for (let i = 0; i < bookmark.length; i++) {
-    bookmark[i].addEventListener("click", async (e) => {
-      e.preventDefault();
-      let id = bookmark[i].classList[2].slice(9);
-      let bookmarked = bookmark[i].classList.value;
-      let result = bookmarked.includes("saved");
-      console.log(result);
-      const res = await fetch("/post/savePost/:id", {
-        // send the data to browser
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: id,
-          saved: result,
-        }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        if (bookmark[i].classList.contains("saved")) {
-          bookmark[i].classList.remove("saved");
-        } else {
-          bookmark[i].classList.add("saved");
+  let res = await fetch("/currentUser");
+  let json = await res.json();
+  if (json.isLogin) {
+    let bookmark = document.querySelectorAll(".fa-bookmark");
+    for (let i = 0; i < bookmark.length; i++) {
+      bookmark[i].addEventListener("click", async (e) => {
+        e.preventDefault();
+        let id = bookmark[i].classList[2].slice(9);
+        let bookmarked = bookmark[i].classList.value;
+        let result = bookmarked.includes("saved");
+        console.log(result);
+        const res = await fetch("/post/savePost/:id", {
+          // send the data to browser
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: id,
+            saved: result,
+          }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          if (bookmark[i].classList.contains("saved")) {
+            bookmark[i].classList.remove("saved");
+          } else {
+            bookmark[i].classList.add("saved");
+          }
+          // location.href = "./forum.html";
         }
-        // location.href = "./forum.html";
-      }
-    });
+      });
+    }
   }
 }
 
@@ -289,7 +300,7 @@ async function loadPosts() {
             let p2ImgContainer = document.createElement("div");
             p2ImgContainer.className = "p2-img-container";
             let img = document.createElement("img");
-            img.src = tagButtons_res.content.rows[0].image;
+            img.src = tagButtons_res.content.rows[i].image;
 
             let p2RightContainer = document.createElement("div");
             p2RightContainer.className = "p2-right-container";
@@ -311,7 +322,7 @@ async function loadPosts() {
             gap.className = "gap";
             let p2Date = document.createElement("div");
             p2Date.className = "p2-date";
-            p2Date.innerHTML = tagButtons_res.content.rows[0].created_at.slice(
+            p2Date.innerHTML = tagButtons_res.content.rows[i].created_at.slice(
               0,
               10
             );
@@ -355,25 +366,25 @@ async function loadPosts() {
             p2TagContainer.className = "p2-tag-container";
 
             // generate tags
-            let dbTag = Object.values(tagButtons_res.tags.rowCount);
-            for (let j = 0; j < dbTag; j++) {
-              if (
-                tagButtons_res.content.rows[i].post_id ==
-                tagButtons_res.tags.rows[j].post_id
-              ) {
-                let obj = tagButtons_res.tags.rows[j].tag_content;
-                let p2Tag = document.createElement("button");
-                p2Tag.className = "p2-tag";
-                p2Tag.innerHTML = obj;
-                p2TagContainer.appendChild(p2Tag);
-              }
-            }
+            // let dbTag = Object.values(tagButtons_res.tags.rowCount);
+            // for (let j = 0; j < dbTag; j++) {
+            //   if (
+            //     tagButtons_res.content.rows[i].post_id ==
+            //     tagButtons_res.tags.rows[j].post_id
+            //   ) {
+            //     let obj = tagButtons_res.tags.rows[j].tag_content;
+            //     let p2Tag = document.createElement("button");
+            //     p2Tag.className = "p2-tag";
+            //     p2Tag.innerHTML = obj;
+            //     p2TagContainer.appendChild(p2Tag);
+            //   }
+            // }
 
             let p2Content = document.createElement("div");
             p2Content.className = "p2-content";
             let p2ContentContent = document.createElement("div");
             p2ContentContent.className = "p2-content-content";
-            p2ContentContent.innerHTML = tagButtons_res.content.rows[0].content;
+            p2ContentContent.innerHTML = tagButtons_res.content.rows[i].content;
 
             let row = document.createElement("div");
             row.className = "row";
