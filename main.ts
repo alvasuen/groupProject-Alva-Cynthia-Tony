@@ -8,6 +8,8 @@ import { Client } from "pg";
 import dotenv from "dotenv";
 // import http from "http";
 import { checkPassword, hashPassword } from "./hash";
+// import fetch from "cross-fetch";
+// import grant from "grant";
 // import { resolveModuleName } from "typescript";
 // import { stepsRoutes } from "./steps";
 // import { searchRoutes } from "./search";
@@ -105,6 +107,7 @@ declare module "express-session" {
     icon?: string;
     // count?: number;
     isLogin?: boolean;
+    grant?: any;
   }
 }
 
@@ -182,6 +185,58 @@ app.post("/login", async (req: Request, res: Response) => {
     res.json(result);
   }
 });
+
+
+// //Google Login
+// const grantExpress = grant.express({
+//   defaults: {
+//     origin: "http://localhost:8080",
+//     transport: "session",
+//     state: true,
+//   },
+//   google: {
+//     key: process.env.GOOGLE_CLIENT_ID || "",
+//     secret: process.env.GOOGLE_CLIENT_SECRET || "",
+//     scope: ["profile", "email"],
+//     callback: "/login/google",
+//   },
+// });
+
+// app.get('/login/google', loginGoogle);
+
+// async function loginGoogle (req:express.Request, res:express.Response){
+//   const accessToken = req.session?.grant.response.access_token;
+//   const fetchRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo',{
+//       method:"get",
+//       headers:{
+//           "Authorization":`Bearer ${accessToken}`
+//       }
+//   });
+
+//   const result = await fetchRes.json();
+//   const users = (await client.query(`SELECT * FROM users WHERE users.username = $1`, [result.email])).rows;
+
+//   let user = users[0];
+
+//   if(!user){
+//       // Create the user when the user does not exist
+//       user = ( await client.query(
+//               `INSERT INTO users (login_email,password)
+//               VALUES ($1,$2) RETURNING *`,
+//               [result.email, "abc"])
+//           ).rows[0]
+//   }
+
+//   if(req.session){
+//       req.session.userId =user.id;
+//   }
+
+//   return res.redirect('/')
+// }
+
+
+// app.use(grantExpress as express.RequestHandler);
+
 
 app.get("/currentUser", (req, res) => {
   // console.log(req.session);
@@ -354,13 +409,8 @@ app.post("/post", async (req: Request, res: Response) => {
       `select icon from users where user_id = $1`,
       [id]
     );
-    // console.log("test", icon);
-    const createdDate = await client.query(
-      `select created_at from posts where post_id = $1`,
-      [postId.rows[0].post_id]
-    );
-    const likedCount = await client.query(
-      `select liked_count from posts where post_id = $1`,
+    const createdPost = await client.query(
+      `select * from posts where post_id = $1`,
       [postId.rows[0].post_id]
     );
 
@@ -368,13 +418,10 @@ app.post("/post", async (req: Request, res: Response) => {
       success: true,
       post: {
         postId: postId.rows[0].post_id,
-        content: content,
-        image: image,
         username: username,
         tags: tags,
         icon: icon,
-        createdDate: createdDate,
-        likedCount: likedCount,
+        createdPost: createdPost,
       },
     });
   } catch (ex) {
@@ -432,7 +479,7 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
 
       if (checkLiked.rowCount == 0) {
         const liked = await client.query(
-          `update posts set liked_count=liked_count+1 where post_id = $1`,
+          `update posts set liked_count = liked_count+1 where post_id = $1`,
           [req.body.id]
         );
         const updateLikePost = await client.query(
@@ -441,7 +488,7 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
         );
       } else {
         const liked = await client.query(
-          `update posts set liked_count=liked_count+1 where post_id = $1`,
+          `update posts set liked_count = liked_count+1 where post_id = $1`,
           [req.body.id]
         );
         const updateLiked = await client.query(
@@ -451,7 +498,7 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
       }
     } else {
       const unliked = await client.query(
-        `update posts set liked_count=liked_count-1 where post_id = $1`,
+        `update posts set liked_count = liked_count -1 where post_id = $1`,
         [req.body.id]
       );
       const updateLiked = await client.query(
@@ -460,10 +507,14 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
       );
     }
     const likedCount = await client.query(
-      `select liked_count from posts where post_id =$1`,
-      [req.body.id]
+      `select liked_count from posts where post_id = $1`,[req.body.id]
     );
-    res.status(200).json({ success: true, likedCount: likedCount.rows });
+    // const liked = await client.query(
+    //   `select * from liked_posts where post_id = $1`,[req.body.id]
+    // );
+    res
+      .status(200)
+      .json({ success: true, likedCount: likedCount.rows });
   } catch (err) {
     res.status(500).end("Error Message:" + err);
   }
@@ -638,6 +689,7 @@ app.post("/search", async (req: Request, res: Response) => {
       `SELECT ingredient_id FROM ingredient WHERE ingredient ~* $1`,
       [searchContent]
     );
+    
 
     //Extract the ingredient id
     let ingredientId = [];
@@ -973,6 +1025,21 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
     res.json({ success: false });
   }
 });
+
+
+app.get("/popularRecipe", async (req:Request, res:Response)=>{
+  try{
+    let data = await client.query(
+      `SELECT recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`);
+    res.json({
+      success: true,
+      content: data,
+    })
+  }catch (err){
+    console.log(err);
+    res.json({success:false})
+  }
+})
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));

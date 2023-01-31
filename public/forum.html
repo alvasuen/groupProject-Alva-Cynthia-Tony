@@ -16,6 +16,7 @@
   </head>
   <body>
     <!-- add post -->
+    <div class="filter hidden"></div>
     <div class="generate-post-container hidden">
       <div class="generate-post">
         <div class="generate-post-header">
@@ -73,9 +74,18 @@
     </div>
 
     <div class="forum-container">
- <div class="demo">
-        <button class="addpost">CREATE</button>
-      </div>
+    <div class="panel">
+      <div class="search-tag-container">
+       <button class="search-tag"><i class="fa-solid fa-magnifying-glass"></i></button>
+       <form class="searchTagForm hidden">
+     <input class="searchBar" id="searchBar" type="text" placeholder="# tag..."></input>
+     <button class="searchSubmit" type="submit" id="searchSubmit"><i class="fa-solid fa-magnifying-glass"></i></button>
+     </form>
+      </div> 
+    <div class="add-post-container">
+      <button class="addpost"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    </div>
 
       <!-- forum -->
       <div class="main">
@@ -84,8 +94,6 @@
           <span class="likedCount">0</span>
         </div>
       </div>
-
-      <div class="demo"></div>
     </div>
     </div>
 
