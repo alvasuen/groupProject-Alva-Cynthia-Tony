@@ -21,15 +21,6 @@ profileBtn.addEventListener("click", async () => {
   }
 });
 
-let forum = document.querySelector(".forum");
-forum.addEventListener("click", async () => {
-  let res = await fetch("/currentUser");
-  let json = await res.json();
-  if (json.isLogin) {
-    location.href = "./forum.html";
-  }
-});
-
 window.onload = async (event) => {
   //show username and icon in header
   let res = await fetch("/currentUser");
