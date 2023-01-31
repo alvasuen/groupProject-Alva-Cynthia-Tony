@@ -48,7 +48,6 @@ async function likePost() {
   if (json.isLogin) {
     let like = document.querySelectorAll(".fa-heart");
 
-
     for (let i = 0; i < like.length; i++) {
       like[i].addEventListener("click", async (e) => {
         e.preventDefault();
@@ -112,6 +111,7 @@ async function savePost() {
         } else {
           bookmark[i].classList.add("saved");
         }
+        // location.href = "./forum.html";
       }
     });
   }
@@ -149,18 +149,19 @@ async function loadPosts() {
   const res = await fetch("/posts");
   const json = await res.json();
   if (json.success) {
-    console.log(json);
     let forum = document.querySelector(".main");
     forum.innerHTML = "";
+    console.log(json);
 
-    for (let i = json.post.posts.length - 1; i >= 0; i--) {
+    for (let i = json.posts.length - 1; i >= 0; i--) {
+      // for (let i = 0; i < json.post.posts.length; i++) {
       // forum += createPost(json.post[i]);
       let p2Container = document.createElement("div");
       p2Container.className = "p2-container";
       let p2ImgContainer = document.createElement("div");
       p2ImgContainer.className = "p2-img-container";
       let img = document.createElement("img");
-      img.src = json.post.posts[i].image;
+      img.src = json.posts[i].image;
 
       let p2RightContainer = document.createElement("div");
       p2RightContainer.className = "p2-right-container";
@@ -172,17 +173,17 @@ async function loadPosts() {
       p2UsernameIcon.className = "p2-username-icon";
       let p2Icon = document.createElement("img");
       p2Icon.className = "p2-icon";
-      p2Icon.src = json.post.posts[i].icon;
+      p2Icon.src = json.posts[i].icon;
 
       let p2Username = document.createElement("div");
       p2Username.className = "p2-username";
-      p2Username.innerHTML = json.post.posts[i].username;
+      p2Username.innerHTML = json.posts[i].username;
 
       let gap = document.createElement("div");
       gap.className = "gap";
       let p2Date = document.createElement("div");
       p2Date.className = "p2-date";
-      p2Date.innerHTML = json.post.posts[i].created_at.slice(0, 10);
+      p2Date.innerHTML = json.posts[i].created_at.slice(0, 10);
 
       let p2Function = document.createElement("div");
       p2Function.className = "p2-function";
@@ -191,36 +192,30 @@ async function loadPosts() {
       likeContainer.className = "like-container";
 
       let faHeart = document.createElement("i");
-      faHeart.className = `fa-solid fa-heart heart-${json.post.posts[i].post_id}`;
-      // console.log(json);
-      for (let j = 0; j < json.checkLiked.checkLiked.length; j++) {
+      faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id}`;
+
+      for (let j = 0; j < json.checkLiked.length; j++) {
         if (
-          json.post.posts[i].post_id == json.checkLiked.checkLiked[j].post_id &&
-          json.checkLiked.checkLiked[j].liked == true &&
-          json.isLogin == true
+          json.posts[i].post_id == json.checkLiked[j].post_id &&
+          json.checkLiked[j].liked == true
         ) {
-          faHeart.className = `fa-solid fa-heart heart-${json.post.posts[i].post_id} liked`;
-        } else {
-          faHeart.className = `fa-solid fa-heart heart-${json.post.posts[i].post_id}`;
+          faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id} liked`;
         }
       }
 
       let likedCount = document.createElement("span");
-      likedCount.className = `likedCount likeCount-${json.post.posts[i].post_id}`;
-      likedCount.textContent = json.post.posts[i].liked_count;
+      likedCount.className = `likedCount likeCount-${json.posts[i].post_id}`;
+      likedCount.textContent = json.posts[i].liked_count;
       // likedCount.style.fontFamily = "Courier New, Courier, monospace";
 
       let faBookMark = document.createElement("i");
-      faBookMark.className = `fa-solid fa-bookmark bookmark-${json.post.posts[i].post_id}`;
-      for (let j = 0; j < json.checkSaved.checkSaved.length; j++) {
+      faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id}`;
+      for (let j = 0; j < json.checkSaved.length; j++) {
         if (
-          json.post.posts[i].post_id == json.checkSaved.checkSaved[j].post_id &&
-          json.checkSaved.checkSaved[j].saved == true &&
-          json.isLogin == true
+          json.posts[i].post_id == json.checkSaved[j].post_id &&
+          json.checkSaved[j].saved == true
         ) {
-          faBookMark.className = `fa-solid fa-bookmark bookmark-${json.post.posts[i].post_id} saved`;
-        } else {
-          faBookMark.className = `fa-solid fa-bookmark bookmark-${json.post.posts[i].post_id}`;
+          faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id} saved`;
         }
       }
 
@@ -228,10 +223,10 @@ async function loadPosts() {
       p2TagContainer.className = "p2-tag-container";
 
       // generate tags
-      let dbTag = Object.values(json.tags.tags);
+      let dbTag = Object.values(json.tags);
       for (let j = 0; j < dbTag.length; j++) {
-        if (json.post.posts[i].post_id == json.tags.tags[j].post_id) {
-          let obj = json.tags.tags[j].tag_content;
+        if (json.posts[i].post_id == json.tags[j].post_id) {
+          let obj = json.tags[j].tag_content;
           let p2Tag = document.createElement("button");
           p2Tag.className = "p2-tag";
           p2Tag.innerHTML = obj;
@@ -243,7 +238,7 @@ async function loadPosts() {
       p2Content.className = "p2-content";
       let p2ContentContent = document.createElement("div");
       p2ContentContent.className = "p2-content-content";
-      p2ContentContent.innerHTML = json.post.posts[i].content;
+      p2ContentContent.innerHTML = json.posts[i].content;
 
       let row = document.createElement("div");
       row.className = "row";

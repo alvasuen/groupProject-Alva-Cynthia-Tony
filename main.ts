@@ -446,18 +446,10 @@ app.get("/posts", async (req: Request, res: Response) => {
 
   res.json({
     success: true,
-    post: {
-      posts: posts.rows,
-    },
-    tags: {
-      tags: tags.rows,
-    },
-    checkLiked: {
-      checkLiked: checkLiked.rows,
-    },
-    checkSaved: {
-      checkSaved: checkSaved.rows,
-    },
+    posts: posts.rows,
+    tags: tags.rows,
+    checkLiked: checkLiked.rows,
+    checkSaved: checkSaved.rows,
     isLogin: req.session.isLogin,
   });
 });
