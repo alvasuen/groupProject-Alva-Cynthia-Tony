@@ -1014,7 +1014,8 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
 app.get("/popularRecipe", async (req: Request, res: Response) => {
   try {
     let data = await client.query(
-      `SELECT recipe_id, recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`);
+      `SELECT recipe_id, recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`
+    );
     res.json({
       success: true,
       content: data,
@@ -1025,24 +1026,47 @@ app.get("/popularRecipe", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/getTagPosts", async (req:Request, res:Response)=>{
-  try{
-    console.log(req.body.content, "getTagPosts")
+app.post("/getTagPosts", async (req: Request, res: Response) => {
+  try {
+    console.log(req.body.content, "getTagPosts");
     let data = await client.query(
-      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id=tag_relate.post_id WHERE tag_id = (SELECT tag_id FROM tag WHERE tag_content=$1);`,
-      [req.body.content]);
-    
+      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content=$1);`,
+      [req.body.content]
+    );
+
+    let userData = await client.query(
+      `select * from users where user_id in (SELECT user_id FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id in(SELECT tag_id FROM tag where tag_content= $1));`,
+      [req.body.content]
+    );
+
+    const tags = await client.query(
+      `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
+    );
+
+    const checkLiked = await client.query(
+      `select * from liked_posts where user_id = $1`,
+      [req.session.userId]
+    );
+    const checkSaved = await client.query(
+      `select * from saved_posts where user_id = $1`,
+      [req.session.userId]
+    );
+
     res.json({
-      success:true,
-      content: data
-    })
-  }catch (err){
+      success: true,
+      content: data,
+      checkLiked,
+      checkSaved,
+      tags,
+      userData,
+    });
+  } catch (err) {
     console.log(err);
     res.json({
-      success: false
-    })
+      success: false,
+    });
   }
-})
+});
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
