@@ -186,7 +186,6 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-
 // //Google Login
 // const grantExpress = grant.express({
 //   defaults: {
@@ -234,9 +233,7 @@ app.post("/login", async (req: Request, res: Response) => {
 //   return res.redirect('/')
 // }
 
-
 // app.use(grantExpress as express.RequestHandler);
-
 
 app.get("/currentUser", (req, res) => {
   // console.log(req.session);
@@ -488,7 +485,7 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
         );
       } else {
         const liked = await client.query(
-          `update posts set liked_count = liked_count+1 where post_id = $1`,
+          `update posts set liked_count = liked_count + 1 where post_id = $1`,
           [req.body.id]
         );
         const updateLiked = await client.query(
@@ -507,16 +504,15 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
       );
     }
     const likedCount = await client.query(
-      `select liked_count from posts where post_id = $1`,[req.body.id]
+      `select liked_count from posts where post_id = $1`,
+      [req.body.id]
     );
     // const liked = await client.query(
     //   `select * from liked_posts where post_id = $1`,[req.body.id]
     // );
-    res
-      .status(200)
-      .json({ success: true, likedCount: likedCount.rows });
+    res.status(200).json({ success: true, likedCount: likedCount.rows });
   } catch (err) {
-    res.status(500).end("Error Message:" + err);
+    res.status(500).json({ err: "Error Message:" + err });
   }
 });
 
@@ -531,7 +527,7 @@ app.put("/post/savePost/:id", async (req: Request, res: Response) => {
 
       if (checkSaved.rowCount == 0) {
         const saved = await client.query(
-          `update posts set saved_count=saved_count+1 where post_id = $1`,
+          `update posts set saved_count = saved_count + 1 where post_id = $1`,
           [req.body.id]
         );
         const updateSavePost = await client.query(
@@ -540,7 +536,7 @@ app.put("/post/savePost/:id", async (req: Request, res: Response) => {
         );
       } else {
         const saved = await client.query(
-          `update posts set saved_count=saved_count+1 where post_id = $1`,
+          `update posts set saved_count=saved_count + 1 where post_id = $1`,
           [req.body.id]
         );
         const updateSaved = await client.query(
@@ -561,7 +557,7 @@ app.put("/post/savePost/:id", async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true });
   } catch (err) {
-    res.status(500).end("Error Message:" + err);
+    res.status(500).json({ err: "Error Message:" });
   }
 });
 
@@ -689,7 +685,6 @@ app.post("/search", async (req: Request, res: Response) => {
       `SELECT ingredient_id FROM ingredient WHERE ingredient ~* $1`,
       [searchContent]
     );
-    
 
     //Extract the ingredient id
     let ingredientId = [];
@@ -740,7 +735,6 @@ app.post("/search", async (req: Request, res: Response) => {
     if (resultFromLevel.rowCount > 0) {
       summaryData.push(...resultFromLevel.rows);
     }
-
 
     //search from tag
     if (resultFromTag.rowCount > 0) {
@@ -812,6 +806,9 @@ app.get("/profile", async (req: Request, res: Response) => {
 app.get("/profile/:id", async (req: Request, res: Response) => {
   try {
     let user_id = req.session.userId;
+    let userName = req.session.username;
+    // console.log(userName);
+
     if (req.session.isLogin) {
       const getAllPostId = await client.query(
         `SELECT post_id FROM posts WHERE user_id = $1`,
@@ -836,13 +833,13 @@ app.get("/profile/:id", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.status(200).end("Haven't posted any posts");
+        res.status(200).json({ err: "Haven't posted any posts" });
       }
     } else {
-      res.status(301).end("Please login first.");
+      res.status(301).json({ err: "Please login first." });
     }
   } catch (error) {
-    res.status(500).end("Can't load the post.");
+    res.status(500).json({ err: "Can't load the post." });
   }
 });
 
@@ -851,7 +848,7 @@ app.get("/savedPosts", async (req: Request, res: Response) => {
     let user_id = req.session.userId;
     if (req.session.isLogin) {
       let allSavedPost = await client.query(
-        `SELECT post_id FROM saved_posts WHERE user_id = $1`,
+        `SELECT post_id FROM saved_posts WHERE user_id = $1 AND saved = true`,
         [user_id]
       );
 
@@ -872,11 +869,11 @@ app.get("/savedPosts", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.status(200).end("Haven't saved any posts");
+        res.status(200).json({ err: "Haven't saved any posts" });
       }
     }
   } catch (err) {
-    res.status(500).end("Sorry! Can't load any saved posts.");
+    res.status(500).json({ err: "Sorry! Can't load any saved posts." });
   }
 });
 
@@ -888,10 +885,10 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         `SELECT post_id FROM posts WHERE user_id = $1`,
         [user_id]
       );
-      const userName = await client.query(
-        `SELECT username FROM users WHERE user_id = $1`,
-        [user_id]
-      );
+      // const userName = await client.query(
+      //   `SELECT username FROM users WHERE user_id = $1`,
+      //   [user_id]
+      // );
 
       if (getAllPostId.rowCount > 0) {
         // console.log("getAllPostId: ", getAllPostId);
@@ -913,17 +910,17 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         res.status(200).json({
           postId: getAllPostId.rows,
           image: imgArray,
-          userName: userName.rows,
+          userName: req.session.username,
           success: true,
         });
       } else {
-        res.status(200).end("Haven't posted any posts");
+        res.status(200).json({ err: "Haven't posted any posts" });
       }
     } else {
-      res.status(301).end("Please login first.");
+      res.status(301).json({ err: "Please login first." });
     }
   } catch (error) {
-    res.status(500).end("Can't load the post.");
+    res.status(500).json({ err: "Can't load the post." });
   }
 });
 
@@ -933,7 +930,7 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
     if (req.session.isLogin) {
       let user_id = req.session.userId;
       let saveRecipesId = await client.query(
-        `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+        `SELECT recipe_id FROM saved_recipe WHERE user_id = $1 AND saved = true`,
         [user_id]
       );
 
@@ -957,13 +954,13 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.sendStatus(200).end("Haven't saved any recipes");
+        res.sendStatus(200).json({ err: "Haven't saved any recipes" });
       }
     } else {
-      res.status(301).end("Please login First.");
+      res.status(301).json({ err: "Please login First." });
     }
   } catch (error) {
-    res.status(500).end(`Can't load the saved recipes ${error}`);
+    res.status(500).json({ err: `Can't load the saved recipes ${error}` });
   }
 });
 
@@ -1024,20 +1021,19 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
   }
 });
 
-
-app.get("/popularRecipe", async (req:Request, res:Response)=>{
-  try{
+app.get("/popularRecipe", async (req: Request, res: Response) => {
+  try {
     let data = await client.query(
       `SELECT recipe_id, recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`);
     res.json({
       success: true,
       content: data,
-    })
-  }catch (err){
+    });
+  } catch (err) {
     console.log(err);
-    res.json({success:false})
+    res.json({ success: false });
   }
-})
+});
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));

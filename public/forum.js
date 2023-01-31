@@ -43,39 +43,47 @@ const tags = createTag.addEventListener("click", function (event) {
 });
 
 async function likePost() {
-  let like = document.querySelectorAll(".fa-heart");
-  for (let i = 0; i < like.length; i++) {
-    like[i].addEventListener("click", async (e) => {
-      e.preventDefault();
-      let id = like[i].classList[2].slice(6);
-      console.log(like[i].classList[2].slice(6));
-      let liked = like[i].classList.value;
-      let result = liked.includes("liked");
-      console.log(result);
-      const res = await fetch("/post/likePost/:id", {
-        // send the data to browser
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: id,
-          liked: result,
-        }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        console.log(json);
-        if (like[i].classList.contains("liked")) {
-          like[i].classList.remove("liked");
-        } else {
-          like[i].classList.add("liked");
+  let res = await fetch("/currentUser");
+  let json = await res.json();
+  if (json.isLogin) {
+    let like = document.querySelectorAll(".fa-heart");
+
+
+    for (let i = 0; i < like.length; i++) {
+      like[i].addEventListener("click", async (e) => {
+        e.preventDefault();
+        let id = like[i].classList[2].slice(6);
+        console.log(id);
+        let liked = like[i].classList.value;
+        let result = liked.includes("liked");
+        console.log(result);
+        const res = await fetch("/post/likePost/:id", {
+          // send the data to browser
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: id,
+            liked: result,
+          }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          console.log(json);
+          if (like[i].classList.contains("liked")) {
+            like[i].classList.remove("liked");
+          } else {
+            like[i].classList.add("liked");
+          }
+          let likedCount = document.querySelector("span");
+          likedCount.innerHTML = "";
+          let innerText = document.createTextNode(
+            json.likedCount[0].liked_count
+          );
+          likedCount.appendChild(innerText);
+          console.log(json.likedCount[0].liked_count);
         }
-        let likedCount = document.querySelector("span");
-        likedCount.innerHTML = "";
-        let innerText = document.createTextNode(json.likedCount[0].liked_count);
-        likedCount.appendChild(innerText);
-        console.log(json.likedCount[0].liked_count);
-      }
-    });
+      });
+    }
   }
 }
 
