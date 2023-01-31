@@ -3,6 +3,8 @@
 //   document.querySelector(".generate-post-container").classList.remove("hidden");
 // });
 
+let userName;
+
 let profileBtn = document.querySelector("#profileRedirect");
 profileBtn.addEventListener("click", async () => {
   let res = await fetch("/currentUser");
@@ -74,7 +76,9 @@ async function onLoad() {
     let innerText = document.createTextNode(postAmount);
     posts.appendChild(innerText);
     let username = document.querySelector(".username");
-    let name = allPost.userName;
+    // let name = allPost.userName;
+    let name = userName;
+    console.log("User:", name);
     let innerName = document.createTextNode(name);
     username.appendChild(innerName);
   } catch (err) {
@@ -142,6 +146,7 @@ saved.addEventListener("click", async function () {
 window.onload = async (e) => {
   let res = await fetch("/currentUser");
   let json = await res.json();
+  userName = json.username;
   if (json.isLogin) {
     profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
     // profileBtn.href="./profile.html";
