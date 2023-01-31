@@ -184,7 +184,7 @@ app.post("/login", async (req: Request, res: Response) => {
 });
 
 app.get("/currentUser", (req, res) => {
-  console.log(req.session);
+  // console.log(req.session);
   res.json(req.session);
 });
 
@@ -225,7 +225,7 @@ app.post("/signup", async (req: Request, res: Response) => {
         [formidable_result.fields.email]
       );
       if (signUpCheck.rowCount > 0) {
-        result.errMess = "Sign Up rejected!";
+        result.errMess = "This email has been registered already!";
         result.isSignUp = false;
         res.json(result);
       } else {
@@ -679,7 +679,6 @@ app.post("/search", async (req: Request, res: Response) => {
     }
 
     //search from recipe name
-    // console.log(resultFromName,'434')
     if (resultFromName.rowCount > 0) {
       summaryData.push(...resultFromName.rows);
     }
@@ -690,7 +689,6 @@ app.post("/search", async (req: Request, res: Response) => {
       summaryData.push(...resultFromLevel.rows);
     }
 
-    // console.log(resultFromLevel)
 
     //search from tag
     if (resultFromTag.rowCount > 0) {
@@ -707,9 +705,6 @@ app.post("/search", async (req: Request, res: Response) => {
     const summaryData0 = [
       ...new Map(summaryData.map((m) => [m.recipe_id, m])).values(),
     ];
-    // console.log(summaryData);
-
-    // console.log(summaryData0)
 
     res.json({
       success: true,
@@ -916,14 +911,14 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
       res.status(301).end("Please login First.");
     }
   } catch (error) {
-    res.status(500).end(`Can't load the save recipes ${error}`);
+    res.status(500).end(`Can't load the saved recipes ${error}`);
   }
 });
 
 app.get("/checkRepLike", async (req: Request, res: Response) => {
   if (req.session.isLogin) {
     let recipeData = await client.query(
-      `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+      `SELECT recipe_id FROM saved_recipe WHERE user_id = $1 AND saved = true`,
       [req.session.userId]
     );
     let arr = [];
@@ -941,8 +936,8 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
   }
 });
 
-app.put("/profile/change_icon", async (req: Request, res: Response) => {
-  console.log(req.body.icon);
+app.put("/change_icon", async (req: Request, res: Response) => {
+  // console.log(req.body.icon);
   try {
     await client.query(`UPDATE users SET icon = $1 WHERE user_id = $2 ;`, [
       req.body.icon,
@@ -960,12 +955,22 @@ app.put("/profile/change_icon", async (req: Request, res: Response) => {
   }
 });
 
-// app.delete("/deleteSavedRecipe", async (req:Request, res:Response)=>{
-//   await client.query(
-//     `DELETE FROM saved_recipe WHERE recipe_id=$1 AND user_id=$2;`,
-//     [req.body.id, req.session.userId]
-//   );
-// })
+app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
+  try {
+    await client.query(
+      `UPDATE saved_recipe SET saved=false WHERE recipe_id=$1 AND user_id=$2;`,
+      [req.body.id, req.session.userId]
+    );
+    await client.query(
+      `UPDATE recipes SET saved_count = saved_count-1 WHERE recipe_id = $1 ;`,
+      [req.body.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
