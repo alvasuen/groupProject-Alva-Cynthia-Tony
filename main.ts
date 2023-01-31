@@ -485,7 +485,7 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
         );
       } else {
         const liked = await client.query(
-          `update posts set liked_count = liked_count+1 where post_id = $1`,
+          `update posts set liked_count = liked_count + 1 where post_id = $1`,
           [req.body.id]
         );
         const updateLiked = await client.query(
@@ -527,7 +527,7 @@ app.put("/post/savePost/:id", async (req: Request, res: Response) => {
 
       if (checkSaved.rowCount == 0) {
         const saved = await client.query(
-          `update posts set saved_count=saved_count+1 where post_id = $1`,
+          `update posts set saved_count = saved_count + 1 where post_id = $1`,
           [req.body.id]
         );
         const updateSavePost = await client.query(
@@ -536,7 +536,7 @@ app.put("/post/savePost/:id", async (req: Request, res: Response) => {
         );
       } else {
         const saved = await client.query(
-          `update posts set saved_count=saved_count+1 where post_id = $1`,
+          `update posts set saved_count=saved_count + 1 where post_id = $1`,
           [req.body.id]
         );
         const updateSaved = await client.query(
