@@ -885,10 +885,10 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         `SELECT post_id FROM posts WHERE user_id = $1`,
         [user_id]
       );
-      // const userName = await client.query(
-      //   `SELECT username FROM users WHERE user_id = $1`,
-      //   [user_id]
-      // );
+      const userName = await client.query(
+        `SELECT username FROM users WHERE user_id = $1`,
+        [user_id]
+      );
 
       if (getAllPostId.rowCount > 0) {
         // console.log("getAllPostId: ", getAllPostId);
@@ -910,7 +910,8 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         res.status(200).json({
           postId: getAllPostId.rows,
           image: imgArray,
-          userName: req.session.username,
+          // userName: req.session.username,
+          userName: userName.rows,
           success: true,
         });
       } else {

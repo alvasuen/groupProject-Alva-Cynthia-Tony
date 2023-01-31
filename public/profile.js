@@ -76,7 +76,7 @@ async function onLoad() {
     let innerText = document.createTextNode(postAmount);
     posts.appendChild(innerText);
     let username = document.querySelector(".username");
-    let name = allPost.userName;
+    let name = allPost.userName[0].username;
     // let name = userName;
     // console.log("User:", name);
     let innerName = document.createTextNode(name);
@@ -153,5 +153,5 @@ window.onload = async (e) => {
   } else {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
   }
-  await onLoad();
+  onLoad();
 };
