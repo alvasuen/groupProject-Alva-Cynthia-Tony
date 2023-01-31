@@ -134,6 +134,7 @@ a{
  .textTitle{
     font-size: 25px;
     font-weight: bold;
+    text-align: center;
  }
 
  .textContent{
@@ -167,11 +168,16 @@ a{
     width: 400px;
     height:400px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
  }
 
  .loginContainer p{
     font-size: 25px;
     font-weight: bold;
+    /* padding-left: 10px; */
+    text-align:center;
  }
 
  .loginPanel{

@@ -8,6 +8,8 @@ import { Client } from "pg";
 import dotenv from "dotenv";
 // import http from "http";
 import { checkPassword, hashPassword } from "./hash";
+// import fetch from "cross-fetch";
+// import grant from "grant";
 // import { resolveModuleName } from "typescript";
 // import { stepsRoutes } from "./steps";
 // import { searchRoutes } from "./search";
@@ -105,6 +107,7 @@ declare module "express-session" {
     icon?: string;
     // count?: number;
     isLogin?: boolean;
+    grant?: any;
   }
 }
 
@@ -183,8 +186,60 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
+
+// //Google Login
+// const grantExpress = grant.express({
+//   defaults: {
+//     origin: "http://localhost:8080",
+//     transport: "session",
+//     state: true,
+//   },
+//   google: {
+//     key: process.env.GOOGLE_CLIENT_ID || "",
+//     secret: process.env.GOOGLE_CLIENT_SECRET || "",
+//     scope: ["profile", "email"],
+//     callback: "/login/google",
+//   },
+// });
+
+// app.get('/login/google', loginGoogle);
+
+// async function loginGoogle (req:express.Request, res:express.Response){
+//   const accessToken = req.session?.grant.response.access_token;
+//   const fetchRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo',{
+//       method:"get",
+//       headers:{
+//           "Authorization":`Bearer ${accessToken}`
+//       }
+//   });
+
+//   const result = await fetchRes.json();
+//   const users = (await client.query(`SELECT * FROM users WHERE users.username = $1`, [result.email])).rows;
+
+//   let user = users[0];
+
+//   if(!user){
+//       // Create the user when the user does not exist
+//       user = ( await client.query(
+//               `INSERT INTO users (login_email,password)
+//               VALUES ($1,$2) RETURNING *`,
+//               [result.email, "abc"])
+//           ).rows[0]
+//   }
+
+//   if(req.session){
+//       req.session.userId =user.id;
+//   }
+
+//   return res.redirect('/')
+// }
+
+
+// app.use(grantExpress as express.RequestHandler);
+
+
 app.get("/currentUser", (req, res) => {
-  console.log(req.session);
+  // console.log(req.session);
   res.json(req.session);
 });
 
@@ -225,7 +280,7 @@ app.post("/signup", async (req: Request, res: Response) => {
         [formidable_result.fields.email]
       );
       if (signUpCheck.rowCount > 0) {
-        result.errMess = "Sign Up rejected!";
+        result.errMess = "This email has been registered already!";
         result.isSignUp = false;
         res.json(result);
       } else {
@@ -634,6 +689,7 @@ app.post("/search", async (req: Request, res: Response) => {
       `SELECT ingredient_id FROM ingredient WHERE ingredient ~* $1`,
       [searchContent]
     );
+    
 
     //Extract the ingredient id
     let ingredientId = [];
@@ -675,7 +731,6 @@ app.post("/search", async (req: Request, res: Response) => {
     }
 
     //search from recipe name
-    // console.log(resultFromName,'434')
     if (resultFromName.rowCount > 0) {
       summaryData.push(...resultFromName.rows);
     }
@@ -686,7 +741,6 @@ app.post("/search", async (req: Request, res: Response) => {
       summaryData.push(...resultFromLevel.rows);
     }
 
-    // console.log(resultFromLevel)
 
     //search from tag
     if (resultFromTag.rowCount > 0) {
@@ -703,9 +757,6 @@ app.post("/search", async (req: Request, res: Response) => {
     const summaryData0 = [
       ...new Map(summaryData.map((m) => [m.recipe_id, m])).values(),
     ];
-    // console.log(summaryData);
-
-    // console.log(summaryData0)
 
     res.json({
       success: true,
@@ -912,14 +963,14 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
       res.status(301).end("Please login First.");
     }
   } catch (error) {
-    res.status(500).end(`Can't load the save recipes ${error}`);
+    res.status(500).end(`Can't load the saved recipes ${error}`);
   }
 });
 
 app.get("/checkRepLike", async (req: Request, res: Response) => {
   if (req.session.isLogin) {
     let recipeData = await client.query(
-      `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+      `SELECT recipe_id FROM saved_recipe WHERE user_id = $1 AND saved = true`,
       [req.session.userId]
     );
     let arr = [];
@@ -938,7 +989,7 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
 });
 
 app.put("/change_icon", async (req: Request, res: Response) => {
-  console.log(req.body.icon);
+  // console.log(req.body.icon);
   try {
     await client.query(`UPDATE users SET icon = $1 WHERE user_id = $2 ;`, [
       req.body.icon,
@@ -956,12 +1007,37 @@ app.put("/change_icon", async (req: Request, res: Response) => {
   }
 });
 
-// app.delete("/deleteSavedRecipe", async (req:Request, res:Response)=>{
-//   await client.query(
-//     `DELETE FROM saved_recipe WHERE recipe_id=$1 AND user_id=$2;`,
-//     [req.body.id, req.session.userId]
-//   );
-// })
+app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
+  try {
+    await client.query(
+      `UPDATE saved_recipe SET saved=false WHERE recipe_id=$1 AND user_id=$2;`,
+      [req.body.id, req.session.userId]
+    );
+    await client.query(
+      `UPDATE recipes SET saved_count = saved_count-1 WHERE recipe_id = $1 ;`,
+      [req.body.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
+
+
+app.get("/popularRecipe", async (req:Request, res:Response)=>{
+  try{
+    let data = await client.query(
+      `SELECT recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`);
+    res.json({
+      success: true,
+      content: data,
+    })
+  }catch (err){
+    console.log(err);
+    res.json({success:false})
+  }
+})
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));

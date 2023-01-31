@@ -22,6 +22,7 @@ profileBtn.addEventListener("click", async () => {
 });
 
 window.onload = async (event) => {
+  //show username and icon in header
   let res = await fetch("/currentUser");
   let json = await res.json();
   if (json.isLogin) {
@@ -30,4 +31,26 @@ window.onload = async (event) => {
   } else {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
   }
+
+  //show recipes slideshow
+  let recipeData = await fetch ("/popularRecipe");
+  let recipeData_json = await recipeData.json();
+  // console.log(recipeData_json)
+  if (recipeData_json.success){
+    for (let i=0; i<recipeData_json.content.rowCount;i++){
+
+      document.querySelector("#recipes").innerHTML += 
+      `<div class="comment-box" >
+      <div class="shadow-box">
+        <div class="comment">
+            <img src=${recipeData_json.content.rows[i].image}>
+        </div>
+        <div class="recipeTitle">
+          <p>${recipeData_json.content.rows[i].recipe_name}</p>
+        </div>
+      </div>
+    </div>`
+    }
+  }
 };
+

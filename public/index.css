@@ -135,6 +135,7 @@ a {
   font-family: "Times New Roman", Times, serif;
   font-size: 50px;
   width: 1000px;
+  margin-top: 30px;
 
   float: left;
   display: flex;
@@ -205,9 +206,13 @@ a {
   }
 }
 
+.animate-container {
+  background-color: #efeee8;
+}
+
 .nypd {
-  height: 200px;
-  border-radius: 50%;
+  height: 100px;
+  /* border-radius: 50%; */
   animation: translateinfinite 30s linear infinite;
   margin: 30px;
 }
@@ -262,11 +267,23 @@ a {
 .comment {
   width: 359px;
   height: 320px;
-  /* background-color: rgb(250, 250, 250); */
+  overflow: hidden;
+  background-color: transparent;
+}
 
-  /* background-color: rgba(240, 239, 239, 0.388); */
-  background-color: rgb(219, 219, 217);
-  /* border-radius: 8px; */
+.comment img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+
+.recipeTitle p{
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .content {
@@ -298,6 +315,7 @@ a {
 .icon:active {
   color: #042d42;
 }
+
 
 /* Footer */
 .footer {
