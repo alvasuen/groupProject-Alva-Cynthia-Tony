@@ -806,8 +806,6 @@ app.get("/profile", async (req: Request, res: Response) => {
 app.get("/profile/:id", async (req: Request, res: Response) => {
   try {
     let user_id = req.session.userId;
-    let userName = req.session.username;
-    // console.log(userName);
 
     if (req.session.isLogin) {
       const getAllPostId = await client.query(
@@ -910,7 +908,6 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         res.status(200).json({
           postId: getAllPostId.rows,
           image: imgArray,
-          // userName: req.session.username,
           userName: userName.rows,
           success: true,
         });
@@ -961,7 +958,7 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
       res.status(301).json({ err: "Please login First." });
     }
   } catch (error) {
-    res.status(500).json({ err: `Can't load the saved recipes ${error}` });
+    res.status(500).json({ err: "Can't load the saved recipes" + error });
   }
 });
 
