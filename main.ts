@@ -689,7 +689,6 @@ app.post("/search", async (req: Request, res: Response) => {
       summaryData.push(...resultFromLevel.rows);
     }
 
-
     //search from tag
     if (resultFromTag.rowCount > 0) {
       summaryData.push(...resultFromTag.rows);
@@ -760,6 +759,9 @@ app.get("/profile", async (req: Request, res: Response) => {
 app.get("/profile/:id", async (req: Request, res: Response) => {
   try {
     let user_id = req.session.userId;
+    let userName = req.session.username;
+    // console.log(userName);
+
     if (req.session.isLogin) {
       const getAllPostId = await client.query(
         `SELECT post_id FROM posts WHERE user_id = $1`,
@@ -799,7 +801,7 @@ app.get("/savedPosts", async (req: Request, res: Response) => {
     let user_id = req.session.userId;
     if (req.session.isLogin) {
       let allSavedPost = await client.query(
-        `SELECT post_id FROM saved_posts WHERE user_id = $1`,
+        `SELECT post_id FROM saved_posts WHERE user_id = $1 AND saved = true`,
         [user_id]
       );
 
@@ -836,10 +838,10 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         `SELECT post_id FROM posts WHERE user_id = $1`,
         [user_id]
       );
-      const userName = await client.query(
-        `SELECT username FROM users WHERE user_id = $1`,
-        [user_id]
-      );
+      // const userName = await client.query(
+      //   `SELECT username FROM users WHERE user_id = $1`,
+      //   [user_id]
+      // );
 
       if (getAllPostId.rowCount > 0) {
         // console.log("getAllPostId: ", getAllPostId);
@@ -861,7 +863,7 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         res.status(200).json({
           postId: getAllPostId.rows,
           image: imgArray,
-          userName: userName.rows,
+          userName: req.session.username,
           success: true,
         });
       } else {
@@ -881,7 +883,7 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
     if (req.session.isLogin) {
       let user_id = req.session.userId;
       let saveRecipesId = await client.query(
-        `SELECT recipe_id FROM saved_recipe WHERE user_id = $1`,
+        `SELECT recipe_id FROM saved_recipe WHERE user_id = $1 AND saved = true`,
         [user_id]
       );
 
