@@ -1036,6 +1036,25 @@ app.get("/popularRecipe", async (req: Request, res: Response) => {
   }
 });
 
+app.post("/getTagPosts", async (req:Request, res:Response)=>{
+  try{
+    console.log(req.body.content, "getTagPosts")
+    let data = await client.query(
+      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id=tag_relate.post_id WHERE tag_id = (SELECT tag_id FROM tag WHERE tag_content=$1);`,
+      [req.body.content]);
+    
+    res.json({
+      success:true,
+      content: data
+    })
+  }catch (err){
+    console.log(err);
+    res.json({
+      success: false
+    })
+  }
+})
+
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
 });
