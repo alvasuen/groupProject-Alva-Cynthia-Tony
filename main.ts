@@ -679,7 +679,6 @@ app.post("/search", async (req: Request, res: Response) => {
     }
 
     //search from recipe name
-    // console.log(resultFromName,'434')
     if (resultFromName.rowCount > 0) {
       summaryData.push(...resultFromName.rows);
     }
@@ -690,7 +689,6 @@ app.post("/search", async (req: Request, res: Response) => {
       summaryData.push(...resultFromLevel.rows);
     }
 
-    // console.log(resultFromLevel)
 
     //search from tag
     if (resultFromTag.rowCount > 0) {
@@ -707,9 +705,6 @@ app.post("/search", async (req: Request, res: Response) => {
     const summaryData0 = [
       ...new Map(summaryData.map((m) => [m.recipe_id, m])).values(),
     ];
-    // console.log(summaryData);
-
-    // console.log(summaryData0)
 
     res.json({
       success: true,
@@ -916,7 +911,7 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
       res.status(301).end("Please login First.");
     }
   } catch (error) {
-    res.status(500).end(`Can't load the save recipes ${error}`);
+    res.status(500).end(`Can't load the saved recipes ${error}`);
   }
 });
 
@@ -965,6 +960,10 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
     await client.query(
       `UPDATE saved_recipe SET saved=false WHERE recipe_id=$1 AND user_id=$2;`,
       [req.body.id, req.session.userId]
+    );
+    await client.query(
+      `UPDATE recipes SET saved_count = saved_count-1 WHERE recipe_id = $1 ;`,
+      [req.body.id]
     );
     res.json({ success: true });
   } catch (err) {
