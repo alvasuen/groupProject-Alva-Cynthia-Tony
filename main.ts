@@ -354,13 +354,8 @@ app.post("/post", async (req: Request, res: Response) => {
       `select icon from users where user_id = $1`,
       [id]
     );
-    // console.log("test", icon);
-    const createdDate = await client.query(
-      `select created_at from posts where post_id = $1`,
-      [postId.rows[0].post_id]
-    );
-    const likedCount = await client.query(
-      `select liked_count from posts where post_id = $1`,
+    const createdPost = await client.query(
+      `select * from posts where post_id = $1`,
       [postId.rows[0].post_id]
     );
 
@@ -368,13 +363,10 @@ app.post("/post", async (req: Request, res: Response) => {
       success: true,
       post: {
         postId: postId.rows[0].post_id,
-        content: content,
-        image: image,
         username: username,
         tags: tags,
         icon: icon,
-        createdDate: createdDate,
-        likedCount: likedCount,
+        createdPost: createdPost,
       },
     });
   } catch (ex) {
@@ -432,7 +424,7 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
 
       if (checkLiked.rowCount == 0) {
         const liked = await client.query(
-          `update posts set liked_count=liked_count+1 where post_id = $1`,
+          `update posts set liked_count = liked_count+1 where post_id = $1`,
           [req.body.id]
         );
         const updateLikePost = await client.query(
@@ -441,7 +433,7 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
         );
       } else {
         const liked = await client.query(
-          `update posts set liked_count=liked_count+1 where post_id = $1`,
+          `update posts set liked_count = liked_count+1 where post_id = $1`,
           [req.body.id]
         );
         const updateLiked = await client.query(
@@ -451,7 +443,7 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
       }
     } else {
       const unliked = await client.query(
-        `update posts set liked_count=liked_count-1 where post_id = $1`,
+        `update posts set liked_count = liked_count -1 where post_id = $1`,
         [req.body.id]
       );
       const updateLiked = await client.query(
@@ -460,10 +452,14 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
       );
     }
     const likedCount = await client.query(
-      `select liked_count from posts where post_id =$1`,
-      [req.body.id]
+      `select liked_count from posts where post_id = $1`,[req.body.id]
     );
-    res.status(200).json({ success: true, likedCount: likedCount.rows });
+    // const liked = await client.query(
+    //   `select * from liked_posts where post_id = $1`,[req.body.id]
+    // );
+    res
+      .status(200)
+      .json({ success: true, likedCount: likedCount.rows });
   } catch (err) {
     res.status(500).end("Error Message:" + err);
   }

@@ -1,11 +1,8 @@
-const addNewPost = document.querySelector(".addpost");
-addNewPost.addEventListener("click", function () {
-  document.querySelector(".generate-post-container").classList.remove("hidden");
-});
-
 const cancel = document.querySelector(".cancel");
+const filter = document.querySelector(".filter");
 cancel.addEventListener("click", function () {
   document.querySelector(".generate-post-container").classList.add("hidden");
+  filter.classList.add("hidden");
 });
 
 //header - profile button
@@ -18,6 +15,17 @@ profileBtn.addEventListener("click", async () => {
     location.href = "./profile.html";
   } else {
     location.href = "./login.html";
+  }
+});
+
+// search tag function
+const searchTag = document.querySelector(".search-tag");
+const searchTagForm = document.querySelector(".searchTagForm ");
+searchTag.addEventListener("click", function () {
+  if (searchTagForm.classList.contains("hidden")) {
+    searchTagForm.classList.remove("hidden");
+  } else {
+    searchTagForm.classList.add("hidden");
   }
 });
 
@@ -55,14 +63,13 @@ async function likePost() {
       });
       const json = await res.json();
       if (json.success) {
+        console.log(json);
         if (like[i].classList.contains("liked")) {
           like[i].classList.remove("liked");
         } else {
           like[i].classList.add("liked");
         }
         let likedCount = document.querySelector("span");
-        // likedCount.className = "likedCount";
-        // likedCount.textContent = json.likedCount[0].liked_count;
         likedCount.innerHTML = "";
         let innerText = document.createTextNode(json.likedCount[0].liked_count);
         likedCount.appendChild(innerText);
@@ -103,19 +110,27 @@ async function savePost() {
 }
 
 window.onload = async () => {
+  await loadPosts();
+
   let res = await fetch("/currentUser");
   let json = await res.json();
-  let createBtn = document.querySelector(".demo");
+  let addPostBtn = document.querySelector(".add-post-container");
   if (json.isLogin) {
     profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
     profileBtn.href = "./profile.html";
-    createBtn.innerHTML = `<button class="addpost">CREATE</button>`;
+    addPostBtn.innerHTML = `<button class="addpost"><i class="fa-solid fa-plus"></i></button>`;
   } else {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
-    createBtn.innerHTML = "";
+    addPostBtn.innerHTML = "";
   }
 
-  await loadPosts();
+  const addNewPost = document.querySelector(".addpost");
+  addNewPost.addEventListener("click", function () {
+    document
+      .querySelector(".generate-post-container")
+      .classList.remove("hidden");
+    filter.classList.remove("hidden");
+  });
 
   likePost();
 
@@ -169,7 +184,7 @@ async function loadPosts() {
 
       let faHeart = document.createElement("i");
       faHeart.className = `fa-solid fa-heart heart-${json.post.posts[i].post_id}`;
-      console.log(json);
+      // console.log(json);
       for (let j = 0; j < json.checkLiked.checkLiked.length; j++) {
         if (
           json.post.posts[i].post_id == json.checkLiked.checkLiked[j].post_id &&
@@ -183,7 +198,7 @@ async function loadPosts() {
       }
 
       let likedCount = document.createElement("span");
-      likedCount.className = "likedCount";
+      likedCount.className = `likedCount likeCount-${json.post.posts[i].post_id}`;
       likedCount.textContent = json.post.posts[i].liked_count;
       // likedCount.style.fontFamily = "Courier New, Courier, monospace";
 
@@ -269,7 +284,6 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
   for (let tag of tags) {
     obj = Object.assign(obj, { [`${tag.id}`]: tag.textContent });
   }
-  // console.log(obj);
 
   const res = await fetch("/post", {
     // send the data to browser
@@ -284,14 +298,14 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
 
   //   response data from browser, style:(json)
   const result = await res.json();
+  console.log(result.post.createdPost.rows[0].content);
   if (result.success) {
     let p2Container = document.createElement("div");
     p2Container.className = "p2-container";
     let p2ImgContainer = document.createElement("div");
     p2ImgContainer.className = "p2-img-container";
     let img = document.createElement("img");
-    console.log();
-    img.src = result.post.image;
+    img.src = result.post.createdPost.rows[0].image;
 
     let p2RightContainer = document.createElement("div");
     p2RightContainer.className = "p2-right-container";
@@ -308,14 +322,12 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     let p2Username = document.createElement("div");
     p2Username.className = "p2-username";
     p2Username.innerHTML = result.post.username.rows[0].username;
-    console.log(result);
-    console.log(result.post);
 
     let gap = document.createElement("div");
     gap.className = "gap";
     let p2Date = document.createElement("div");
     p2Date.className = "p2-date";
-    p2Date.innerHTML = result.post.createdDate.rows[0].created_at.slice(0, 10);
+    p2Date.innerHTML = result.post.createdPost.rows[0].created_at.slice(0, 10);
 
     let p2Function = document.createElement("div");
     p2Function.className = "p2-function";
@@ -324,15 +336,14 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     likeContainer.className = "like-container";
 
     let faHeart = document.createElement("i");
-    faHeart.className = `fa-solid fa-heart heart-${result.post.postId}`;
+    faHeart.className = `fa-solid fa-heart}`;
 
     let likedCount = document.createElement("span");
-    likedCount.className = "likedCount";
-    likedCount.textContent = result.post.likedCount.rows[0].liked_count;
-    // likedCount.style.fontFamily = "Courier New, Courier, monospace";
+    likedCount.className = `likedCount`;
+    likedCount.textContent = result.post.createdPost.rows[0].liked_count;
 
     let faBookMark = document.createElement("i");
-    faBookMark.className = `fa-solid fa-bookmark bookmark-${result.post.postId}`;
+    faBookMark.className = `fa-solid fa-bookmark`;
     // faBookMark.textContent = result.post.username.rows[0].saved_count;
 
     let p2TagContainer = document.createElement("div");
@@ -352,7 +363,7 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     p2Content.className = "p2-content";
     let p2ContentContent = document.createElement("div");
     p2ContentContent.className = "p2-content-content";
-    p2ContentContent.innerHTML = result.post.content;
+    p2ContentContent.innerHTML = result.post.createdPost.rows[0].content;
 
     let row = document.createElement("div");
     row.className = "row";
@@ -375,7 +386,7 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     likeContainer.appendChild(likedCount);
     p2Function.appendChild(faBookMark);
     p2Right.appendChild(p2TagContainer);
-    // p2TagContainer.appendChild(p2Tag);
+    // p2TagContainer.appendChild(p2Tag); // wrote in above
     p2Right.appendChild(p2Content);
     p2Content.appendChild(p2ContentContent);
     document.querySelector(".main").appendChild(row);
