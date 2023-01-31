@@ -49,7 +49,7 @@ window.onload = async (event) => {
     for (let i=0; i<recipeData_json.content.rowCount;i++){
 
       document.querySelector("#recipes").innerHTML += 
-      `<div class="comment-box" >
+      `<a href= http://localhost:8080/recipe.html?id=${json.content[i].recipe_id}><div class="comment-box" >
       <div class="shadow-box">
         <div class="comment">
             <img src=${recipeData_json.content.rows[i].image}>
@@ -58,7 +58,8 @@ window.onload = async (event) => {
           <p>${recipeData_json.content.rows[i].recipe_name}</p>
         </div>
       </div>
-    </div>`
+    </div>
+    </a>`
     }
   }
 };
