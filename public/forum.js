@@ -135,7 +135,7 @@ window.onload = async () => {
   let json = await res.json();
   let addPostBtn = document.querySelector(".add-post-container");
   if (json.isLogin) {
-    profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
+    profileBtn.innerHTML = `<img src=${json.icon} style="width: 30px; height:30px; border-radius: 50%; object-fit: cover;"> ${json.username}`;
     profileBtn.href = "./profile.html";
     addPostBtn.innerHTML = `<button class="addpost"><i class="fa-solid fa-plus"></i></button>`;
   } else {
