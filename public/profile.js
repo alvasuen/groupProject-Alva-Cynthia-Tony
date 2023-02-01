@@ -234,5 +234,12 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
   if (!json.success) {
     alert(json.message);
   }
-  // location.href("./profile.html")
 });
+
+let logoutBtn = document.querySelector(".logout")
+logoutBtn.addEventListener("click", async (e)=>{
+  let res = await fetch ("/logout");
+  let res_json = res.json();
+  console.log(res_json);
+  location.href = "./index.html"
+})
