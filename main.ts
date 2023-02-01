@@ -876,10 +876,10 @@ app.get("/savedPosts", async (req: Request, res: Response) => {
 app.get("/postedPost", async (req: Request, res: Response) => {
   try {
     let user_id = req.session.userId;
-    if (!req.session.isLogin) {
-      res.json({ err: "Please login first." });
-      return;
-    }
+    // if (!req.session.isLogin) {
+    //   res.json({ err: "Please login first." });
+    //   return;
+    // }
 
     const getAllPostId = await client.query(
       `SELECT post_id FROM posts WHERE user_id = $1`,
@@ -889,9 +889,11 @@ app.get("/postedPost", async (req: Request, res: Response) => {
       `SELECT username FROM users WHERE user_id = $1`,
       [user_id]
     );
+    console.log(getAllPostId);
+    
 
     let hasPost = getAllPostId.rowCount > 0 ? true : false;
-    // console.log(hasPost);
+    console.log(hasPost);
 
     if (!hasPost) {
       res.json({ hasPost });
