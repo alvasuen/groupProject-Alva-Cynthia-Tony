@@ -244,7 +244,8 @@ a {
 }
 
 .step-1 {
-  width: 200px;
+  height: 300px;
+  object-fit: cover;
 }
 
 .page-background {
