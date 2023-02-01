@@ -175,7 +175,7 @@ window.onload = async (e) => {
   gridParent.innerHTML = "";
 
   if (json.isLogin) {
-    profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
+    profileBtn.innerHTML = `<img src=${json.icon} style="width: 30px; height:30px; border-radius: 50%; object-fit: cover;"> ${json.username}`;
     // profileBtn.href="./profile.html";
   } else {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;

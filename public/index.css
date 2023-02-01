@@ -24,6 +24,7 @@ body {
   line-height: 22px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   color: #042d42;
+  border-bottom: #042d42 2px solid;
 }
 
 a {
@@ -48,13 +49,14 @@ a {
 }
 
 .menu-wrapper a {
-  margin-left: 100px;
+  margin-left: 50px;
   font-size: 12px;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   letter-spacing: 9px;
   color: #042d42;
   cursor: pointer;
+  margin-right: 50px;
 }
 
 .menu-wrapper a:hover {
@@ -118,6 +120,8 @@ a {
   width: 100vw;
   height: 56.25vw;
   margin-top: 80px;
+  margin-bottom: 60px;
+  border-bottom: #c28d06 solid 2px;
 }
 
 /* Choose go to recipe or memoWall */
@@ -146,13 +150,14 @@ a {
 
 .choice-photo {
   background-position: left;
-  width: 100px;
-  height: 400px;
+  width: 600px;
+  height: 300px;
   display: block;
   position: relative;
   transform: scale(1, 1);
   transition: all 1s ease-out;
   /* object-position: 50% 25%; */
+  overflow: hidden;
 }
 
 .choice-photo:hover {
