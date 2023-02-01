@@ -362,9 +362,9 @@ app.get("/recipe", async (req: Request, res: Response) => {
 });
 
 // connect to wall.html
-app.get("/post", async (req: Request, res: Response) => {
-  res.sendFile(path.join(p, "wall.html"));
-});
+// app.get("/post", async (req: Request, res: Response) => {
+//   res.sendFile(path.join(p, "wall.html"));
+// });
 
 // create memo, photo store in the ./uploads, and req.json take the file
 app.post("/post", async (req: Request, res: Response) => {
@@ -763,7 +763,7 @@ app.post("/saveRecipe", async (req: Request, res: Response) => {
   try {
     if (!req.session.isLogin) {
       res.json({
-        message: "Please login first!",
+        message: "Please login first! - 2",
         success: false,
       });
     } else {
@@ -790,9 +790,9 @@ app.post("/saveRecipe", async (req: Request, res: Response) => {
 });
 
 //load profile post
-app.get("/profile", async (req: Request, res: Response) => {
-  res.sendFile(path.join(p, "profile.html"));
-});
+// app.get("/profile", async (req: Request, res: Response) => {
+//   res.sendFile(path.join(p, "profile.html"));
+// });
 
 app.get("/profile/:id", async (req: Request, res: Response) => {
   try {
@@ -825,7 +825,7 @@ app.get("/profile/:id", async (req: Request, res: Response) => {
         res.status(200).json({ err: "Haven't posted any posts" });
       }
     } else {
-      res.status(301).json({ err: "Please login first." });
+      res.status(301).json({ err: "Please login first. - 3" });
     }
   } catch (error) {
     res.status(500).json({ err: "Can't load the post." });
@@ -835,10 +835,6 @@ app.get("/profile/:id", async (req: Request, res: Response) => {
 app.get("/savedPosts", async (req: Request, res: Response) => {
   try {
     let user_id = req.session.userId;
-    if (!req.session.isLogin) {
-      res.status(301).json({ err: "Please login first." });
-      return;
-    }
 
     let allSavedPost = await client.query(
       `SELECT post_id FROM saved_posts WHERE user_id = $1 AND saved = true`,
@@ -876,10 +872,6 @@ app.get("/savedPosts", async (req: Request, res: Response) => {
 app.get("/postedPost", async (req: Request, res: Response) => {
   try {
     let user_id = req.session.userId;
-    // if (!req.session.isLogin) {
-    //   res.json({ err: "Please login first." });
-    //   return;
-    // }
 
     const getAllPostId = await client.query(
       `SELECT post_id FROM posts WHERE user_id = $1`,
@@ -926,10 +918,6 @@ app.get("/postedPost", async (req: Request, res: Response) => {
 //Read Saved Recipes
 app.get("/saveRecipe", async (req: Request, res: Response) => {
   try {
-    if (!req.session.isLogin) {
-      res.json({ err: "Please login First." });
-      return;
-    }
     // else {
     //   // res.status(301).json({ err: "Please login First." });
     // }
@@ -988,7 +976,7 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
     });
   } else {
     res.json({
-      message: "Please login first!",
+      message: "Please login first! - 1",
     });
   }
 });

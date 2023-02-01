@@ -158,18 +158,13 @@ window.onload = async () => {
 };
 
 async function loadPosts() {
-  try {
-    const res = await fetch("/posts");
-    const json = await res.json();
-    console.log(json.hasPost);
-    // if (!json.hasPost) {
-    //   console.log("No posts.");
-    //   return;
-    // }
-    if (json.success) {
-      let forum = document.querySelector(".main");
-      forum.innerHTML = "";
-      console.log(json);
+  const res = await fetch("/posts");
+  const json = await res.json();
+  console.log(json);
+  if (json.success) {
+    let forum = document.querySelector(".main");
+    forum.innerHTML = "";
+    console.log(json);
 
       for (let i = json.posts.length - 1; i >= 0; i--) {
         // for (let i = 0; i < json.post.posts.length; i++) {
@@ -425,11 +420,7 @@ async function loadPosts() {
         });
       });
     }
-  } catch (err) {
-    console.log(err);
-  }
-}
-
+  } 
 // create post
 document.querySelector("#submit").addEventListener("click", async (event) => {
   event.preventDefault();
