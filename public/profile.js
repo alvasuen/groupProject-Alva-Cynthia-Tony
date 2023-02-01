@@ -52,6 +52,25 @@ function createGrid(image, href) {
   gridParent.appendChild(grid);
 }
 
+function postStatus(status) {
+  let all = document.querySelector(".main-container");
+  let textContent = " ";
+  // all.removeChild("textBox");
+  let textBox = document.createElement("div");
+  textBox.innerHTML = "";
+  textBox.classList.add("textBox");
+  let posts = document.querySelector(".user-posts");
+  let zero = "0 Post";
+  let innerText = document.createTextNode(zero);
+  posts.appendChild(innerText);
+  let text = document.createElement("p");
+  text.classList.add("text-none");
+  textContent = document.createTextNode(status);
+  text.appendChild(textContent);
+  textBox.appendChild(text);
+  all.appendChild(textBox);
+}
+
 //It will show the user post part when the page loaded
 async function onLoad() {
   try {
@@ -59,21 +78,9 @@ async function onLoad() {
     const res = await fetch("/postedPost");
     const allPost = await res.json();
     console.log("AllPOST: ", allPost);
-    console.log(allPost.hasOwnProperty("err"));
-    if (allPost.hasOwnProperty("err")) {
-      let all = document.querySelector(".main-container");
-      let posts = document.querySelector(".user-posts");
-      let zero = "0 Post";
-      let innerText = document.createTextNode(zero);
-      posts.appendChild(innerText);
-      let textBox = document.createElement("div");
-      textBox.classList.add("textBox");
-      let text = document.createElement("p");
-      text.classList.add("text-none");
-      let textContent = document.createTextNode("Haven't posted any post.");
-      text.appendChild(textContent);
-      textBox.appendChild(text);
-      all.appendChild(textBox);
+    // console.log(allPost.hasOwnProperty("err"));
+    if (!allPost.hasPst) {
+      postStatus("Haven't posted any post.");
     }
     if (allPost.postId.length > 0) {
       for (let index = 0; index < allPost.postId.length; index++) {
@@ -96,10 +103,13 @@ async function onLoad() {
 const post = document.querySelector(".post-btn");
 post.addEventListener("click", async function () {
   try {
-    gridParent.innerHTML = "";
+    // gridParent.innerHTML = "";
     const res = await fetch("/postedPost");
     const allPost = await res.json();
     console.log("AllPOST: ", allPost);
+    // if (!allPost.hasPst) {
+    //   postStatus("Haven't posted any post.");
+    // }
 
     for (let index = 0; index < allPost.postId.length; index++) {
       let image = allPost.image[index].image;
@@ -139,6 +149,9 @@ saved.addEventListener("click", async function () {
     const res = await fetch("/savedPosts");
     const allSavedPost = await res.json();
     console.log(allSavedPost);
+    // if (!allSavedPost.hasPst) {
+    //   postStatus("Haven't saved any post.");
+    // }
     for (let index = 0; index < allSavedPost.allSavedPost.length; index++) {
       let image = allSavedPost.allSavedPostImage[index].image;
       let href = `http://localhost:8080/post.html?id=${allSavedPost.allSavedPost[index].post_id}`;

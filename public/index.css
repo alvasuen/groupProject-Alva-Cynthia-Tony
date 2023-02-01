@@ -140,17 +140,19 @@ a {
   float: left;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  /* overflow: hidden; */
   position: relative;
 }
 
 .choice-photo {
+  background-position: left;
   width: 100px;
   height: 400px;
   display: block;
   position: relative;
   transform: scale(1, 1);
   transition: all 1s ease-out;
+  /* object-position: 50% 25%; */
 }
 
 .choice-photo:hover {
@@ -271,14 +273,13 @@ a {
   background-color: transparent;
 }
 
-.comment img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+.comment img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-
-.recipeTitle p{
+.recipeTitle p {
   font-family: "Cormorant Garamond", serif;
   font-size: 20px;
   display: flex;
@@ -315,7 +316,6 @@ a {
 .icon:active {
   color: #042d42;
 }
-
 
 /* Footer */
 .footer {

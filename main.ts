@@ -446,18 +446,10 @@ app.get("/posts", async (req: Request, res: Response) => {
 
   res.json({
     success: true,
-    post: {
-      posts: posts.rows,
-    },
-    tags: {
-      tags: tags.rows,
-    },
-    checkLiked: {
-      checkLiked: checkLiked.rows,
-    },
-    checkSaved: {
-      checkSaved: checkSaved.rows,
-    },
+    posts: posts.rows,
+    tags: tags.rows,
+    checkLiked: checkLiked.rows,
+    checkSaved: checkSaved.rows,
     isLogin: req.session.isLogin,
   });
 });
@@ -867,7 +859,7 @@ app.get("/savedPosts", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.status(200).json({ err: "Haven't saved any posts" });
+        res.status(200).json({ message: "Haven't saved any posts" });
       }
     }
   } catch (err) {
@@ -887,8 +879,8 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         `SELECT username FROM users WHERE user_id = $1`,
         [user_id]
       );
-
-      if (getAllPostId.rowCount > 0) {
+      let hasPost = getAllPostId.rowCount > 0 ? true : false;
+      if (hasPost) {
         // console.log("getAllPostId: ", getAllPostId);
         let imgArray = [];
         if (getAllPostId.rowCount > 0) {
@@ -909,10 +901,11 @@ app.get("/postedPost", async (req: Request, res: Response) => {
           postId: getAllPostId.rows,
           image: imgArray,
           userName: userName.rows,
+          hasPost,
           success: true,
         });
       } else {
-        res.status(200).json({ err: "Haven't posted any posts" });
+        res.status(200).json({ hasPost });
       }
     } else {
       res.status(301).json({ err: "Please login first." });
@@ -958,7 +951,7 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
       res.status(301).json({ err: "Please login First." });
     }
   } catch (error) {
-    res.status(500).json({ err: "Can't load the saved recipes" + error });
+    res.status(500).json({ error });
   }
 });
 
@@ -1022,7 +1015,7 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
 app.get("/popularRecipe", async (req: Request, res: Response) => {
   try {
     let data = await client.query(
-      `SELECT recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`
+      `SELECT recipe_id, recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`
     );
     res.json({
       success: true,
@@ -1031,6 +1024,26 @@ app.get("/popularRecipe", async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     res.json({ success: false });
+  }
+});
+
+app.post("/getTagPosts", async (req: Request, res: Response) => {
+  try {
+    console.log(req.body.content, "getTagPosts");
+    let data = await client.query(
+      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id=tag_relate.post_id WHERE tag_id = (SELECT tag_id FROM tag WHERE tag_content=$1);`,
+      [req.body.content]
+    );
+
+    res.json({
+      success: true,
+      content: data,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      success: false,
+    });
   }
 });
 
