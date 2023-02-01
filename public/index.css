@@ -140,17 +140,19 @@ a {
   float: left;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  /* overflow: hidden; */
   position: relative;
 }
 
 .choice-photo {
+  background-position: left;
   width: 100px;
   height: 400px;
   display: block;
   position: relative;
   transform: scale(1, 1);
   transition: all 1s ease-out;
+  /* object-position: 50% 25%; */
 }
 
 .choice-photo:hover {

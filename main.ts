@@ -28,7 +28,7 @@ client.connect();
 
 const app = express();
 app.use(express.urlencoded()); // req.body
-app.use(express.json()); // RESTful, method + verb, example: GET / memos
+app.use(express.json({limit: '50mb'})); // RESTful, method + verb, example: GET / memos
 
 app.use(express.static("public"));
 app.use(express.static("uploads"));
@@ -859,7 +859,7 @@ app.get("/savedPosts", async (req: Request, res: Response) => {
           success: true,
         });
       } else {
-        res.status(200).json({ err: "Haven't saved any posts" });
+        res.status(200).json({ message: "Haven't saved any posts" });
       }
     }
   } catch (err) {
@@ -879,8 +879,8 @@ app.get("/postedPost", async (req: Request, res: Response) => {
         `SELECT username FROM users WHERE user_id = $1`,
         [user_id]
       );
-
-      if (getAllPostId.rowCount > 0) {
+      let hasPost = getAllPostId.rowCount > 0 ? true : false;
+      if (hasPost) {
         // console.log("getAllPostId: ", getAllPostId);
         let imgArray = [];
         if (getAllPostId.rowCount > 0) {
@@ -901,10 +901,11 @@ app.get("/postedPost", async (req: Request, res: Response) => {
           postId: getAllPostId.rows,
           image: imgArray,
           userName: userName.rows,
+          hasPost,
           success: true,
         });
       } else {
-        res.status(200).json({ err: "Haven't posted any posts" });
+        res.status(200).json({ hasPost });
       }
     } else {
       res.status(301).json({ err: "Please login first." });
@@ -950,7 +951,7 @@ app.get("/saveRecipe", async (req: Request, res: Response) => {
       res.status(301).json({ err: "Please login First." });
     }
   } catch (error) {
-    res.status(500).json({ err: "Can't load the saved recipes" + error });
+    res.status(500).json({ error });
   }
 });
 
@@ -976,7 +977,7 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
 });
 
 app.put("/change_icon", async (req: Request, res: Response) => {
-  // console.log(req.body.icon);
+  // console.log(req.body);
   try {
     await client.query(`UPDATE users SET icon = $1 WHERE user_id = $2 ;`, [
       req.body.icon,
@@ -1030,6 +1031,15 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   try {
     console.log(req.body.content, "getTagPosts");
     let data = await client.query(
+<<<<<<< HEAD
+      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id=tag_relate.post_id WHERE tag_id = (SELECT tag_id FROM tag WHERE tag_content=$1);`,
+      [req.body.content]
+    );
+
+    res.json({
+      success: true,
+      content: data,
+=======
       `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content=$1);`,
       [req.body.content]
     );
@@ -1059,6 +1069,7 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
       checkSaved,
       tags,
       userData,
+>>>>>>> 3c0ed495a215f9aa91e6c315e1bc0fe1b5257e93
     });
   } catch (err) {
     console.log(err);
@@ -1068,6 +1079,18 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   }
 });
 
+<<<<<<< HEAD
+=======
+app.get("/getUserIcon",async (req:Request, res:Response)=>{
+  let data = await client.query(
+    `SELECT icon FROM users WHERE user_id=$1;`,
+    [req.session.userId]);
+    res.json({
+      content: data
+    })
+})
+
+>>>>>>> 3c0ed495a215f9aa91e6c315e1bc0fe1b5257e93
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
 });
