@@ -161,10 +161,6 @@ async function loadPosts() {
   const res = await fetch("/posts");
   const json = await res.json();
   console.log(json);
-  if (!json.hasPost) {
-    console.log("No posts.");
-    return;
-  }
   if (json.success) {
     let forum = document.querySelector(".main");
     forum.innerHTML = "";
