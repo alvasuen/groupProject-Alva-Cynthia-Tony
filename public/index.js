@@ -32,6 +32,29 @@ window.onload = async (event) => {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
   }
 
+// show post slideshow
+  let postData = await fetch("/popularLikePost");
+  let postData_json = await postData.json();
+  if (postData_json.success) {
+    for (let i = 0; i < postData_json.content.rowCount; i++) {
+      document.querySelector(
+        "#posts"
+      ).innerHTML += `<a href= "http://localhost:8080/recipe.html?id=${postData_json.content.rows[i].post_id}">
+      <div class="comment-box" >
+      <div class="shadow-box">
+        <div class="comment">
+            <img src=${postData_json.content.rows[i].image}>
+        </div>
+        <div class="recipeTitle">
+          <p>${postData_json.content.rows[i].content}</p>
+        </div>
+      </div>
+    </div>
+    </a>`;
+    }
+  }
+
+
   //show recipes slideshow
   let recipeData = await fetch ("/popularRecipe");
   let recipeData_json = await recipeData.json();
