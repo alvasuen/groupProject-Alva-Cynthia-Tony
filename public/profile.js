@@ -165,19 +165,25 @@ saved.addEventListener("click", async function () {
 window.onload = async (e) => {
   let res = await fetch("/currentUser");
   let json = await res.json();
-  let username = document.querySelector(".username");
-  let name = json.username;
-  let innerName = document.createTextNode(name);
-  username.appendChild(innerName);
-  //ON profile page's icon
-  let userIcon = document.querySelector(".icon");
-  userIcon.src = json.icon;
+
   if (json.isLogin) {
     profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
     // profileBtn.href="./profile.html";
   } else {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
   }
+
+  let username = document.querySelector(".username");
+  let name = json.username;
+  let innerName = document.createTextNode(name);
+  username.appendChild(innerName);
+  //ON profile page's icon
+  let userIcon = document.querySelector(".icon");
+  // userIcon.src = json.icon;
+  let icon = await fetch ("/getUserIcon")
+  let icon_json = await icon.json();
+  userIcon.src = icon_json.content.rows[0].icon;
+
   onLoad();
 };
 
@@ -227,7 +233,7 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
   let temp1 = await getBase64(files[0]);
   let temp = ["data:image/jpeg;base64", temp1.toString()];
   let image = temp.join().toString();
-  console.log(image);
+  // console.log(image);
 
   const res = await fetch("/change_icon", {
     method: "PUT",
@@ -242,3 +248,11 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     alert(json.message);
   }
 });
+
+let logoutBtn = document.querySelector(".logout")
+logoutBtn.addEventListener("click", async (e)=>{
+  let res = await fetch ("/logout");
+  let res_json = res.json();
+  console.log(res_json);
+  location.href = "./index.html"
+})

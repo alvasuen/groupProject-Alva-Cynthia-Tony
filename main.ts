@@ -28,7 +28,7 @@ client.connect();
 
 const app = express();
 app.use(express.urlencoded()); // req.body
-app.use(express.json()); // RESTful, method + verb, example: GET / memos
+app.use(express.json({limit: '50mb'})); // RESTful, method + verb, example: GET / memos
 
 app.use(express.static("public"));
 app.use(express.static("uploads"));
@@ -430,17 +430,17 @@ app.post("/post", async (req: Request, res: Response) => {
 // load all posts from the json
 app.get("/posts", async (req: Request, res: Response) => {
   const posts = await client.query(
-    `select * from posts inner join users on posts.user_id = users.user_id`
+    `select * from posts inner join users on posts.user_id = users.user_id ORDER BY post_id ASC`
   );
   const tags = await client.query(
     `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
   );
   const checkLiked = await client.query(
-    `select * from liked_posts where user_id = $1`,
+    `select * from liked_posts where user_id = $1 ORDER BY post_id ASC`,
     [req.session.userId]
   );
   const checkSaved = await client.query(
-    `select * from saved_posts where user_id = $1`,
+    `select * from saved_posts where user_id = $1 ORDER BY post_id ASC`,
     [req.session.userId]
   );
 
@@ -977,7 +977,7 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
 });
 
 app.put("/change_icon", async (req: Request, res: Response) => {
-  // console.log(req.body.icon);
+  // console.log(req.body);
   try {
     await client.query(`UPDATE users SET icon = $1 WHERE user_id = $2 ;`, [
       req.body.icon,
@@ -1031,6 +1031,7 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   try {
     console.log(req.body.content, "getTagPosts");
     let data = await client.query(
+<<<<<<< HEAD
       `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id=tag_relate.post_id WHERE tag_id = (SELECT tag_id FROM tag WHERE tag_content=$1);`,
       [req.body.content]
     );
@@ -1038,6 +1039,37 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
     res.json({
       success: true,
       content: data,
+=======
+      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content=$1);`,
+      [req.body.content]
+    );
+
+    let userData = await client.query(
+      `select * from users where user_id in (SELECT user_id FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id in(SELECT tag_id FROM tag where tag_content= $1));`,
+      [req.body.content]
+    );
+
+    const tags = await client.query(
+      `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
+    );
+
+    const checkLiked = await client.query(
+      `select * from liked_posts where user_id = $1`,
+      [req.session.userId]
+    );
+    const checkSaved = await client.query(
+      `select * from saved_posts where user_id = $1`,
+      [req.session.userId]
+    );
+
+    res.json({
+      success: true,
+      content: data,
+      checkLiked,
+      checkSaved,
+      tags,
+      userData,
+>>>>>>> 3c0ed495a215f9aa91e6c315e1bc0fe1b5257e93
     });
   } catch (err) {
     console.log(err);
@@ -1047,6 +1079,18 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   }
 });
 
+<<<<<<< HEAD
+=======
+app.get("/getUserIcon",async (req:Request, res:Response)=>{
+  let data = await client.query(
+    `SELECT icon FROM users WHERE user_id=$1;`,
+    [req.session.userId]);
+    res.json({
+      content: data
+    })
+})
+
+>>>>>>> 3c0ed495a215f9aa91e6c315e1bc0fe1b5257e93
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
 });

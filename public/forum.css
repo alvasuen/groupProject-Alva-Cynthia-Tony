@@ -123,7 +123,7 @@ a {
 }
 
 .filter {
-  width: 200vh;
+  width: 250vh;
   height: 100vh;
   background-color: black;
   opacity: 0.5;
@@ -230,7 +230,7 @@ a {
 
 .forum-container {
   display: grid;
-  grid-template-columns: 250px auto;
+  grid-template-columns: 50px auto 50px;
 }
 
 .panel {
