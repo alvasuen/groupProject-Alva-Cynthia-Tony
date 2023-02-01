@@ -15,28 +15,9 @@ profileBtn.addEventListener("click", async () => {
   }
 });
 
-// let imgIcon = document.querySelector(".icon");
-// imgIcon.addEventListener("click", async () => {
-//   let res = await fetch("/currentUser");
-//   let json = await res.json();
-//   console.log("JSON", json);
-//   if (json.isLogin) {
-//     location.href = "./profile.html";
-//   } else {
-//     location.href = "./login.html";
-//   }
-// });
-
 //For Create new elements
 const gridParent = document.querySelector("#profile-post");
 const createPost = document.querySelector(".addpost");
-// createPost.addEventListener("click", async function () {
-// const res = await fetch("/post");
-// const result = await res.json();
-// const b = document.createElement("a");
-// b.href = `http://localhost:8080/forum.html`;
-// createPost.appendChild(b);
-// });
 
 //For create new grid
 function createGrid(image, href) {
@@ -52,20 +33,21 @@ function createGrid(image, href) {
   gridParent.appendChild(grid);
 }
 
+let all = document.querySelector(".main-container");
+let posts = document.querySelector(".user-posts");
+
 function postStatus(status) {
-  let all = document.querySelector(".main-container");
-  let textContent = " ";
+  // let textContent = " ";
   // all.removeChild("textBox");
   let textBox = document.createElement("div");
-  textBox.innerHTML = "";
+  textBox.innerHTML = " ";
   textBox.classList.add("textBox");
-  let posts = document.querySelector(".user-posts");
   let zero = "0 Post";
   let innerText = document.createTextNode(zero);
   posts.appendChild(innerText);
   let text = document.createElement("p");
   text.classList.add("text-none");
-  textContent = document.createTextNode(status);
+  let textContent = document.createTextNode(status);
   text.appendChild(textContent);
   textBox.appendChild(text);
   all.appendChild(textBox);
@@ -74,48 +56,58 @@ function postStatus(status) {
 //It will show the user post part when the page loaded
 async function onLoad() {
   try {
-    gridParent.innerHTML = "";
+    gridParent.innerHTML = " ";
     const res = await fetch("/postedPost");
     const allPost = await res.json();
     console.log("AllPOST: ", allPost);
     // console.log(allPost.hasOwnProperty("err"));
-    if (!allPost.hasPst) {
+    if (!allPost.hasPost) {
       postStatus("Haven't posted any post.");
+      // let textBox = document.querySelector(".textBox");
+      // textBox.innerHTML = " ";
+      return;
     }
-    if (allPost.postId.length > 0) {
-      for (let index = 0; index < allPost.postId.length; index++) {
-        let image = allPost.image[index].image;
-        let href = `http://localhost:8080/post.html?id=${allPost.postId[index].post_id}`;
-        createGrid(image, href);
-      }
-      let posts = document.querySelector(".user-posts");
-      //Show the number of total posts
-      let postAmount = allPost.postId.length + " " + "Posts";
-      let innerText = document.createTextNode(postAmount);
-      posts.appendChild(innerText);
+    // if (allPost.postId.length > 0) {
+    for (let index = 0; index < allPost.postId.length; index++) {
+      let image = allPost.image[index].image;
+      let href = `http://localhost:8080/post.html?id=${allPost.postId[index].post_id}`;
+      createGrid(image, href);
     }
+    let posts = document.querySelector(".user-posts");
+    //Show the number of total posts
+    let postAmount = allPost.postId.length + " " + "Posts";
+    let innerText = document.createTextNode(postAmount);
+    posts.appendChild(innerText);
+    // }
   } catch (err) {
     console.log("Error message:" + err);
   }
 }
 
+let textBox = document.querySelector(".textBox");
 //Read the posted post
 const post = document.querySelector(".post-btn");
 post.addEventListener("click", async function () {
   try {
-    // gridParent.innerHTML = "";
+    gridParent.innerHTML = " ";
     const res = await fetch("/postedPost");
     const allPost = await res.json();
     console.log("AllPOST: ", allPost);
-    // if (!allPost.hasPst) {
-    //   postStatus("Haven't posted any post.");
-    // }
 
+    if (!allPost.hasPost) {
+      textBox.innerHTML = " ";
+      console.log("allPost.hasPst");
+      // textBox.removeChild("text-none");
+      postStatus("Haven't any post.");
+      return;
+    }
+    // if (allPost.postId.length > 0) {
     for (let index = 0; index < allPost.postId.length; index++) {
       let image = allPost.image[index].image;
       let href = `http://localhost:8080/post.html?id=${allPost.postId[index].post_id}`;
       createGrid(image, href);
       // console.log("index", index);
+      // }
     }
   } catch (err) {
     console.log("Error message:" + err);
@@ -126,11 +118,20 @@ post.addEventListener("click", async function () {
 const recipe = document.querySelector(".recipe-btn");
 recipe.addEventListener("click", async function () {
   try {
-    gridParent.innerHTML = "";
+    gridParent.innerHTML = " ";
     const res = await fetch("/saveRecipe");
     const resImages = await res.json();
     console.log("resImg:", resImages);
     // console.log("Front:" + resImages);
+    if (!resImages.hasPost) {
+      // textBox.innerHTML = " ";
+      // console.log("resImages.hasPst");
+      // // textBox.removeChild("text-none");
+      // postStatus("Haven't saved any recipe.");
+      return;
+    }
+    // let textBox = document.querySelector(".textBox");
+    // textBox.innerHTML = " ";
     for (let index = 0; index < resImages.saveRecipeArray.length; index++) {
       let image = resImages.saveRecipeArray[index].image;
       let href = `http://localhost:8080/recipe.html?id=${resImages.saveRecipesId[index].recipe_id}`;
@@ -145,13 +146,19 @@ recipe.addEventListener("click", async function () {
 const saved = document.querySelector(".saved-btn");
 saved.addEventListener("click", async function () {
   try {
-    gridParent.innerHTML = "";
+    gridParent.innerHTML = " ";
     const res = await fetch("/savedPosts");
     const allSavedPost = await res.json();
     console.log(allSavedPost);
-    // if (!allSavedPost.hasPst) {
-    //   postStatus("Haven't saved any post.");
-    // }
+    if (!allSavedPost.hasPost) {
+      // console.log("allSavedPost.hasPst");
+      // textBox.innerHTML = " ";
+      // // textBox.removeChild("text-none");
+      // postStatus("Haven't saved any post.");
+      return;
+    }
+    // let textBox = document.querySelector(".textBox");
+    // textBox.innerHTML = " ";
     for (let index = 0; index < allSavedPost.allSavedPost.length; index++) {
       let image = allSavedPost.allSavedPostImage[index].image;
       let href = `http://localhost:8080/post.html?id=${allSavedPost.allSavedPost[index].post_id}`;
@@ -165,9 +172,10 @@ saved.addEventListener("click", async function () {
 window.onload = async (e) => {
   let res = await fetch("/currentUser");
   let json = await res.json();
+  gridParent.innerHTML = "";
 
   if (json.isLogin) {
-    profileBtn.innerHTML = `<img src=${json.icon} style="width:30px; border-radius:50%;"> ${json.username}`;
+    profileBtn.innerHTML = `<img src=${json.icon} style="width: 30px; height:30px; border-radius: 50%; object-fit: cover;"> ${json.username}`;
     // profileBtn.href="./profile.html";
   } else {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
@@ -180,7 +188,7 @@ window.onload = async (e) => {
   //ON profile page's icon
   let userIcon = document.querySelector(".icon");
   // userIcon.src = json.icon;
-  let icon = await fetch ("/getUserIcon")
+  let icon = await fetch("/getUserIcon");
   let icon_json = await icon.json();
   userIcon.src = icon_json.content.rows[0].icon;
 
@@ -249,10 +257,10 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
   }
 });
 
-let logoutBtn = document.querySelector(".logout")
-logoutBtn.addEventListener("click", async (e)=>{
-  let res = await fetch ("/logout");
+let logoutBtn = document.querySelector(".logout");
+logoutBtn.addEventListener("click", async (e) => {
+  let res = await fetch("/logout");
   let res_json = res.json();
   console.log(res_json);
-  location.href = "./index.html"
-})
+  location.href = "./index.html";
+});
