@@ -158,270 +158,272 @@ window.onload = async () => {
 };
 
 async function loadPosts() {
-  const res = await fetch("/posts");
-  const json = await res.json();
-  console.log(json);
-  if (!json.hasPost) {
-    console.log("No posts.");
-    return;
-  }
-  if (json.success) {
-    let forum = document.querySelector(".main");
-    forum.innerHTML = "";
+  try {
+    const res = await fetch("/posts");
+    const json = await res.json();
     console.log(json);
 
-    for (let i = json.posts.length - 1; i >= 0; i--) {
-      // for (let i = 0; i < json.post.posts.length; i++) {
-      // forum += createPost(json.post[i]);
-      let p2Container = document.createElement("div");
-      p2Container.className = "p2-container";
-      let p2ImgContainer = document.createElement("div");
-      p2ImgContainer.className = "p2-img-container";
-      let img = document.createElement("img");
-      img.src = json.posts[i].image;
+    if (json.success) {
+      let forum = document.querySelector(".main");
+      forum.innerHTML = "";
+      console.log(json);
 
-      let p2RightContainer = document.createElement("div");
-      p2RightContainer.className = "p2-right-container";
-      let p2Right = document.createElement("div");
-      p2Right.className = "p2-right";
-      let p2UsernameDate = document.createElement("div");
-      p2UsernameDate.className = "p2-username-date";
-      let p2UsernameIcon = document.createElement("div");
-      p2UsernameIcon.className = "p2-username-icon";
-      let p2Icon = document.createElement("img");
-      p2Icon.className = "p2-icon";
-      p2Icon.src = json.posts[i].icon;
+      for (let i = json.posts.length - 1; i >= 0; i--) {
+        // for (let i = 0; i < json.post.posts.length; i++) {
+        // forum += createPost(json.post[i]);
+        let p2Container = document.createElement("div");
+        p2Container.className = "p2-container";
+        let p2ImgContainer = document.createElement("div");
+        p2ImgContainer.className = "p2-img-container";
+        let img = document.createElement("img");
+        img.src = json.posts[i].image;
 
-      let p2Username = document.createElement("div");
-      p2Username.className = "p2-username";
-      p2Username.innerHTML = json.posts[i].username;
+        let p2RightContainer = document.createElement("div");
+        p2RightContainer.className = "p2-right-container";
+        let p2Right = document.createElement("div");
+        p2Right.className = "p2-right";
+        let p2UsernameDate = document.createElement("div");
+        p2UsernameDate.className = "p2-username-date";
+        let p2UsernameIcon = document.createElement("div");
+        p2UsernameIcon.className = "p2-username-icon";
+        let p2Icon = document.createElement("img");
+        p2Icon.className = "p2-icon";
+        p2Icon.src = json.posts[i].icon;
 
-      let gap = document.createElement("div");
-      gap.className = "gap";
-      let p2Date = document.createElement("div");
-      p2Date.className = "p2-date";
-      p2Date.innerHTML = json.posts[i].created_at.slice(0, 10);
+        let p2Username = document.createElement("div");
+        p2Username.className = "p2-username";
+        p2Username.innerHTML = json.posts[i].username;
 
-      let p2Function = document.createElement("div");
-      p2Function.className = "p2-function";
+        let gap = document.createElement("div");
+        gap.className = "gap";
+        let p2Date = document.createElement("div");
+        p2Date.className = "p2-date";
+        p2Date.innerHTML = json.posts[i].created_at.slice(0, 10);
 
-      let likeContainer = document.createElement("div");
-      likeContainer.className = "like-container";
+        let p2Function = document.createElement("div");
+        p2Function.className = "p2-function";
 
-      let faHeart = document.createElement("i");
-      faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id}`;
+        let likeContainer = document.createElement("div");
+        likeContainer.className = "like-container";
 
-      for (let j = 0; j < json.checkLiked.length; j++) {
-        if (
-          json.posts[i].post_id == json.checkLiked[j].post_id &&
-          json.checkLiked[j].liked == true
-        ) {
-          faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id} liked`;
-        }
-      }
+        let faHeart = document.createElement("i");
+        faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id}`;
 
-      let likedCount = document.createElement("span");
-      likedCount.className = `likedCount likeCount-${json.posts[i].post_id}`;
-      likedCount.textContent = json.posts[i].liked_count;
-      // likedCount.style.fontFamily = "Courier New, Courier, monospace";
-
-      let faBookMark = document.createElement("i");
-      faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id}`;
-      for (let j = 0; j < json.checkSaved.length; j++) {
-        if (
-          json.posts[i].post_id == json.checkSaved[j].post_id &&
-          json.checkSaved[j].saved == true
-        ) {
-          faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id} saved`;
-        }
-      }
-
-      let p2TagContainer = document.createElement("div");
-      p2TagContainer.className = "p2-tag-container";
-
-      // generate tags
-      let dbTag = Object.values(json.tags);
-      for (let j = 0; j < dbTag.length; j++) {
-        if (json.posts[i].post_id == json.tags[j].post_id) {
-          let obj = json.tags[j].tag_content;
-          let p2Tag = document.createElement("button");
-          p2Tag.className = "p2-tag";
-          p2Tag.innerHTML = obj;
-          p2TagContainer.appendChild(p2Tag);
-        }
-      }
-
-      let p2Content = document.createElement("div");
-      p2Content.className = "p2-content";
-      let p2ContentContent = document.createElement("div");
-      p2ContentContent.className = "p2-content-content";
-      p2ContentContent.innerHTML = json.posts[i].content;
-
-      let row = document.createElement("div");
-      row.className = "row";
-
-      forum.appendChild(p2Container);
-      p2Container.appendChild(p2ImgContainer);
-      p2ImgContainer.appendChild(img);
-
-      p2Container.appendChild(p2RightContainer);
-      p2RightContainer.appendChild(p2Right);
-      p2Right.appendChild(p2UsernameDate);
-      p2UsernameDate.appendChild(p2UsernameIcon);
-      p2UsernameIcon.appendChild(p2Icon);
-      p2UsernameIcon.appendChild(p2Username);
-      p2UsernameDate.appendChild(gap);
-      p2UsernameDate.appendChild(p2Date);
-      p2Right.appendChild(p2Function);
-
-      p2Function.appendChild(likeContainer);
-      likeContainer.appendChild(faHeart);
-      likeContainer.appendChild(likedCount);
-      p2Function.appendChild(faBookMark);
-      p2Right.appendChild(p2TagContainer);
-      // p2TagContainer.appendChild(p2Tag); forum.js:92
-      p2Right.appendChild(p2Content);
-      p2Content.appendChild(p2ContentContent);
-      forum.appendChild(row);
-    }
-
-    let tagButtons = document.querySelectorAll(".p2-tag");
-    tagButtons.forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        document.querySelector(".main").innerHTML = "";
-        let res = await fetch("/getTagPosts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: btn.textContent }),
-        });
-
-        let tagButtons_res = await res.json();
-        console.log(tagButtons_res);
-
-        if (json.success) {
-          for (let i = 0; i < tagButtons_res.content.rowCount; i++) {
-            console.log(tagButtons_res.content.rows[i].content);
-            let p2Container = document.createElement("div");
-            p2Container.className = "p2-container";
-            let p2ImgContainer = document.createElement("div");
-            p2ImgContainer.className = "p2-img-container";
-            let img = document.createElement("img");
-            img.src = tagButtons_res.content.rows[i].image;
-
-            let p2RightContainer = document.createElement("div");
-            p2RightContainer.className = "p2-right-container";
-            let p2Right = document.createElement("div");
-            p2Right.className = "p2-right";
-            let p2UsernameDate = document.createElement("div");
-            p2UsernameDate.className = "p2-username-date";
-            let p2UsernameIcon = document.createElement("div");
-            p2UsernameIcon.className = "p2-username-icon";
-            let p2Icon = document.createElement("img");
-            p2Icon.className = "p2-icon";
-            p2Icon.src = tagButtons_res.userData.rows[0].icon; // now only for one user_id
-
-            let p2Username = document.createElement("div");
-            p2Username.className = "p2-username";
-            p2Username.innerHTML = tagButtons_res.userData.rows[0].username;
-
-            let gap = document.createElement("div");
-            gap.className = "gap";
-            let p2Date = document.createElement("div");
-            p2Date.className = "p2-date";
-            p2Date.innerHTML = tagButtons_res.content.rows[i].created_at.slice(
-              0,
-              10
-            );
-
-            let p2Function = document.createElement("div");
-            p2Function.className = "p2-function";
-
-            let likeContainer = document.createElement("div");
-            likeContainer.className = "like-container";
-
-            let faHeart = document.createElement("i");
-            faHeart.className = `fa-solid fa-heart heart-${tagButtons_res.content.rows[0].post_id}`;
-            for (let j = 0; j < tagButtons_res.checkLiked.rows.length; j++) {
-              if (
-                tagButtons_res.content.rows[i].post_id ==
-                  tagButtons_res.checkLiked.rows[j].post_id &&
-                tagButtons_res.checkLiked.liked == true
-              ) {
-                faHeart.className = `fa-solid fa-heart heart-${tagButtons_res.content.rows[0].post_id} liked`;
-              }
-            }
-
-            let likedCount = document.createElement("span");
-            likedCount.className = `likedCount likeCount-${tagButtons_res.content.rows[0].post_id}`;
-            likedCount.textContent = tagButtons_res.content.rows[0].liked_count;
-            // likedCount.style.fontFamily = "Courier New, Courier, monospace";
-
-            let faBookMark = document.createElement("i");
-            faBookMark.className = `fa-solid fa-bookmark bookmark-${tagButtons_res.content.rows[0].post_id}`;
-            for (let j = 0; j < tagButtons_res.checkSaved.length; j++) {
-              if (
-                tagButtons_res.content.rows[i].post_id ==
-                  tagButtons_res.checkSaved.rows[j].post_id &&
-                tagButtons_res.checkSaved[j].saved == true
-              ) {
-                faBookMark.className = `fa-solid fa-bookmark bookmark-${tagButtons_res.content.rows[0].post_id} saved`;
-              }
-            }
-
-            let p2TagContainer = document.createElement("div");
-            p2TagContainer.className = "p2-tag-container";
-
-            // generate tags
-            // let dbTag = Object.values(tagButtons_res.tags.rowCount);
-            // for (let j = 0; j < dbTag; j++) {
-            //   if (
-            //     tagButtons_res.content.rows[i].post_id ==
-            //     tagButtons_res.tags.rows[j].post_id
-            //   ) {
-            //     let obj = tagButtons_res.tags.rows[j].tag_content;
-            //     let p2Tag = document.createElement("button");
-            //     p2Tag.className = "p2-tag";
-            //     p2Tag.innerHTML = obj;
-            //     p2TagContainer.appendChild(p2Tag);
-            //   }
-            // }
-
-            let p2Content = document.createElement("div");
-            p2Content.className = "p2-content";
-            let p2ContentContent = document.createElement("div");
-            p2ContentContent.className = "p2-content-content";
-            p2ContentContent.innerHTML = tagButtons_res.content.rows[i].content;
-
-            let row = document.createElement("div");
-            row.className = "row";
-
-            forum.appendChild(p2Container);
-            p2Container.appendChild(p2ImgContainer);
-            p2ImgContainer.appendChild(img);
-
-            p2Container.appendChild(p2RightContainer);
-            p2RightContainer.appendChild(p2Right);
-            p2Right.appendChild(p2UsernameDate);
-            p2UsernameDate.appendChild(p2UsernameIcon);
-            p2UsernameIcon.appendChild(p2Icon);
-            p2UsernameIcon.appendChild(p2Username);
-            p2UsernameDate.appendChild(gap);
-            p2UsernameDate.appendChild(p2Date);
-            p2Right.appendChild(p2Function);
-
-            p2Function.appendChild(likeContainer);
-            likeContainer.appendChild(faHeart);
-            likeContainer.appendChild(likedCount);
-            p2Function.appendChild(faBookMark);
-            p2Right.appendChild(p2TagContainer);
-            // p2TagContainer.appendChild(p2Tag); forum.js:92
-            p2Right.appendChild(p2Content);
-            p2Content.appendChild(p2ContentContent);
-            forum.appendChild(row);
+        for (let j = 0; j < json.checkLiked.length; j++) {
+          if (
+            json.posts[i].post_id == json.checkLiked[j].post_id &&
+            json.checkLiked[j].liked == true
+          ) {
+            faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id} liked`;
           }
         }
+
+        let likedCount = document.createElement("span");
+        likedCount.className = `likedCount likeCount-${json.posts[i].post_id}`;
+        likedCount.textContent = json.posts[i].liked_count;
+        // likedCount.style.fontFamily = "Courier New, Courier, monospace";
+
+        let faBookMark = document.createElement("i");
+        faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id}`;
+        for (let j = 0; j < json.checkSaved.length; j++) {
+          if (
+            json.posts[i].post_id == json.checkSaved[j].post_id &&
+            json.checkSaved[j].saved == true
+          ) {
+            faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id} saved`;
+          }
+        }
+
+        let p2TagContainer = document.createElement("div");
+        p2TagContainer.className = "p2-tag-container";
+
+        // generate tags
+        let dbTag = Object.values(json.tags);
+        for (let j = 0; j < dbTag.length; j++) {
+          if (json.posts[i].post_id == json.tags[j].post_id) {
+            let obj = json.tags[j].tag_content;
+            let p2Tag = document.createElement("button");
+            p2Tag.className = "p2-tag";
+            p2Tag.innerHTML = obj;
+            p2TagContainer.appendChild(p2Tag);
+          }
+        }
+
+        let p2Content = document.createElement("div");
+        p2Content.className = "p2-content";
+        let p2ContentContent = document.createElement("div");
+        p2ContentContent.className = "p2-content-content";
+        p2ContentContent.innerHTML = json.posts[i].content;
+
+        let row = document.createElement("div");
+        row.className = "row";
+
+        forum.appendChild(p2Container);
+        p2Container.appendChild(p2ImgContainer);
+        p2ImgContainer.appendChild(img);
+
+        p2Container.appendChild(p2RightContainer);
+        p2RightContainer.appendChild(p2Right);
+        p2Right.appendChild(p2UsernameDate);
+        p2UsernameDate.appendChild(p2UsernameIcon);
+        p2UsernameIcon.appendChild(p2Icon);
+        p2UsernameIcon.appendChild(p2Username);
+        p2UsernameDate.appendChild(gap);
+        p2UsernameDate.appendChild(p2Date);
+        p2Right.appendChild(p2Function);
+
+        p2Function.appendChild(likeContainer);
+        likeContainer.appendChild(faHeart);
+        likeContainer.appendChild(likedCount);
+        p2Function.appendChild(faBookMark);
+        p2Right.appendChild(p2TagContainer);
+        // p2TagContainer.appendChild(p2Tag); forum.js:92
+        p2Right.appendChild(p2Content);
+        p2Content.appendChild(p2ContentContent);
+        forum.appendChild(row);
+      }
+
+      let tagButtons = document.querySelectorAll(".p2-tag");
+      tagButtons.forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          document.querySelector(".main").innerHTML = "";
+          let res = await fetch("/getTagPosts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: btn.textContent }),
+          });
+
+          let tagButtons_res = await res.json();
+          console.log(tagButtons_res);
+
+          if (json.success) {
+            for (let i = 0; i < tagButtons_res.content.rowCount; i++) {
+              console.log(tagButtons_res.content.rows[i].content);
+              let p2Container = document.createElement("div");
+              p2Container.className = "p2-container";
+              let p2ImgContainer = document.createElement("div");
+              p2ImgContainer.className = "p2-img-container";
+              let img = document.createElement("img");
+              img.src = tagButtons_res.content.rows[i].image;
+
+              let p2RightContainer = document.createElement("div");
+              p2RightContainer.className = "p2-right-container";
+              let p2Right = document.createElement("div");
+              p2Right.className = "p2-right";
+              let p2UsernameDate = document.createElement("div");
+              p2UsernameDate.className = "p2-username-date";
+              let p2UsernameIcon = document.createElement("div");
+              p2UsernameIcon.className = "p2-username-icon";
+              let p2Icon = document.createElement("img");
+              p2Icon.className = "p2-icon";
+              p2Icon.src = tagButtons_res.userData.rows[0].icon; // now only for one user_id
+
+              let p2Username = document.createElement("div");
+              p2Username.className = "p2-username";
+              p2Username.innerHTML = tagButtons_res.userData.rows[0].username;
+
+              let gap = document.createElement("div");
+              gap.className = "gap";
+              let p2Date = document.createElement("div");
+              p2Date.className = "p2-date";
+              p2Date.innerHTML = tagButtons_res.content.rows[
+                i
+              ].created_at.slice(0, 10);
+
+              let p2Function = document.createElement("div");
+              p2Function.className = "p2-function";
+
+              let likeContainer = document.createElement("div");
+              likeContainer.className = "like-container";
+
+              let faHeart = document.createElement("i");
+              faHeart.className = `fa-solid fa-heart heart-${tagButtons_res.content.rows[0].post_id}`;
+              for (let j = 0; j < tagButtons_res.checkLiked.rows.length; j++) {
+                if (
+                  tagButtons_res.content.rows[i].post_id ==
+                    tagButtons_res.checkLiked.rows[j].post_id &&
+                  tagButtons_res.checkLiked.liked == true
+                ) {
+                  faHeart.className = `fa-solid fa-heart heart-${tagButtons_res.content.rows[0].post_id} liked`;
+                }
+              }
+
+              let likedCount = document.createElement("span");
+              likedCount.className = `likedCount likeCount-${tagButtons_res.content.rows[0].post_id}`;
+              likedCount.textContent =
+                tagButtons_res.content.rows[0].liked_count;
+              // likedCount.style.fontFamily = "Courier New, Courier, monospace";
+
+              let faBookMark = document.createElement("i");
+              faBookMark.className = `fa-solid fa-bookmark bookmark-${tagButtons_res.content.rows[0].post_id}`;
+              for (let j = 0; j < tagButtons_res.checkSaved.length; j++) {
+                if (
+                  tagButtons_res.content.rows[i].post_id ==
+                    tagButtons_res.checkSaved.rows[j].post_id &&
+                  tagButtons_res.checkSaved[j].saved == true
+                ) {
+                  faBookMark.className = `fa-solid fa-bookmark bookmark-${tagButtons_res.content.rows[0].post_id} saved`;
+                }
+              }
+
+              let p2TagContainer = document.createElement("div");
+              p2TagContainer.className = "p2-tag-container";
+
+              // generate tags
+              // let dbTag = Object.values(tagButtons_res.tags.rowCount);
+              // for (let j = 0; j < dbTag; j++) {
+              //   if (
+              //     tagButtons_res.content.rows[i].post_id ==
+              //     tagButtons_res.tags.rows[j].post_id
+              //   ) {
+              //     let obj = tagButtons_res.tags.rows[j].tag_content;
+              //     let p2Tag = document.createElement("button");
+              //     p2Tag.className = "p2-tag";
+              //     p2Tag.innerHTML = obj;
+              //     p2TagContainer.appendChild(p2Tag);
+              //   }
+              // }
+
+              let p2Content = document.createElement("div");
+              p2Content.className = "p2-content";
+              let p2ContentContent = document.createElement("div");
+              p2ContentContent.className = "p2-content-content";
+              p2ContentContent.innerHTML =
+                tagButtons_res.content.rows[i].content;
+
+              let row = document.createElement("div");
+              row.className = "row";
+
+              forum.appendChild(p2Container);
+              p2Container.appendChild(p2ImgContainer);
+              p2ImgContainer.appendChild(img);
+
+              p2Container.appendChild(p2RightContainer);
+              p2RightContainer.appendChild(p2Right);
+              p2Right.appendChild(p2UsernameDate);
+              p2UsernameDate.appendChild(p2UsernameIcon);
+              p2UsernameIcon.appendChild(p2Icon);
+              p2UsernameIcon.appendChild(p2Username);
+              p2UsernameDate.appendChild(gap);
+              p2UsernameDate.appendChild(p2Date);
+              p2Right.appendChild(p2Function);
+
+              p2Function.appendChild(likeContainer);
+              likeContainer.appendChild(faHeart);
+              likeContainer.appendChild(likedCount);
+              p2Function.appendChild(faBookMark);
+              p2Right.appendChild(p2TagContainer);
+              // p2TagContainer.appendChild(p2Tag); forum.js:92
+              p2Right.appendChild(p2Content);
+              p2Content.appendChild(p2ContentContent);
+              forum.appendChild(row);
+            }
+          }
+        });
       });
-    });
+    }
+  } catch (err) {
+    console.log("Error message", err);
   }
 }
 

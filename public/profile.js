@@ -192,7 +192,7 @@ window.onload = async (e) => {
   let icon_json = await icon.json();
   userIcon.src = icon_json.content.rows[0].icon;
 
-  onLoad();
+  await onLoad();
 };
 
 const addNewPost = document.querySelector(".icon");

@@ -84,6 +84,15 @@ CREATE TABLE saved_recipe
   PRIMARY KEY (saved_recipe_id)
 );
 
+CREATE TABLE tag_relate (
+	tag_re_id SERIAL NOT NULL,
+	tag_id integer NULL,
+	rep_id integer NULL,
+	post_id integer NULL,
+  PRIMARY KEY (tag_re_id)
+);
+
+
 ALTER TABLE posts
   ADD CONSTRAINT FK_users_TO_posts
     FOREIGN KEY (user_id)
