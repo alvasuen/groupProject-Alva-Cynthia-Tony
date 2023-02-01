@@ -28,7 +28,7 @@ client.connect();
 
 const app = express();
 app.use(express.urlencoded()); // req.body
-app.use(express.json()); // RESTful, method + verb, example: GET / memos
+app.use(express.json({limit: '50mb'})); // RESTful, method + verb, example: GET / memos
 
 app.use(express.static("public"));
 app.use(express.static("uploads"));
@@ -984,7 +984,7 @@ app.get("/checkRepLike", async (req: Request, res: Response) => {
 });
 
 app.put("/change_icon", async (req: Request, res: Response) => {
-  // console.log(req.body.icon);
+  // console.log(req.body);
   try {
     await client.query(`UPDATE users SET icon = $1 WHERE user_id = $2 ;`, [
       req.body.icon,
@@ -1050,6 +1050,15 @@ app.post("/getTagPosts", async (req:Request, res:Response)=>{
       success: false
     })
   }
+})
+
+app.get("/getUserIcon",async (req:Request, res:Response)=>{
+  let data = await client.query(
+    `SELECT icon FROM users WHERE user_id=$1;`,
+    [req.session.userId]);
+    res.json({
+      content: data
+    })
 })
 
 app.use((req: Request, res: Response) => {
