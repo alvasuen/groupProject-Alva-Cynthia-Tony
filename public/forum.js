@@ -42,7 +42,8 @@ const tags = createTag.addEventListener("click", function (event) {
   i++;
 });
 
-async function likePost() {3
+async function likePost() {
+  3;
   let res = await fetch("/currentUser");
   let json = await res.json();
   if (json.isLogin) {
@@ -79,14 +80,14 @@ async function likePost() {3
           // } else {
           //   like[i].classList.add("liked");
           // }
-            let likedCount = document.querySelector("span");
-            console.log(likedCount.classList);
-            likedCount.innerHTML = "";
-            let innerText = document.createTextNode(
-              json.likedCount[0].liked_count
-            );
-            likedCount.appendChild(innerText);
-            console.log(json.likedCount[0].liked_count);
+          let likedCount = document.querySelector("span");
+          console.log(likedCount.classList);
+          likedCount.innerHTML = "";
+          let innerText = document.createTextNode(
+            json.likedCount[0].liked_count
+          );
+          likedCount.appendChild(innerText);
+          console.log(json.likedCount[0].liked_count);
         }
       });
     }
@@ -159,6 +160,11 @@ window.onload = async () => {
 async function loadPosts() {
   const res = await fetch("/posts");
   const json = await res.json();
+  console.log(json);
+  if (!json.hasPost) {
+    console.log("No posts.");
+    return;
+  }
   if (json.success) {
     let forum = document.querySelector(".main");
     forum.innerHTML = "";

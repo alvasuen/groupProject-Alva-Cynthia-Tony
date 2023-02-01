@@ -1042,6 +1042,21 @@ app.get("/popularRecipe", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/popularLikePost", async (req: Request, res: Response) => {
+  try {
+    let data = await client.query(
+      `SELECT post_id, image, content FROM posts ORDER BY liked_count DESC LIMIT 5`
+    );
+    res.json({
+      success: true,
+      content: data,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
+
 app.post("/getTagPosts", async (req: Request, res: Response) => {
   try {
     console.log(req.body.content, "getTagPosts");
@@ -1084,7 +1099,6 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   }
 });
 
-<<<<<<< HEAD
 app.get("/getUserIcon", async (req: Request, res: Response) => {
   let data = await client.query(`SELECT icon FROM users WHERE user_id=$1;`, [
     req.session.userId,
@@ -1093,16 +1107,6 @@ app.get("/getUserIcon", async (req: Request, res: Response) => {
     content: data,
   });
 });
-=======
-app.get("/getUserIcon",async (req:Request, res:Response)=>{
-  let data = await client.query(
-    `SELECT icon FROM users WHERE user_id=$1;`,
-    [req.session.userId]);
-    res.json({
-      content: data
-    })
-})
->>>>>>> e2537b486562a2e15ed65d558293e0542e7648b6
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
