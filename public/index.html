@@ -56,38 +56,44 @@
     </div> -->
 
     <!-- main photo -->
-    <div>
+    <div class="main-photo-container">
       <iframe
         class="main-photo"
         src="https://player.vimeo.com/video/642559790?title=0&sidedock=0&muted=1&autoplay=1&loop=1&title=0&sidedock=0&controls=0"
       ></iframe>
+      <div class="main-photo-content">
+        a delectable journey of mystery and desire
+      </div>
     </div>
 
     <!-- Container -->
-    <div class="container">
+    <div class="main-container">
       <div class="choice">
         <div class="recipe">
           <div class="choice-photo">
-            <img src="./upload/bg5.JPG" />
+            <img src="./upload/bg2.JPG" />
           </div>
           <div class="a-recipe">
-            <a class="link" href="#">recipe</a>
+            <a class="link" href="http://localhost:8080/search">recipes</a>
           </div>
         </div>
+
         <div class="memowall">
           <div class="choice-photo">
-            <img src="./upload/bg6.JPG" />
+            <img src="./upload/bg4.JPG" />
           </div>
           <div class="a-memowall">
-            <a class="link" href="#">memowall</a>
+            <a class="link" href="http://localhost:8080/forum.html"
+              >community</a
+            >
           </div>
         </div>
       </div>
 
-      <br />
-
+       <div class="mostlike-container">
       <p class="sub-title">MOST LIKE</p>
-      <div class="mostlike">
+       <div class="mostlike" id="posts"></div>
+      <!-- <div class="mostlike">
         <div class="comment-box" id="comments">
           <div class="shadow-box">
             <div class="comment">
@@ -108,102 +114,14 @@
                 name="create-outline"
               ></ion-icon>
             </div>
+      
           </div>
-        </div>
-
-        <div class="comment-box" id="comments">
-          <div class="shadow-box">
-            <div class="comment">
-              <div>
-                <p class="content">Tony Cooking bad lol🤪</p>
-              </div>
-            </div>
-            <div class="features">
-              <ion-icon class="icon f-save" name="bookmark-outline"></ion-icon>
-              <ion-icon
-                class="icon f-like"
-                id="f-like"
-                name="heart-outline"
-              ></ion-icon>
-              <ion-icon
-                class="icon f-edit"
-                id="f-edit"
-                name="create-outline"
-              ></ion-icon>
-            </div>
-          </div>
-        </div>
-
-        <div class="comment-box" id="comments">
-          <div class="shadow-box">
-            <div class="comment">
-              <div>
-                <p class="content">Cynthia Cooking Good Good to!🤭</p>
-              </div>
-            </div>
-            <div class="features">
-              <ion-icon class="icon f-save" name="bookmark-outline"></ion-icon>
-              <ion-icon
-                class="icon f-like"
-                id="f-like"
-                name="heart-outline"
-              ></ion-icon>
-              <ion-icon
-                class="icon f-edit"
-                id="f-edit"
-                name="create-outline"
-              ></ion-icon>
-            </div>
-          </div>
-        </div>
-
-        <div class="comment-box" id="comments">
-          <div class="shadow-box">
-            <div class="comment">
-              <div>
-                <p class="content">Alva is the cooking Queen! 👑</p>
-              </div>
-            </div>
-            <div class="features">
-              <ion-icon class="icon f-save" name="bookmark-outline"></ion-icon>
-              <ion-icon
-                class="icon f-like"
-                id="f-like"
-                name="heart-outline"
-              ></ion-icon>
-              <ion-icon
-                class="icon f-edit"
-                id="f-edit"
-                name="create-outline"
-              ></ion-icon>
-            </div>
-          </div>
-        </div>
-
-        <div class="comment-box" id="comments">
-          <div class="shadow-box">
-            <div class="comment">
-              <div>
-                <p class="content">Tony Cooking bad lol🤪</p>
-              </div>
-            </div>
-            <div class="features">
-              <ion-icon class="icon f-save" name="bookmark-outline"></ion-icon>
-              <ion-icon
-                class="icon f-like"
-                id="f-like"
-                name="heart-outline"
-              ></ion-icon>
-              <ion-icon
-                class="icon f-edit"
-                id="f-edit"
-                name="create-outline"
-              ></ion-icon>
-            </div>
-          </div>
-        </div>
+        </div> -->
+       
       </div>
+       </div>
 
+      
       <div class="animate-container">
         <img class="nypd" src="./upload/logos/business-insider.png" />
         <img class="nypd" src="./upload/logos/forbes.png" />
@@ -212,9 +130,10 @@
         <img class="nypd" src="./upload/logos/usa-today.png" />
       </div>
 
-      <p class="sub-title">POPULAR RECIPES</p>
-      <div class="mostlike" id="recipes">
-        <!-- <div class="comment-box" >
+      <div class="recipes-container">
+        <p class="sub-title">POPULAR RECIPES</p>
+        <div class="mostlike" id="recipes">
+          <!-- <div class="comment-box" >
           <div class="shadow-box">
             <div class="comment">
                 <img>
@@ -224,9 +143,9 @@
             </div>
           </div>
         </div> -->
+        </div>
       </div>
 
-      <br />
     </div>
 
     <div class="footer">

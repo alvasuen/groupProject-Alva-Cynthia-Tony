@@ -1027,6 +1027,21 @@ app.get("/popularRecipe", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/popularLikePost", async (req: Request, res: Response) => {
+  try {
+    let data = await client.query(
+      `SELECT post_id, image, content FROM posts ORDER BY liked_count DESC LIMIT 5`
+    );
+    res.json({
+      success: true,
+      content: data,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
+
 app.post("/getTagPosts", async (req: Request, res: Response) => {
   try {
     console.log(req.body.content, "getTagPosts");
