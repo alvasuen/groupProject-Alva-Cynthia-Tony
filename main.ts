@@ -1031,15 +1031,6 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   try {
     console.log(req.body.content, "getTagPosts");
     let data = await client.query(
-<<<<<<< HEAD
-      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id=tag_relate.post_id WHERE tag_id = (SELECT tag_id FROM tag WHERE tag_content=$1);`,
-      [req.body.content]
-    );
-
-    res.json({
-      success: true,
-      content: data,
-=======
       `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content=$1);`,
       [req.body.content]
     );
@@ -1069,7 +1060,6 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
       checkSaved,
       tags,
       userData,
->>>>>>> 3c0ed495a215f9aa91e6c315e1bc0fe1b5257e93
     });
   } catch (err) {
     console.log(err);
@@ -1079,8 +1069,6 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   }
 });
 
-<<<<<<< HEAD
-=======
 app.get("/getUserIcon",async (req:Request, res:Response)=>{
   let data = await client.query(
     `SELECT icon FROM users WHERE user_id=$1;`,
@@ -1090,7 +1078,6 @@ app.get("/getUserIcon",async (req:Request, res:Response)=>{
     })
 })
 
->>>>>>> 3c0ed495a215f9aa91e6c315e1bc0fe1b5257e93
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
 });
