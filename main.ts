@@ -236,7 +236,6 @@ app.post("/login", async (req: Request, res: Response) => {
 // app.use(grantExpress as express.RequestHandler);
 
 app.get("/currentUser", (req, res) => {
-  // console.log(req.session);
   res.json(req.session);
 });
 

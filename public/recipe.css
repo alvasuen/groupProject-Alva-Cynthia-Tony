@@ -273,3 +273,75 @@ a {
   text-align: center;
   display: inline-block;
 }
+
+/* Footer */
+.footer {
+  display: flex;
+  flex-direction: column;
+  height: 450px;
+  background-color: #0b1c2c;
+  /* font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif; */
+  /* letter-spacing: 5px;  */
+}
+
+.footer-session {
+  display: flex;
+  flex-direction: row;
+  height: 160px;
+  margin-top: 30px;
+  margin-left: 40px;
+  color: #b78403;
+}
+
+.footer-title {
+  font-size: 50px;
+  margin-right: 190px;
+  letter-spacing: 5px;
+  font-weight: bold;
+}
+
+.footer-content {
+  font-size: 20px;
+  margin-left: 50px;
+}
+
+.footer-content div {
+  margin-bottom: 10px;
+}
+
+.social-icon {
+  margin-left: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.social-icon ion-icon {
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+.contact-container {
+  font-size: 20px;
+  margin-right: 160px;
+}
+
+.contact {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.contact i {
+  margin-right: 20px;
+}
+
+.partners-title {
+  font-size: 25px;
+}
+
+.partners-img {
+  width: 160px;
+  margin-right: 50px;
+}
