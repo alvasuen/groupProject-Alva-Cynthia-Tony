@@ -430,34 +430,26 @@ app.post("/post", async (req: Request, res: Response) => {
 // load all posts from the json
 app.get("/posts", async (req: Request, res: Response) => {
   const posts = await client.query(
-    `select * from posts inner join users on posts.user_id = users.user_id`
+    `select * from posts inner join users on posts.user_id = users.user_id ORDER BY post_id ASC`
   );
   const tags = await client.query(
     `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
   );
   const checkLiked = await client.query(
-    `select * from liked_posts where user_id = $1`,
+    `select * from liked_posts where user_id = $1 ORDER BY post_id ASC`,
     [req.session.userId]
   );
   const checkSaved = await client.query(
-    `select * from saved_posts where user_id = $1`,
+    `select * from saved_posts where user_id = $1 ORDER BY post_id ASC`,
     [req.session.userId]
   );
 
   res.json({
     success: true,
-    post: {
-      posts: posts.rows,
-    },
-    tags: {
-      tags: tags.rows,
-    },
-    checkLiked: {
-      checkLiked: checkLiked.rows,
-    },
-    checkSaved: {
-      checkSaved: checkSaved.rows,
-    },
+    posts: posts.rows,
+    tags: tags.rows,
+    checkLiked: checkLiked.rows,
+    checkSaved: checkSaved.rows,
     isLogin: req.session.isLogin,
   });
 });
@@ -1022,7 +1014,8 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
 app.get("/popularRecipe", async (req: Request, res: Response) => {
   try {
     let data = await client.query(
-      `SELECT recipe_id, recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`);
+      `SELECT recipe_id, recipe_name, image FROM recipes ORDER BY saved_count DESC LIMIT 5`
+    );
     res.json({
       success: true,
       content: data,
@@ -1033,24 +1026,47 @@ app.get("/popularRecipe", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/getTagPosts", async (req:Request, res:Response)=>{
-  try{
-    console.log(req.body.content, "getTagPosts")
+app.post("/getTagPosts", async (req: Request, res: Response) => {
+  try {
+    console.log(req.body.content, "getTagPosts");
     let data = await client.query(
-      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id=tag_relate.post_id WHERE tag_id = (SELECT tag_id FROM tag WHERE tag_content=$1);`,
-      [req.body.content]);
-    
+      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content=$1);`,
+      [req.body.content]
+    );
+
+    let userData = await client.query(
+      `select * from users where user_id in (SELECT user_id FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id in(SELECT tag_id FROM tag where tag_content= $1));`,
+      [req.body.content]
+    );
+
+    const tags = await client.query(
+      `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
+    );
+
+    const checkLiked = await client.query(
+      `select * from liked_posts where user_id = $1`,
+      [req.session.userId]
+    );
+    const checkSaved = await client.query(
+      `select * from saved_posts where user_id = $1`,
+      [req.session.userId]
+    );
+
     res.json({
-      success:true,
-      content: data
-    })
-  }catch (err){
+      success: true,
+      content: data,
+      checkLiked,
+      checkSaved,
+      tags,
+      userData,
+    });
+  } catch (err) {
     console.log(err);
     res.json({
-      success: false
-    })
+      success: false,
+    });
   }
-})
+});
 
 app.get("/getUserIcon",async (req:Request, res:Response)=>{
   let data = await client.query(

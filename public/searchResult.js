@@ -424,6 +424,7 @@ searchBtn.addEventListener("click", async (event) => {
       newTextBlock.appendChild(saveBtn);
       likeAndResult.appendChild(saveBtn);
 
+      console.log(savedRecipes);
       if (saveResult_json.success) {
         if (savedRecipes.includes(json.content[i].recipe_id)) {
           saveBtn.style.color = "red";
