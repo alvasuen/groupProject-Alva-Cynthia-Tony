@@ -1099,7 +1099,6 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   }
 });
 
-<<<<<<< HEAD
 app.get("/getUserIcon", async (req: Request, res: Response) => {
   let data = await client.query(`SELECT icon FROM users WHERE user_id=$1;`, [
     req.session.userId,
@@ -1108,16 +1107,6 @@ app.get("/getUserIcon", async (req: Request, res: Response) => {
     content: data,
   });
 });
-=======
-app.get("/getUserIcon",async (req:Request, res:Response)=>{
-  let data = await client.query(
-    `SELECT icon FROM users WHERE user_id=$1;`,
-    [req.session.userId]);
-    res.json({
-      content: data
-    })
-})
->>>>>>> e2537b486562a2e15ed65d558293e0542e7648b6
 
 app.use((req: Request, res: Response) => {
   res.status(404).sendFile(path.join(p, "index.html"));
