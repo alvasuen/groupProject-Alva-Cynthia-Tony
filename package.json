@@ -4,6 +4,7 @@
   "description": "Group Project",
   "main": "index.js",
   "scripts": {
+    "prod": "npx ts-node main.ts",
     "start": "nodemon main.ts",
     "test": "tsc -p . --noEmit"
   },

@@ -32,21 +32,31 @@ window.onload = async (event) => {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
   }
 
-// show post slideshow
+  // show post slideshow
   let postData = await fetch("/popularLikePost");
   let postData_json = await postData.json();
   if (postData_json.success) {
     for (let i = 0; i < postData_json.content.rowCount; i++) {
       document.querySelector(
         "#posts"
+<<<<<<< HEAD
       ).innerHTML += `<a href= "http://localhost:8080/forum.html?id=${postData_json.content.rows[i].post_id}">
+=======
+      ).innerHTML += `<a href= "http://localhost:8080/forum.html?id=${
+        postData_json.content.rows[i].post_id
+      }">
+>>>>>>> b1aba28a518b9f79911bd71c3d46aa03ddf6651c
       <div class="comment-box" >
       <div class="shadow-box">
         <div class="comment">
             <img src=${postData_json.content.rows[i].image}>
         </div>
         <div class="recipeTitle">
+<<<<<<< HEAD
           <p>${postData_json.content.rows[i].content.slice(0,60)}</p>
+=======
+          <p>${postData_json.content.rows[i].content.slice(0, 60)}</p>
+>>>>>>> b1aba28a518b9f79911bd71c3d46aa03ddf6651c
         </div>
       </div>
     </div>
@@ -54,16 +64,15 @@ window.onload = async (event) => {
     }
   }
 
-
   //show recipes slideshow
-  let recipeData = await fetch ("/popularRecipe");
+  let recipeData = await fetch("/popularRecipe");
   let recipeData_json = await recipeData.json();
-  console.log(recipeData_json)
-  if (recipeData_json.success){
-    for (let i=0; i<recipeData_json.content.rowCount;i++){
-
-      document.querySelector("#recipes").innerHTML += 
-      `<a href= "http://localhost:8080/recipe.html?id=${recipeData_json.content.rows[i].recipe_id}"><div class="comment-box" >
+  console.log(recipeData_json);
+  if (recipeData_json.success) {
+    for (let i = 0; i < recipeData_json.content.rowCount; i++) {
+      document.querySelector(
+        "#recipes"
+      ).innerHTML += `<a href= "http://localhost:8080/recipe.html?id=${recipeData_json.content.rows[i].recipe_id}"><div class="comment-box" >
       <div class="shadow-box">
         <div class="comment">
             <img src=${recipeData_json.content.rows[i].image}>
@@ -73,8 +82,7 @@ window.onload = async (event) => {
         </div>
       </div>
     </div>
-    </a>`
+    </a>`;
     }
   }
 };
-

@@ -152,7 +152,7 @@ a {
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin: 0 50px 70px 50px;
+  margin: 50px 50px 70px 50px;
 }
 
 .recipe,
@@ -240,6 +240,13 @@ a {
 .recipes-container {
   height: 700px;
   background-color: #042d42;
+}
+
+.recipeTitle {
+  width: 300px;
+  /* height: 20px; */
+  display: flex;
+  justify-content: center;
 }
 
 .nypd {

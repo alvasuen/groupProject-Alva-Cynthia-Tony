@@ -25,11 +25,16 @@ a {
 }
 
 #profileRedirect {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 16px;
+font-family: "Cormorant Garamond", serif;
   font-weight: bold;
   display: flex;
   align-items: center;
+<<<<<<< HEAD
+=======
+  color: black;
+  cursor: pointer;
+  font-size: 16px;
+>>>>>>> b1aba28a518b9f79911bd71c3d46aa03ddf6651c
 }
 
 .logo img {

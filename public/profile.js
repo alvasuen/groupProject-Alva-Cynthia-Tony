@@ -56,11 +56,12 @@ function postStatus(status) {
 //It will show the user post part when the page loaded
 async function onLoad() {
   try {
+  
     gridParent.innerHTML = " ";
     const res = await fetch("/postedPost");
+
     const allPost = await res.json();
     console.log("AllPOST: ", allPost);
-    // console.log(allPost.hasOwnProperty("err"));
     if (!allPost.hasPost) {
       postStatus("Haven't posted any post.");
       // let textBox = document.querySelector(".textBox");
@@ -114,7 +115,7 @@ post.addEventListener("click", async function () {
   }
 });
 
-//Read the saved recipes
+// Read the saved recipes
 const recipe = document.querySelector(".recipe-btn");
 recipe.addEventListener("click", async function () {
   try {
