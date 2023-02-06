@@ -39,14 +39,14 @@ window.onload = async (event) => {
     for (let i = 0; i < postData_json.content.rowCount; i++) {
       document.querySelector(
         "#posts"
-      ).innerHTML += `<a href= "http://localhost:8080/recipe.html?id=${postData_json.content.rows[i].post_id}">
+      ).innerHTML += `<a href= "http://localhost:8080/forum.html?id=${postData_json.content.rows[i].post_id}">
       <div class="comment-box" >
       <div class="shadow-box">
         <div class="comment">
             <img src=${postData_json.content.rows[i].image}>
         </div>
         <div class="recipeTitle">
-          <p>${postData_json.content.rows[i].content}</p>
+          <p>${postData_json.content.rows[i].content.slice(0,60)}</p>
         </div>
       </div>
     </div>

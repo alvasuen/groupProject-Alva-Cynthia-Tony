@@ -104,7 +104,7 @@ post.addEventListener("click", async function () {
     // if (allPost.postId.length > 0) {
     for (let index = 0; index < allPost.postId.length; index++) {
       let image = allPost.image[index].image;
-      let href = `http://localhost:8080/post.html?id=${allPost.postId[index].post_id}`;
+      let href = `http://localhost:8080/forum.html?id=${allPost.postId[index].post_id}`;
       createGrid(image, href);
       // console.log("index", index);
       // }
@@ -161,7 +161,7 @@ saved.addEventListener("click", async function () {
     // textBox.innerHTML = " ";
     for (let index = 0; index < allSavedPost.allSavedPost.length; index++) {
       let image = allSavedPost.allSavedPostImage[index].image;
-      let href = `http://localhost:8080/post.html?id=${allSavedPost.allSavedPost[index].post_id}`;
+      let href = `http://localhost:8080/forum.html?id=${allSavedPost.allSavedPost[index].post_id}`;
       createGrid(image, href);
     }
   } catch (err) {

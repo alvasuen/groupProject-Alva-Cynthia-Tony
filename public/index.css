@@ -425,3 +425,10 @@ a {
   width: 160px;
   margin-right: 50px;
 }
+
+.recipeTitle{
+  width:300px;
+  margin:20px;
+  display: flex;
+  justify-content: center;
+}

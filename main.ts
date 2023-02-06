@@ -763,7 +763,7 @@ app.post("/saveRecipe", async (req: Request, res: Response) => {
   try {
     if (!req.session.isLogin) {
       res.json({
-        message: "Please login first! - 2",
+        message: "Please login first!",
         success: false,
       });
     } else {
@@ -1049,7 +1049,7 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
   try {
     console.log(req.body.content, "getTagPosts");
     let data = await client.query(
-      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content=$1);`,
+      `select * from users inner join posts on users.user_id = posts.user_id where post_id in (SELECT posts.post_id FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content= $1)) order by created_at DESC`,
       [req.body.content]
     );
 

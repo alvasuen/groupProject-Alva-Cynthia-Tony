@@ -43,7 +43,6 @@ const tags = createTag.addEventListener("click", function (event) {
 });
 
 async function likePost() {
-  3;
   let res = await fetch("/currentUser");
   let json = await res.json();
   if (json.isLogin) {
@@ -80,14 +79,14 @@ async function likePost() {
           // } else {
           //   like[i].classList.add("liked");
           // }
-          let likedCount = document.querySelector("span");
-          console.log(likedCount.classList);
-          likedCount.innerHTML = "";
-          let innerText = document.createTextNode(
-            json.likedCount[0].liked_count
-          );
-          likedCount.appendChild(innerText);
-          console.log(json.likedCount[0].liked_count);
+          // let likedCount = document.querySelector("span");
+          // console.log(likedCount.classList);
+          // likedCount.innerHTML = "";
+          // let innerText = document.createTextNode(
+          //   json.likedCount[0].liked_count
+          // );
+          // likedCount.appendChild(innerText);
+          // console.log(json.likedCount[0].liked_count);
         }
       });
     }
@@ -216,9 +215,9 @@ async function loadPosts() {
         }
       }
 
-      let likedCount = document.createElement("span");
-      likedCount.className = `likedCount likeCount-${json.posts[i].post_id}`;
-      likedCount.textContent = json.posts[i].liked_count;
+      // let likedCount = document.createElement("span");
+      // likedCount.className = `likedCount likeCount-${json.posts[i].post_id}`;
+      // likedCount.textContent = json.posts[i].liked_count;
       // likedCount.style.fontFamily = "Courier New, Courier, monospace";
 
       let faBookMark = document.createElement("i");
@@ -272,7 +271,7 @@ async function loadPosts() {
 
       p2Function.appendChild(likeContainer);
       likeContainer.appendChild(faHeart);
-      likeContainer.appendChild(likedCount);
+      // likeContainer.appendChild(likedCount);
       p2Function.appendChild(faBookMark);
       p2Right.appendChild(p2TagContainer);
       // p2TagContainer.appendChild(p2Tag); forum.js:92
@@ -314,11 +313,11 @@ async function loadPosts() {
             p2UsernameIcon.className = "p2-username-icon";
             let p2Icon = document.createElement("img");
             p2Icon.className = "p2-icon";
-            p2Icon.src = tagButtons_res.userData.rows[0].icon; // now only for one user_id
+            p2Icon.src = tagButtons_res.content.rows[i].icon; // now only for one user_id
 
             let p2Username = document.createElement("div");
             p2Username.className = "p2-username";
-            p2Username.innerHTML = tagButtons_res.userData.rows[0].username;
+            p2Username.innerHTML = tagButtons_res.content.rows[i].username;
 
             let gap = document.createElement("div");
             gap.className = "gap";
@@ -347,9 +346,9 @@ async function loadPosts() {
               }
             }
 
-            let likedCount = document.createElement("span");
-            likedCount.className = `likedCount likeCount-${tagButtons_res.content.rows[0].post_id}`;
-            likedCount.textContent = tagButtons_res.content.rows[0].liked_count;
+            // let likedCount = document.createElement("span");
+            // likedCount.className = `likedCount likeCount-${tagButtons_res.content.rows[0].post_id}`;
+            // likedCount.textContent = tagButtons_res.content.rows[0].liked_count;
             // likedCount.style.fontFamily = "Courier New, Courier, monospace";
 
             let faBookMark = document.createElement("i");
@@ -407,7 +406,7 @@ async function loadPosts() {
 
             p2Function.appendChild(likeContainer);
             likeContainer.appendChild(faHeart);
-            likeContainer.appendChild(likedCount);
+            // likeContainer.appendChild(likedCount);
             p2Function.appendChild(faBookMark);
             p2Right.appendChild(p2TagContainer);
             // p2TagContainer.appendChild(p2Tag); forum.js:92
@@ -492,9 +491,9 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     let faHeart = document.createElement("i");
     faHeart.className = `fa-solid fa-heart}`;
 
-    let likedCount = document.createElement("span");
-    likedCount.className = `likedCount`;
-    likedCount.textContent = result.post.createdPost.rows[0].liked_count;
+    // let likedCount = document.createElement("span");
+    // likedCount.className = `likedCount`;
+    // likedCount.textContent = result.post.createdPost.rows[0].liked_count;
 
     let faBookMark = document.createElement("i");
     faBookMark.className = `fa-solid fa-bookmark`;
@@ -537,7 +536,7 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     p2Right.appendChild(p2Function);
     p2Function.appendChild(likeContainer);
     likeContainer.appendChild(faHeart);
-    likeContainer.appendChild(likedCount);
+    // likeContainer.appendChild(likedCount);
     p2Function.appendChild(faBookMark);
     p2Right.appendChild(p2TagContainer);
     // p2TagContainer.appendChild(p2Tag); // wrote in above
