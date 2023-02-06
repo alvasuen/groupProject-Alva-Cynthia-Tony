@@ -25,8 +25,12 @@ a {
 
 #profileRedirect {
   font-family: "Cormorant Garamond", serif;
-  font-size: 16px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  color: black;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .logo img {

@@ -26,8 +26,13 @@ a {
 
 #profileRedirect {
   font-family: "Cormorant Garamond", serif;
-  font-size: 16px;
-  font-weight: bold;
+  font-weight: bold !important;
+  display: flex;
+  align-items: center;
+  color: black;
+  cursor: pointer;
+  font-size: 18px;
+
 }
 
 .logo img {
@@ -244,7 +249,7 @@ a {
 }
 
 .step-1 {
-  height: 300px;
+  height: 250px;
   object-fit: cover;
 }
 

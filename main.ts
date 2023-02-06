@@ -84,7 +84,8 @@ export function formidable_promise(req: express.Request) {
 }
 
 //main page
-let p = path.join(__dirname, "public");
+// export let p = path.join(__dirname, "public");
+import { p } from './resources'
 app.use(express.static(p));
 
 //session req.session
@@ -111,14 +112,17 @@ declare module "express-session" {
   }
 }
 
+import {loginRoutes} from "./routes/loginRoutes";
+app.use("/", loginRoutes);
+
 //login
-app.get("/login", (req: Request, res: Response) => {
-  if (!req.session.isLogin) {
-    res.sendFile(path.join(p, "login.html"));
-  } else {
-    res.sendFile(path.join(p, "index.html"));
-  }
-});
+// app.get("/login", (req: Request, res: Response) => {
+//   if (!req.session.isLogin) {
+//     res.sendFile(path.join(p, "login.html"));
+//   } else {
+//     res.sendFile(path.join(p, "index.html"));
+//   }
+// });
 
 //Local login
 app.post("/login", async (req: Request, res: Response) => {
@@ -501,12 +505,13 @@ app.put("/post/likePost/:id", async (req: Request, res: Response) => {
     // const liked = await client.query(
     //   `select * from liked_posts where post_id = $1`,[req.body.id]
     // );
-    res.status(200).json({ success: true, likedCount: likedCount.rows });
+    res.status(200).json({ success: true, data: likedCount.rows });
   } catch (err) {
     res.status(500).json({ err: "Error Message:" + err });
   }
 });
 
+// update saved
 app.put("/post/savePost/:id", async (req: Request, res: Response) => {
   try {
     const userId = req.session.userId;
@@ -881,11 +886,9 @@ app.get("/postedPost", async (req: Request, res: Response) => {
       `SELECT username FROM users WHERE user_id = $1`,
       [user_id]
     );
-    console.log(getAllPostId);
-    
 
     let hasPost = getAllPostId.rowCount > 0 ? true : false;
-    console.log(hasPost);
+    // console.log(hasPost);
 
     if (!hasPost) {
       res.json({ hasPost });
@@ -918,9 +921,6 @@ app.get("/postedPost", async (req: Request, res: Response) => {
 //Read Saved Recipes
 app.get("/saveRecipe", async (req: Request, res: Response) => {
   try {
-    // else {
-    //   // res.status(301).json({ err: "Please login First." });
-    // }
     let user_id = req.session.userId;
     let saveRecipesId = await client.query(
       `SELECT recipe_id FROM saved_recipe WHERE user_id = $1 AND saved = true`,
@@ -1000,6 +1000,12 @@ app.put("/change_icon", async (req: Request, res: Response) => {
   }
 });
 
+/*
+
+app.delete("/recipe/saved")
+
+*/
+
 app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
   try {
     await client.query(
@@ -1016,6 +1022,12 @@ app.put("/deleteSavedRecipe", async (req: Request, res: Response) => {
     res.json({ success: false });
   }
 });
+
+/*
+
+app.get("/recipe/popular")
+
+*/
 
 app.get("/popularRecipe", async (req: Request, res: Response) => {
   try {
@@ -1047,11 +1059,13 @@ app.get("/popularLikePost", async (req: Request, res: Response) => {
   }
 });
 
+// only get the target tag content posts
 app.post("/getTagPosts", async (req: Request, res: Response) => {
   try {
     console.log(req.body.content, "getTagPosts");
     let data = await client.query(
-      `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content=$1);`,
+      `select * from users inner join posts on users.user_id = posts.user_id where post_id in (SELECT posts.post_id FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content= $1)) order by created_at DESC`,
+      // `SELECT * FROM posts INNER JOIN tag_relate ON posts.post_id = tag_relate.post_id WHERE tag_id IN (SELECT tag_id FROM tag WHERE tag_content=$1) order by created_at DESC;`,
       [req.body.content]
     );
 
@@ -1060,6 +1074,7 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
       [req.body.content]
     );
 
+    // * check
     const tags = await client.query(
       `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
     );
@@ -1080,6 +1095,43 @@ app.post("/getTagPosts", async (req: Request, res: Response) => {
       checkSaved,
       tags,
       userData,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      success: false,
+    });
+  }
+});
+
+// find target username via search bar (forum)
+app.post("/searchUsername", async (req: Request, res: Response) => {
+  try {
+    let data = await client.query(
+      `select * from posts inner join users on posts.user_id = users.user_id where username = $1 order by post_id DESC`,
+      [req.body.searchUsername]
+    );
+
+    // * check
+    const tags = await client.query(
+      `select * from tag_relate inner join tag on tag_relate.tag_id = tag.tag_id`
+    );
+
+    const checkLiked = await client.query(
+      `select * from liked_posts where user_id = $1`,
+      [req.session.userId]
+    );
+    const checkSaved = await client.query(
+      `select * from saved_posts where user_id = $1`,
+      [req.session.userId]
+    );
+
+    res.json({
+      success: true,
+      content: data,
+      checkLiked,
+      checkSaved,
+      tags,
     });
   } catch (err) {
     console.log(err);

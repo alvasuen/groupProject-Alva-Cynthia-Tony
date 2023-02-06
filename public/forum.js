@@ -19,15 +19,15 @@ profileBtn.addEventListener("click", async () => {
 });
 
 // search tag function
-// const searchTag = document.querySelector(".search-tag");
-// const searchTagForm = document.querySelector(".searchTagForm ");
-// searchTag.addEventListener("click", function () {
-//   if (searchTagForm.classList.contains("hidden")) {
-//     searchTagForm.classList.remove("hidden");
-//   } else {
-//     searchTagForm.classList.add("hidden");
-//   }
-// });
+const searchTag = document.querySelector(".search-tag");
+const searchTagForm = document.querySelector(".searchTagForm ");
+searchTag.addEventListener("click", function () {
+  if (searchTagForm.classList.contains("hidden")) {
+    searchTagForm.classList.remove("hidden");
+  } else {
+    searchTagForm.classList.add("hidden");
+  }
+});
 
 let i = 1;
 const createTag = document.querySelector(".tag-submit");
@@ -43,7 +43,6 @@ const tags = createTag.addEventListener("click", function (event) {
 });
 
 async function likePost() {
-  3;
   let res = await fetch("/currentUser");
   let json = await res.json();
   if (json.isLogin) {
@@ -53,9 +52,7 @@ async function likePost() {
       like[i].addEventListener("click", async (e) => {
         e.preventDefault();
         let id = like[i].classList[2].slice(6);
-        console.log(id);
         let liked = like[i].classList.value;
-        console.log(liked, 456);
         let result = liked.includes("liked");
         if (result) {
           like[i].classList.remove("liked");
@@ -74,20 +71,12 @@ async function likePost() {
         });
         const json = await res.json();
         if (json.success) {
-          console.log(json);
-          // if (like[i].classList.contains("liked")) {
-          //   like[i].classList.remove("liked");
-          // } else {
-          //   like[i].classList.add("liked");
-          // }
-          let likedCount = document.querySelector("span");
+          console.log(json, 123);
+          let likedCount = document.querySelectorAll("span");
           console.log(likedCount.classList);
-          likedCount.innerHTML = "";
-          let innerText = document.createTextNode(
-            json.likedCount[0].liked_count
-          );
-          likedCount.appendChild(innerText);
-          console.log(json.likedCount[0].liked_count);
+          likedCount[i].innerHTML = "";
+          let innerText = document.createTextNode(json.data[0].liked_count);
+          likedCount[i].appendChild(innerText);
         }
       });
     }
@@ -143,7 +132,6 @@ window.onload = async () => {
     profileBtn.innerHTML = `<i class="fa-solid fa-user"></i>`;
     addPostBtn.innerHTML = "";
   }
-
   const addNewPost = document.querySelector(".addpost");
   addNewPost.addEventListener("click", function () {
     document
@@ -151,6 +139,8 @@ window.onload = async () => {
       .classList.remove("hidden");
     filter.classList.remove("hidden");
   });
+
+  await tagSearch();
 
   likePost();
 
@@ -166,15 +156,299 @@ async function loadPosts() {
     forum.innerHTML = "";
     console.log(json);
 
-      for (let i = json.posts.length - 1; i >= 0; i--) {
-        // for (let i = 0; i < json.post.posts.length; i++) {
-        // forum += createPost(json.post[i]);
+    for (let i = json.posts.length - 1; i >= 0; i--) {
+      // for (let i = 0; i < json.post.posts.length; i++) {
+      // forum += createPost(json.post[i]);
+      let p2Container = document.createElement("div");
+      p2Container.className = "p2-container";
+      let p2ImgContainer = document.createElement("div");
+      p2ImgContainer.className = "p2-img-container";
+      let img = document.createElement("img");
+      img.src = json.posts[i].image;
+
+      let p2RightContainer = document.createElement("div");
+      p2RightContainer.className = "p2-right-container";
+      let p2Right = document.createElement("div");
+      p2Right.className = "p2-right";
+      let p2UsernameDate = document.createElement("div");
+      p2UsernameDate.className = "p2-username-date";
+      let p2UsernameIcon = document.createElement("div");
+      p2UsernameIcon.className = "p2-username-icon";
+      let p2Icon = document.createElement("img");
+      p2Icon.className = "p2-icon";
+      p2Icon.src = json.posts[i].icon;
+
+      let p2Username = document.createElement("div");
+      p2Username.className = "p2-username";
+      p2Username.innerHTML = json.posts[i].username;
+
+      let gap = document.createElement("div");
+      gap.className = "gap";
+      let p2Date = document.createElement("div");
+      p2Date.className = "p2-date";
+      p2Date.innerHTML = json.posts[i].created_at.slice(0, 10);
+
+      let p2Function = document.createElement("div");
+      p2Function.className = "p2-function";
+
+      let likeContainer = document.createElement("div");
+      likeContainer.className = "like-container";
+
+      let faHeart = document.createElement("i");
+      faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id}`;
+
+      for (let j = 0; j < json.checkLiked.length; j++) {
+        if (
+          json.posts[i].post_id == json.checkLiked[j].post_id &&
+          json.checkLiked[j].liked == true
+        ) {
+          faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id} liked`;
+        }
+      }
+
+      let likedCount = document.createElement("span");
+      likedCount.className = `likedCount likeCount-${json.posts[i].post_id}`;
+      likedCount.textContent = json.posts[i].liked_count;
+      // likedCount.style.fontFamily = "Courier New, Courier, monospace";
+
+      let faBookMark = document.createElement("i");
+      faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id}`;
+      for (let j = 0; j < json.checkSaved.length; j++) {
+        if (
+          json.posts[i].post_id == json.checkSaved[j].post_id &&
+          json.checkSaved[j].saved == true
+        ) {
+          faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id} saved`;
+        }
+      }
+
+      let p2TagContainer = document.createElement("div");
+      p2TagContainer.className = "p2-tag-container";
+
+      // generate tags
+      let dbTag = Object.values(json.tags);
+      for (let j = 0; j < dbTag.length; j++) {
+        if (json.posts[i].post_id == json.tags[j].post_id) {
+          let obj = json.tags[j].tag_content;
+          let p2Tag = document.createElement("button");
+          p2Tag.className = "p2-tag";
+          p2Tag.innerHTML = obj;
+          p2TagContainer.appendChild(p2Tag);
+        }
+      }
+
+      let p2Content = document.createElement("div");
+      p2Content.className = "p2-content";
+      let p2ContentContent = document.createElement("div");
+      p2ContentContent.className = "p2-content-content";
+      p2ContentContent.innerHTML = json.posts[i].content;
+
+      let row = document.createElement("div");
+      row.className = "row";
+
+      forum.appendChild(p2Container);
+      p2Container.appendChild(p2ImgContainer);
+      p2ImgContainer.appendChild(img);
+
+      p2Container.appendChild(p2RightContainer);
+      p2RightContainer.appendChild(p2Right);
+      p2Right.appendChild(p2UsernameDate);
+      p2UsernameDate.appendChild(p2UsernameIcon);
+      p2UsernameIcon.appendChild(p2Icon);
+      p2UsernameIcon.appendChild(p2Username);
+      p2UsernameDate.appendChild(gap);
+      p2UsernameDate.appendChild(p2Date);
+      p2Right.appendChild(p2Function);
+
+      p2Function.appendChild(likeContainer);
+      likeContainer.appendChild(faHeart);
+      likeContainer.appendChild(likedCount);
+      p2Function.appendChild(faBookMark);
+      p2Right.appendChild(p2TagContainer);
+      // p2TagContainer.appendChild(p2Tag); forum.js:92
+      p2Right.appendChild(p2Content);
+      p2Content.appendChild(p2ContentContent);
+      forum.appendChild(row);
+    }
+  }
+}
+
+// tag search function
+async function tagSearch() {
+  let tagButtons = document.querySelectorAll(".p2-tag");
+  tagButtons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      document.querySelector(".main").innerHTML = "";
+      let res = await fetch("/getTagPosts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: btn.textContent }),
+      });
+
+      let tagButtons_res = await res.json();
+      console.log(tagButtons_res);
+      if (tagButtons_res.success) {
+        for (let i = 0; i < tagButtons_res.content.rowCount; i++) {
+          console.log(tagButtons_res.content.rows[i].content);
+          let p2Container = document.createElement("div");
+          p2Container.className = "p2-container";
+          let p2ImgContainer = document.createElement("div");
+          p2ImgContainer.className = "p2-img-container";
+          let img = document.createElement("img");
+          img.src = tagButtons_res.content.rows[i].image;
+
+          let p2RightContainer = document.createElement("div");
+          p2RightContainer.className = "p2-right-container";
+          let p2Right = document.createElement("div");
+          p2Right.className = "p2-right";
+          let p2UsernameDate = document.createElement("div");
+          p2UsernameDate.className = "p2-username-date";
+          let p2UsernameIcon = document.createElement("div");
+          p2UsernameIcon.className = "p2-username-icon";
+          let p2Icon = document.createElement("img");
+          p2Icon.className = "p2-icon";
+          p2Icon.src = tagButtons_res.content.rows[i].icon;
+
+          let p2Username = document.createElement("div");
+          p2Username.className = "p2-username";
+          p2Username.innerHTML = tagButtons_res.content.rows[i].username;
+
+          let gap = document.createElement("div");
+          gap.className = "gap";
+          let p2Date = document.createElement("div");
+          p2Date.className = "p2-date";
+          p2Date.innerHTML = tagButtons_res.content.rows[i].created_at.slice(
+            0,
+            10
+          );
+
+          let p2Function = document.createElement("div");
+          p2Function.className = "p2-function";
+
+          let likeContainer = document.createElement("div");
+          likeContainer.className = "like-container";
+
+          let faHeart = document.createElement("i");
+          faHeart.className = `fa-solid fa-heart heart-${tagButtons_res.content.rows[i].post_id}`;
+          for (let j = 0; j < tagButtons_res.checkLiked.rows.length; j++) {
+            if (
+              tagButtons_res.content.rows[i].post_id ==
+                tagButtons_res.checkLiked.rows[j].post_id &&
+              tagButtons_res.checkLiked.rows[j].liked == true
+            ) {
+              faHeart.className = `fa-solid fa-heart heart-${tagButtons_res.content.rows[i].post_id} liked`;
+            }
+          }
+
+          let likedCount = document.createElement("span");
+          likedCount.className = `likedCount likeCount-${tagButtons_res.content.rows[i].post_id}`;
+          likedCount.textContent = tagButtons_res.content.rows[i].liked_count;
+
+          let faBookMark = document.createElement("i");
+          faBookMark.className = `fa-solid fa-bookmark bookmark-${tagButtons_res.content.rows[i].post_id}`;
+
+          // check saved and highlight
+          for (let k = 0; k < tagButtons_res.checkSaved.rows.length; k++) {
+            console.log(123);
+            if (
+              tagButtons_res.content.rows[i].post_id ==
+                tagButtons_res.checkSaved.rows[k].post_id &&
+              tagButtons_res.checkSaved.rows[k].saved == true
+            ) {
+              faBookMark.className = `fa-solid fa-bookmark bookmark-${tagButtons_res.content.rows[i].post_id} saved`;
+            }
+          }
+
+          let p2TagContainer = document.createElement("div");
+          p2TagContainer.className = "p2-tag-container";
+
+          // generate tags
+          let dbTag = tagButtons_res.tags.rowCount;
+          for (let j = 0; j < dbTag; j++) {
+            if (
+              tagButtons_res.content.rows[i].post_id ==
+              tagButtons_res.tags.rows[j].post_id
+            ) {
+              let obj = tagButtons_res.tags.rows[j].tag_content;
+              let p2Tag = document.createElement("button");
+              p2Tag.className = "p2-tag";
+              p2Tag.innerHTML = obj;
+              p2TagContainer.appendChild(p2Tag);
+            }
+          }
+
+          let p2Content = document.createElement("div");
+          p2Content.className = "p2-content";
+          let p2ContentContent = document.createElement("div");
+          p2ContentContent.className = "p2-content-content";
+          p2ContentContent.innerHTML = tagButtons_res.content.rows[i].content;
+
+          let row = document.createElement("div");
+          row.className = "row";
+
+          let forum = document.querySelector(".main");
+
+          forum.appendChild(p2Container);
+          p2Container.appendChild(p2ImgContainer);
+          p2ImgContainer.appendChild(img);
+
+          p2Container.appendChild(p2RightContainer);
+          p2RightContainer.appendChild(p2Right);
+          p2Right.appendChild(p2UsernameDate);
+          p2UsernameDate.appendChild(p2UsernameIcon);
+          p2UsernameIcon.appendChild(p2Icon);
+          p2UsernameIcon.appendChild(p2Username);
+          p2UsernameDate.appendChild(gap);
+          p2UsernameDate.appendChild(p2Date);
+          p2Right.appendChild(p2Function);
+
+          p2Function.appendChild(likeContainer);
+          likeContainer.appendChild(faHeart);
+          likeContainer.appendChild(likedCount);
+          p2Function.appendChild(faBookMark);
+          p2Right.appendChild(p2TagContainer);
+          // p2TagContainer.appendChild(p2Tag); forum.js:92
+          p2Right.appendChild(p2Content);
+          p2Content.appendChild(p2ContentContent);
+          forum.appendChild(row);
+        }
+      }
+      likePost();
+      savePost();
+      tagSearch();
+    });
+  });
+}
+
+// search user name (search bar)
+document
+  .querySelector("#searchSubmit")
+  .addEventListener("click", async (event) => {
+    event.preventDefault();
+    let searchBar = document.querySelector("#searchBar");
+    let searchUsername = searchBar.value;
+    let forum = document.querySelector(".main");
+    forum.innerHTML = "";
+    console.log(searchUsername);
+
+    const res = await fetch("/searchUsername", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        searchUsername,
+      }),
+    });
+
+    const json = await res.json();
+    console.log(json);
+    if (json.success) {
+      for (let i = 0; i < json.content.rowCount; i++) {
         let p2Container = document.createElement("div");
         p2Container.className = "p2-container";
         let p2ImgContainer = document.createElement("div");
         p2ImgContainer.className = "p2-img-container";
         let img = document.createElement("img");
-        img.src = json.posts[i].image;
+        img.src = json.content.rows[i].image;
 
         let p2RightContainer = document.createElement("div");
         p2RightContainer.className = "p2-right-container";
@@ -186,17 +460,17 @@ async function loadPosts() {
         p2UsernameIcon.className = "p2-username-icon";
         let p2Icon = document.createElement("img");
         p2Icon.className = "p2-icon";
-        p2Icon.src = json.posts[i].icon;
+        p2Icon.src = json.content.rows[i].icon;
 
         let p2Username = document.createElement("div");
         p2Username.className = "p2-username";
-        p2Username.innerHTML = json.posts[i].username;
+        p2Username.innerHTML = json.content.rows[i].username;
 
         let gap = document.createElement("div");
         gap.className = "gap";
         let p2Date = document.createElement("div");
         p2Date.className = "p2-date";
-        p2Date.innerHTML = json.posts[i].created_at.slice(0, 10);
+        p2Date.innerHTML = json.content.rows[i].created_at.slice(0, 10);
 
         let p2Function = document.createElement("div");
         p2Function.className = "p2-function";
@@ -205,30 +479,30 @@ async function loadPosts() {
         likeContainer.className = "like-container";
 
         let faHeart = document.createElement("i");
-        faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id}`;
-
-        for (let j = 0; j < json.checkLiked.length; j++) {
+        faHeart.className = `fa-solid fa-heart heart-${json.content.rows[i].post_id}`;
+        for (let j = 0; j < json.checkLiked.rows.length; j++) {
           if (
-            json.posts[i].post_id == json.checkLiked[j].post_id &&
-            json.checkLiked[j].liked == true
+            json.content.rows[i].post_id == json.checkLiked.rows[j].post_id &&
+            json.checkLiked.rows[j].liked == true
           ) {
-            faHeart.className = `fa-solid fa-heart heart-${json.posts[i].post_id} liked`;
+            faHeart.className = `fa-solid fa-heart heart-${json.content.rows[i].post_id} liked`;
           }
         }
 
         let likedCount = document.createElement("span");
-        likedCount.className = `likedCount likeCount-${json.posts[i].post_id}`;
-        likedCount.textContent = json.posts[i].liked_count;
-        // likedCount.style.fontFamily = "Courier New, Courier, monospace";
+        likedCount.className = `likedCount likeCount-${json.content.rows[i].post_id}`;
+        likedCount.textContent = json.content.rows[i].liked_count;
 
         let faBookMark = document.createElement("i");
-        faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id}`;
-        for (let j = 0; j < json.checkSaved.length; j++) {
+        faBookMark.className = `fa-solid fa-bookmark bookmark-${json.content.rows[i].post_id}`;
+
+        // check saved and highlight
+        for (let k = 0; k < json.checkSaved.rows.length; k++) {
           if (
-            json.posts[i].post_id == json.checkSaved[j].post_id &&
-            json.checkSaved[j].saved == true
+            json.content.rows[i].post_id == json.checkSaved.rows[k].post_id &&
+            json.checkSaved.rows[k].saved == true
           ) {
-            faBookMark.className = `fa-solid fa-bookmark bookmark-${json.posts[i].post_id} saved`;
+            faBookMark.className = `fa-solid fa-bookmark bookmark-${json.content.rows[i].post_id} saved`;
           }
         }
 
@@ -236,10 +510,10 @@ async function loadPosts() {
         p2TagContainer.className = "p2-tag-container";
 
         // generate tags
-        let dbTag = Object.values(json.tags);
-        for (let j = 0; j < dbTag.length; j++) {
-          if (json.posts[i].post_id == json.tags[j].post_id) {
-            let obj = json.tags[j].tag_content;
+        let dbTag = json.tags.rowCount;
+        for (let j = 0; j < dbTag; j++) {
+          if (json.content.rows[i].post_id == json.tags.rows[j].post_id) {
+            let obj = json.tags.rows[j].tag_content;
             let p2Tag = document.createElement("button");
             p2Tag.className = "p2-tag";
             p2Tag.innerHTML = obj;
@@ -251,10 +525,12 @@ async function loadPosts() {
         p2Content.className = "p2-content";
         let p2ContentContent = document.createElement("div");
         p2ContentContent.className = "p2-content-content";
-        p2ContentContent.innerHTML = json.posts[i].content;
+        p2ContentContent.innerHTML = json.content.rows[i].content;
 
         let row = document.createElement("div");
         row.className = "row";
+
+        let forum = document.querySelector(".main");
 
         forum.appendChild(p2Container);
         p2Container.appendChild(p2ImgContainer);
@@ -280,147 +556,12 @@ async function loadPosts() {
         p2Content.appendChild(p2ContentContent);
         forum.appendChild(row);
       }
-
-      let tagButtons = document.querySelectorAll(".p2-tag");
-      tagButtons.forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          document.querySelector(".main").innerHTML = "";
-          let res = await fetch("/getTagPosts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: btn.textContent }),
-          });
-
-          let tagButtons_res = await res.json();
-          console.log(tagButtons_res);
-
-          if (json.success) {
-            for (let i = 0; i < tagButtons_res.content.rowCount; i++) {
-              console.log(tagButtons_res.content.rows[i].content);
-              let p2Container = document.createElement("div");
-              p2Container.className = "p2-container";
-              let p2ImgContainer = document.createElement("div");
-              p2ImgContainer.className = "p2-img-container";
-              let img = document.createElement("img");
-              img.src = tagButtons_res.content.rows[i].image;
-
-              let p2RightContainer = document.createElement("div");
-              p2RightContainer.className = "p2-right-container";
-              let p2Right = document.createElement("div");
-              p2Right.className = "p2-right";
-              let p2UsernameDate = document.createElement("div");
-              p2UsernameDate.className = "p2-username-date";
-              let p2UsernameIcon = document.createElement("div");
-              p2UsernameIcon.className = "p2-username-icon";
-              let p2Icon = document.createElement("img");
-              p2Icon.className = "p2-icon";
-              p2Icon.src = tagButtons_res.userData.rows[0].icon; // now only for one user_id
-
-              let p2Username = document.createElement("div");
-              p2Username.className = "p2-username";
-              p2Username.innerHTML = tagButtons_res.userData.rows[0].username;
-
-              let gap = document.createElement("div");
-              gap.className = "gap";
-              let p2Date = document.createElement("div");
-              p2Date.className = "p2-date";
-              p2Date.innerHTML = tagButtons_res.content.rows[
-                i
-              ].created_at.slice(0, 10);
-
-              let p2Function = document.createElement("div");
-              p2Function.className = "p2-function";
-
-              let likeContainer = document.createElement("div");
-              likeContainer.className = "like-container";
-
-              let faHeart = document.createElement("i");
-              faHeart.className = `fa-solid fa-heart heart-${tagButtons_res.content.rows[0].post_id}`;
-              for (let j = 0; j < tagButtons_res.checkLiked.rows.length; j++) {
-                if (
-                  tagButtons_res.content.rows[i].post_id ==
-                    tagButtons_res.checkLiked.rows[j].post_id &&
-                  tagButtons_res.checkLiked.liked == true
-                ) {
-                  faHeart.className = `fa-solid fa-heart heart-${tagButtons_res.content.rows[0].post_id} liked`;
-                }
-              }
-
-              let likedCount = document.createElement("span");
-              likedCount.className = `likedCount likeCount-${tagButtons_res.content.rows[0].post_id}`;
-              likedCount.textContent =
-                tagButtons_res.content.rows[0].liked_count;
-              // likedCount.style.fontFamily = "Courier New, Courier, monospace";
-
-              let faBookMark = document.createElement("i");
-              faBookMark.className = `fa-solid fa-bookmark bookmark-${tagButtons_res.content.rows[0].post_id}`;
-              for (let j = 0; j < tagButtons_res.checkSaved.length; j++) {
-                if (
-                  tagButtons_res.content.rows[i].post_id ==
-                    tagButtons_res.checkSaved.rows[j].post_id &&
-                  tagButtons_res.checkSaved[j].saved == true
-                ) {
-                  faBookMark.className = `fa-solid fa-bookmark bookmark-${tagButtons_res.content.rows[0].post_id} saved`;
-                }
-              }
-
-              let p2TagContainer = document.createElement("div");
-              p2TagContainer.className = "p2-tag-container";
-
-              // generate tags
-              // let dbTag = Object.values(tagButtons_res.tags.rowCount);
-              // for (let j = 0; j < dbTag; j++) {
-              //   if (
-              //     tagButtons_res.content.rows[i].post_id ==
-              //     tagButtons_res.tags.rows[j].post_id
-              //   ) {
-              //     let obj = tagButtons_res.tags.rows[j].tag_content;
-              //     let p2Tag = document.createElement("button");
-              //     p2Tag.className = "p2-tag";
-              //     p2Tag.innerHTML = obj;
-              //     p2TagContainer.appendChild(p2Tag);
-              //   }
-              // }
-
-              let p2Content = document.createElement("div");
-              p2Content.className = "p2-content";
-              let p2ContentContent = document.createElement("div");
-              p2ContentContent.className = "p2-content-content";
-              p2ContentContent.innerHTML =
-                tagButtons_res.content.rows[i].content;
-
-              let row = document.createElement("div");
-              row.className = "row";
-
-              forum.appendChild(p2Container);
-              p2Container.appendChild(p2ImgContainer);
-              p2ImgContainer.appendChild(img);
-
-              p2Container.appendChild(p2RightContainer);
-              p2RightContainer.appendChild(p2Right);
-              p2Right.appendChild(p2UsernameDate);
-              p2UsernameDate.appendChild(p2UsernameIcon);
-              p2UsernameIcon.appendChild(p2Icon);
-              p2UsernameIcon.appendChild(p2Username);
-              p2UsernameDate.appendChild(gap);
-              p2UsernameDate.appendChild(p2Date);
-              p2Right.appendChild(p2Function);
-
-              p2Function.appendChild(likeContainer);
-              likeContainer.appendChild(faHeart);
-              likeContainer.appendChild(likedCount);
-              p2Function.appendChild(faBookMark);
-              p2Right.appendChild(p2TagContainer);
-              // p2TagContainer.appendChild(p2Tag); forum.js:92
-              p2Right.appendChild(p2Content);
-              p2Content.appendChild(p2ContentContent);
-              forum.appendChild(row);
-            }
-          }
-        });
-      });
     }
-  } 
+    likePost();
+    savePost();
+    tagSearch();
+  });
+
 // create post
 document.querySelector("#submit").addEventListener("click", async (event) => {
   event.preventDefault();
@@ -492,9 +633,9 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     let faHeart = document.createElement("i");
     faHeart.className = `fa-solid fa-heart}`;
 
-    let likedCount = document.createElement("span");
-    likedCount.className = `likedCount`;
-    likedCount.textContent = result.post.createdPost.rows[0].liked_count;
+    // let likedCount = document.createElement("span");
+    // likedCount.className = `likedCount`;
+    // likedCount.textContent = result.post.createdPost.rows[0].liked_count;
 
     let faBookMark = document.createElement("i");
     faBookMark.className = `fa-solid fa-bookmark`;
@@ -537,7 +678,7 @@ document.querySelector("#submit").addEventListener("click", async (event) => {
     p2Right.appendChild(p2Function);
     p2Function.appendChild(likeContainer);
     likeContainer.appendChild(faHeart);
-    likeContainer.appendChild(likedCount);
+    // likeContainer.appendChild(likedCount);
     p2Function.appendChild(faBookMark);
     p2Right.appendChild(p2TagContainer);
     // p2TagContainer.appendChild(p2Tag); // wrote in above
